@@ -1,0 +1,17 @@
+wheel
+torch==1.4.0
+torchvision==0.5.0
+pretrainedmodels
+numpy
+joblib
+scikit-image < 0.15
+tqdm
+glog
+pyyaml
+tensorboardx
+fire
+pillow==6.1
+torchsummary
+opencv_python
+imageio
+scipy
