@@ -1,0 +1,39 @@
+include_directories(
+  include
+  ${rclcpp_INCLUDE_DIRS}
+  ${PAL_INCLUDE_DIR}
+  ${OpenCV_INCLUDE_DIRS}
+)
+
+find_package(PkgConfig REQUIRED)
+pkg_search_module(PKG_OPENCV REQUIRED opencv)
+
+
+
+add_executable(capture src/pal_camera_node.cpp )
+target_link_libraries(capture ${ament_LIBRARIES} ${PKG_OPENCV_LDFLAGS} ${V4l2_LIBRARIES} ${PAL_LIBRARY})
+ament_target_dependencies(capture rclcpp image_transport cv_bridge)
+
+add_executable(detect src/person_detection_node.cpp )
+target_link_libraries(detect ${ament_LIBRARIES} ${PKG_OPENCV_LDFLAGS} ${V4l2_LIBRARIES} ${PAL_LIBRARY})
+ament_target_dependencies(detect rclcpp image_transport cv_bridge)
+rosidl_target_interfaces(detect ${PROJECT_NAME} "rosidl_typesupport_cpp")
+
+install(TARGETS
+  capture
+  detect
+  DESTINATION lib/${PROJECT_NAME})
+
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  # the following line skips the linter which checks for copyrights
+  # uncomment the line when a copyright and license is not present in all source files
+  #set(ament_cmake_copyright_FOUND TRUE)
+  # the following line skips cpplint (only works in a git repo)
+  # uncomment the line when this package is not in a git repo
+  #set(ament_cmake_cpplint_FOUND TRUE)
+  ament_lint_auto_find_test_dependencies()
+endif()
+
+ament_package()
