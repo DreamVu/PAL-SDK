@@ -1,0 +1,6 @@
+<launch>
+        <node name="pal_camera_node" pkg="dreamvu_pal_camera" type="detectall" output="screen" />
+        
+        <node name="rviz" pkg="rviz" type="rviz" args="-f pal -d $(find dreamvu_pal_camera)/launch/detectall.rviz" output="screen"/>
+      
+</launch>        
