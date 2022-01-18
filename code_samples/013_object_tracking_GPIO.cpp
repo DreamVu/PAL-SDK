@@ -32,7 +32,7 @@ g++ 011_object_tracking.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.
 # include <chrono>
 # include <bits/stdc++.h>
 # include "PAL.h"
-#include <JetsonGPIO.h>
+#include <JetsonGPIO/JetsonGPIO.h>
 
 static bool g_bExit = false;
 

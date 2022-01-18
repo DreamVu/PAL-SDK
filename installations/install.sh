@@ -3,7 +3,7 @@ chmod +x ./*.sh
 
 ./uninstall.sh
 
-sudo ./dependencies.sh
+./dependencies.sh
 
 
 ./ros_cmake.sh

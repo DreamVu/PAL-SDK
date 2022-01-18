@@ -18,7 +18,11 @@ sudo cp ../lib/libnvtvmr.so /usr/lib/aarch64-linux-gnu/tegra
 
 echo "Installing GPIO dependencies"
 git clone https://github.com/pjueon/JetsonGPIO
-cd JetsonGPIO/build
+cd JetsonGPIO
+mkdir build
+cd build
+
+cmake ..
 make all
 sudo make install
 sudo ldconfig
