@@ -1,5 +1,5 @@
-# PAL USB
-The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
+# PAL-USB
+The only single sensor 360° 3D Vision System. [PAL-USB](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
 
 Please follow the instructions given below on any of the Nvidia Jetson embedded boards with Jetpack 4.4.1 to install the software.
 
@@ -15,7 +15,7 @@ Confirm the following dependencies. These are must have to proceed further
 
 - ### Python 3.6 libraries (pytorch, torchvision, numpy, PIL, etc.)
 
-## Step 2. Installing PAL-Mini SDK
+## Step 2. Installing PAL-USB SDK
       cd installations
       chmod +x ./*.sh
       sudo ./install.sh 
@@ -27,7 +27,7 @@ The libPAL_Camera.so file is delivered along with the purchase of the PAL-USB ca
 
 
 ## Documentation 
-For rest of the evaluation of the PAL software, please read the [Evaluation Manual](https://docs.google.com/document/d/e/2PACX-1vT3rc_7S621PJHJ6QuV-rR2CyXbMvPBZztaDoiPnkT_g18Gz327OOA91pf11JMkqIeK0smel81rNbNg/pub)
+For rest of the evaluation of the PAL-USB SDK, please read the [Evaluation Manual](https://docs.google.com/document/d/e/2PACX-1vT3rc_7S621PJHJ6QuV-rR2CyXbMvPBZztaDoiPnkT_g18Gz327OOA91pf11JMkqIeK0smel81rNbNg/pub)
 
 ## Support 
 If you need help or more informations check our [Help Center](https://support.dreamvu.com/portal/en/home) or join our [Community](https://support.dreamvu.com/portal/en/community/dreamvu-inc) or you can email us directly at support@dreamvu.com 
