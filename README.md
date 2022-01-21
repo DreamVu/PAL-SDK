@@ -26,7 +26,7 @@ Once complete please reboot the system.
 The libPAL_Camera.so file is delivered along with the purchase of the PAL USB camera. In case you have not received them, please request for the file by filling out a [form](https://support.dreamvu.com/portal/en/newticket). Place the libPAL_Camera.so file in the ./lib/ folder. 
       
 ## Documentation 
-For rest of the evaluation of the ODOA software, please read the Evaluation Manual
+For rest of the evaluation of the PAL USB SDK, please read the Evaluation Manual
 
 ## Support 
 If you need help or more informations check our [Help Center](https://support.dreamvu.com/portal/en/home) or join our [Community](https://support.dreamvu.com/portal/en/community/dreamvu-inc) or you can email us directly at support@dreamvu.com 
