@@ -1,21 +1,3 @@
-# Initial Steps to follow
-
-1. Unzip the SDK folder 
-
-# SDK-Tutorials 
-
-## PRE-REQUIREMENT: Install OpenCV and OpenCV-contrib modules
-	1. Open docs/PAL Documentation.pdf file
-	
-	2. Follow the instructions as mentioned in the section 3.1 of the pdf file
-
-	
-## Install other dependencies and Compile the SDK Tutorials - This section is same as 3.2, 3.3 and 3.4  in the pdf file
-1. Install QT, follow the process as described in the sec 3.1 in the documentation.
-2. For installing python and other dependencies, Run install.exe
-3. For the setup of Opencv and QT, Run opencv.exe 
-
-
 # PAL USB
 The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
 
@@ -26,26 +8,35 @@ Confirm the following dependencies. These are must have to proceed further
 
 - ### Windows 10 64 bit
 - ### Install OpenCV 3.4.4 and OpenCV Contrib 3.4.4 libraries. Go to the Installatios Folder and run opencv.exe 
--      
-       chmod +x ./*.sh
-       sudo ./opencv.sh
-
-- ### Python 3.8 libraries (pytorch, tensorflow, numpy, PIL, etc.)
-- ### QT 5.12.2
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image11.png)
 
 ## Step 2. Installing QT 
+- ### Extract the PAL SDK compressed file.
+- ### Navigate to the installation folder.
+- ### click qt-unified-windows-x86-4.1.0-online, and follow the below instructions.
 
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image22.png)
+- ### Signup and click Next
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image26.png)
+- ### Click on I approve, add specific details and click Next
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image16.png)
+- ### Click Next
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image15.png)
+- ### Check the disable option and click Next
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image10.png)
+- ### Add the above path and click Next
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image32.png)
+- ### Select MInGW 7.3.0 64 bit and click Next
+- ### Check I agree and click Next
+- ### Click Next
+- ### Click Finish
 
-## Step 2. Installing PAL USB SDK
-      cd installations
-      chmod +x ./*.sh
-      sudo ./install.sh 
+## Step 3. Installing the PAL & Python Libraries
+- ### In the installation folder, right click on the install.exe application.
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image7.png)
+- ### and click, run as administrator and a window like this will show up. 
+![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image33.png)
 
-Once complete please reboot the system.
-
-## Step 3. Installing libPAL_Camera.so
-The libPAL_Camera.so file is delivered along with the purchase of the PAL USB camera. In case you have not received them, please request for the file by filling out a [form](https://support.dreamvu.com/portal/en/newticket). Place the libPAL_Camera.so file in the ./lib/ folder. 
-      
 ## Documentation 
 For rest of the evaluation of the PAL USB SDK, please read the [Evaluation Manual](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/PAL%20SDK%20Windows%20Documentation.pdf)
 
