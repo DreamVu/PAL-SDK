@@ -37,6 +37,11 @@ Confirm the following dependencies. These are must have to proceed further
 - ### and click, run as administrator and a window like this will show up. 
 ![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image33.png)
 
+## Step 4. Installing Camera Data File 
+The data files are delivered along with the purchase of the PAL USB camera. In case you have not received them, please request for the files by filling out a [form](https://support.dreamvu.com/portal/en/newticket)
+
+      Run setup.exe as Administrator 
+      
 ## Documentation 
 For rest of the evaluation of the PAL USB SDK, please read the [Evaluation Manual](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/PAL%20SDK%20Windows%20Documentation.pdf)
 
