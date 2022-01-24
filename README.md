@@ -7,6 +7,10 @@ Please follow the instructions given below on any of the Intel x86 CPU to instal
 Confirm the following dependencies. These are must have to proceed further
 
 - ### Ubuntu 16.04 64 bit
+- ### Install Git-lfs before cloning this repo. 
+-     sudo apt-get install git-lfs
+
+
 - ### OpenCV 3.4.4 and OpenCV Contrib 3.4.4 libraries. 
   Follow these steps to install the required OpenCV dependencies. 
 -      cd installations
