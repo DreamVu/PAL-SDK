@@ -7,6 +7,10 @@ Please follow the instructions given below on any of the Nvidia Jetson embedded 
 Confirm the following dependencies. These are must have to proceed further
 
 - ### Jetpack 4.4.1
+- ### Install Git-lfs before cloning this repo. 
+-     sudo apt-get install git-lfs
+
+
 - ### CUDA enabled OpenCV 4.4.0 and OpenCV Contrib 4.4.0 libraries. 
   Follow these steps to install the required OpenCV dependencies. 
 -      cd installations
