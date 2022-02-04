@@ -3,13 +3,16 @@ The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal
 
 Please follow the instructions given below on any of the Nvidia Jetson embedded boards with Jetpack 4.4.1 to install the software.
 
-## Step 1. Installing Dependencies 
+## Step 1. Clone the repository 
+-     sudo apt-get install git-lfs
+      git clone https://github.com/DreamVu/PAL-Mini.git
+      cd PAL-Mini
+      git lfs pull
+      
+## Step 2. Installing Dependencies 
 Confirm the following dependencies. These are must have to proceed further
 
 - ### Jetpack 4.4.1
-- ### Install Git-lfs before cloning this repo. 
--     sudo apt-get install git-lfs
-
 
 - ### CUDA enabled OpenCV 4.4.0 and OpenCV Contrib 4.4.0 libraries. 
   Follow these steps to install the required OpenCV dependencies. 
@@ -19,14 +22,14 @@ Confirm the following dependencies. These are must have to proceed further
 
 - ### Python 3.6 libraries (pytorch, torchvision, numpy, PIL, etc.)
 
-## Step 2. Installing PAL USB SDK
+## Step 3. Installing PAL USB SDK
       cd installations
       chmod +x ./*.sh
       sudo ./install.sh 
 
 Once complete please reboot the system.
 
-## Step 3. Installing Camera Data File 
+## Step 4. Installing Camera Data File 
 The data files are delivered along with the purchase of the PAL USB camera. In case you have not received them, please request for the files by filling out a [form](https://support.dreamvu.com/portal/en/newticket)
 
       chmod +x setup.sh
