@@ -25,8 +25,15 @@ Confirm the following dependencies. These are must have to proceed further
 ## Step 3. Installing PAL USB SDK
       cd installations
       chmod +x ./*.sh
-      sudo ./install.sh 
+      sudo ./install.sh arg1 arg2
 
+  - arg1: It can be either 0, 1 or can be skipped.  On selecting 1, installation will build the whole software based on the particular Nvidia Jetson architecture and will enable higher performance. This may take a few hours to complete the installation. On selecting 0, it will quickly build the software by using some of the pre-configured libraries provided. If arg1 is skipped, then arg2 must also be skipped.
+
+  - arg2:  If the arg1 is 1, then the second argument takes in the amount of RAM the process will use during the build of the software in MBs. Following are the recommended values for different Nvidia Jetson architectures.
+            For Jetson Xavier NX arg2: 3500
+            For Jetson Xavier AGX arg2: 8000
+            For Jetson Nano arg2: 1000
+            
 Once complete please reboot the system.
 
 ## Step 4. Installing Camera Data File 
