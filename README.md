@@ -5,7 +5,7 @@ Please follow the instructions given below on any of the Intel x86 CPU to instal
 
 ## Step 1. Clone the repository 
 -     sudo apt-get install git-lfs
-      git clone https://github.com/DreamVu/PAL-USB.git
+      git clone -b Ubuntu-20.04 --single-branch https://github.com/DreamVu/PAL-USB.git
       cd PAL-USB
       git lfs pull
       
