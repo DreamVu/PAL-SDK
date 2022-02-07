@@ -3,14 +3,18 @@ The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal
 
 Please follow the instructions given below on any of the Intel x86 CPU to install the software.
 
-## Step 1. Installing Dependencies 
+## Step 1. Clone the repository 
+-     git clone -b Windows-10 --single-branch https://github.com/DreamVu/PAL-USB.git
+      cd PAL-USB
+      
+## Step 2. Installing Dependencies 
 Confirm the following dependencies. These are must have to proceed further
 
 - ### Windows 10 64 bit
 - ### Install OpenCV 3.4.4 and OpenCV Contrib 3.4.4 libraries. Go to the Installatios Folder and run opencv.exe 
 ![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image11.png)
 
-## Step 2. Installing QT 
+## Step 3. Installing QT 
 - ### Extract the PAL SDK compressed file.
 - ### Navigate to the installation folder.
 - ### click qt-unified-windows-x86-4.1.0-online, and follow the below instructions.
@@ -31,13 +35,13 @@ Confirm the following dependencies. These are must have to proceed further
 - ### Click Next
 - ### Click Finish
 
-## Step 3. Installing the PAL & Python Libraries
+## Step 4. Installing the PAL & Python Libraries
 - ### In the installation folder, right click on the install.exe application.
 ![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image7.png)
 - ### and click, run as administrator and a window like this will show up. 
 ![alt text](https://github.com/DreamVu/PAL-USB/blob/Windows-10/docs/image33.png)
 
-## Step 4. Installing Camera Data File 
+## Step 5. Installing Camera Data File 
 The data files are delivered along with the purchase of the PAL USB camera. In case you have not received them, please request for the files by filling out a [form](https://support.dreamvu.com/portal/en/newticket)
 
       Run setup.exe as Administrator 
