@@ -1,28 +1,25 @@
 /*
 
-CODE SAMPLE # 011: Object Tracking
-This code will grab the basic stereo panoramas (left and right images) and ALSO the Disparity panorama, execute tracking for objects on it and then display in an opencv window
+CODE SAMPLE # 013: Object Tracking
+This code will grab the 360 rgb data, do object tracking and toggle GPIO pins of the Nvidia board.
 
 
 >>>>>> Compile this code using the following command....
 
 
-g++ 011_object_tracking.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so libPAL_Track.so `pkg-config --libs --cflags opencv`   -g  -o 011_object_tracking.out -I../include/ -I/usr/local/include/eigen3     -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl
+g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so libPAL_Track.so `pkg-config --libs --cflags opencv`   -g  -o 013_object_tracking_GPIO.out -I../include/ -I/usr/local/include/eigen3     -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl
 
 
 >>>>>> Execute the binary file by typing the following command...
 
 
-./011_object_tracking.out
+./013_object_tracking_GPIO.out
 
 
 >>>>>> KEYBOARD CONTROLS:
 
-	   ESC key closes the window
-	   	Press v/V key to toggle the vertical flip of panorama
-		Press f/F to toggle filter rgb property.
-		Press d/D to toggle fast depth property
-		Press r/R to toggle near range property
+	   Press Ctrl+C key to exit the code sample
+
 
 */
 
@@ -32,7 +29,7 @@ g++ 011_object_tracking.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.
 # include <chrono>
 # include <bits/stdc++.h>
 # include "PAL.h"
-#include <JetsonGPIO/JetsonGPIO.h>
+#include <JetsonGPIO.h>
 
 static bool g_bExit = false;
 
