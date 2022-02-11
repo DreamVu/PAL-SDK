@@ -1,24 +1,24 @@
 /*
 
-CODE SAMPLE # 013: Object Tracking
+CODE SAMPLE # 013: Object Tracking With GPIO compatibilty
 This code will grab the 360 rgb data, do object tracking and toggle GPIO pins of the Nvidia board.
 
 
 >>>>>> Compile this code using the following command....
 
 
-g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so libPAL_Track.so `pkg-config --libs --cflags opencv`   -g  -o 013_object_tracking_GPIO.out -I../include/ -I/usr/local/include/eigen3     -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl
+g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so  ../lib/libPAL_Track.so  `pkg-config --libs --cflags opencv`   -O3  -o 013_object_tracking_GPIO.out -I../include/ -lv4l2 -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lJetsonGPIO -lpthread
+
 
 
 >>>>>> Execute the binary file by typing the following command...
-
 
 ./013_object_tracking_GPIO.out
 
 
 >>>>>> KEYBOARD CONTROLS:
 
-	   Press Ctrl+C key to exit the code sample
+	Press Ctrl+C key to exit the code sample
 
 
 */
@@ -30,6 +30,8 @@ g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/li
 # include <bits/stdc++.h>
 # include "PAL.h"
 #include <JetsonGPIO.h>
+#include "unistd.h"
+
 
 static bool g_bExit = false;
 
@@ -70,6 +72,7 @@ namespace PAL
 int main(int argc, char *argv[])
 {
    	
+
 	signal(SIGINT, signalHandler);
 
 	PAL::Internal::EnableDepth(false);
@@ -84,15 +87,41 @@ int main(int argc, char *argv[])
 	GPIO::setup(camera_pin_2, GPIO::OUT, GPIO::LOW);
 	GPIO::setup(camera_pin_3, GPIO::OUT, GPIO::LOW); 
 
+
+
+
 	//setting detection pin inactive by default
 	GPIO::setup(detection_pin, GPIO::OUT, GPIO::HIGH);
 
-	int width, height;
-	if (PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
+
+
+	cv::VideoCapture cap;
+
+	while(!cap.open("/dev/pal5")) 
 	{
-		printf("Init failed\n");
+		cout << "\n\n[INFO] CAMERA NOT CONNECTED, CONNECT THE CAMERA \n\n" << endl;
+		system("clear");
+		
+		GPIO::output(camera_pin, 1);
+		GPIO::output(camera_pin_1, 1);
+		GPIO::output(camera_pin_2, 1);
+		GPIO::output(camera_pin_3, 1);
+		GPIO::output(detection_pin, 1);
+	}
+	
+	cap.release();
+	
+	int width, height;
+	while(PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
+	{
+		printf("\n[INFO] Init Failed\n");
 		return 1;
 	}
+	GPIO::output(camera_pin, 0);
+	GPIO::output(camera_pin_1, 0);
+	GPIO::output(camera_pin_2, 0);
+	GPIO::output(camera_pin_3, 0);
+
 
 	PAL::CameraProperties data; 
 	PAL::Acknowledgement ack = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
@@ -132,9 +161,9 @@ int main(int argc, char *argv[])
 	bool useDepth = false;
 
 	bool bDetectionPinActive = false;
-
+	int key = ' ';
 	//27 = esc key. Run the loop until the ESC key is pressed
-	while(!g_bExit)
+	while (!g_bExit)
 	{
 		PAL::Image left, right, depth, disparity;
 		Mat img, d;
@@ -156,12 +185,13 @@ int main(int argc, char *argv[])
 		
 		num = PAL::RunTrack(img, d, boxes, ids, depthValues, colours);
 
+
 		if(num)
 		{
 			if(!bDetectionPinActive)
 			{
 				cout<<"Setting GPIO detection pin active"<<endl;
-				GPIO::setup(detection_pin, GPIO::OUT, GPIO::LOW);
+				GPIO::output(detection_pin, 0);
 
 				bDetectionPinActive = true;
 			}
@@ -172,18 +202,20 @@ int main(int argc, char *argv[])
 			if(bDetectionPinActive)
 			{
 				cout<<"Setting GPIO detection pin inactive"<<endl;
-				GPIO::setup(detection_pin, GPIO::OUT, GPIO::HIGH);
-
+				GPIO::output(detection_pin, 1);
 				bDetectionPinActive = false;
 			}
 
 		}
 
+		
 		boxes.clear();
 		ids.clear();
 		if(useDepth)
-			depthValues.clear();
+		depthValues.clear();
 		colours.clear();
+		
+		//Wait for the keypress - with a timeout of 1 ms
 		
 		
 	}
