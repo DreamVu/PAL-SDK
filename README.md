@@ -5,7 +5,7 @@ Please follow the instructions given below on any of the Nvidia Jetson embedded 
 
 ## Step 1. Clone the repository 
 -     sudo apt-get install git-lfs
-      git clone -b Jetpack-4.4.1 --single-branch https://github.com/DreamVu/PAL-USB.git
+      git clone -b JetPack-4.4.1 --single-branch https://github.com/DreamVu/PAL-USB.git
       cd PAL-USB
       git lfs pull
       
