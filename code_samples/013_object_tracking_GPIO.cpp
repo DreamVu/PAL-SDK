@@ -7,7 +7,8 @@ This code will grab the 360 rgb data, do object tracking and toggle GPIO pins of
 >>>>>> Compile this code using the following command....
 
 
-g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so  ../lib/libPAL_Track.so  `pkg-config --libs --cflags opencv`   -O3  -o 013_object_tracking_GPIO.out -I../include/ -lv4l2 -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lJetsonGPIO -lpthread
+g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so  ../lib/libPAL_Track.so  `pkg-config --libs --cflags opencv`   -O3  -o 013_object_tracking_GPIO.out -I../include/ -lv4l2 -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lJetsonGPIO -lpthread -w
+
 
 
 

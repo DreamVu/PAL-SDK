@@ -24,7 +24,7 @@ struct termios tty;
 static char read_buf [1];
 
 
-
+char read_buf_distance[1] ;
 // Get Num of Person
 int Receive_Num_of_Person()
 {
@@ -39,7 +39,7 @@ int Receive_Num_of_Person()
       
     }
     
-    
+    read_buf_distance[0] = read_buf[0];
     return num_of_person;
     
 }
@@ -55,6 +55,11 @@ void Get_Data_Checksum( float* frame_data)//, int* checksum_host)
     
     int index = 0;
     
+    if(read_buf_distance[0] == 'E')
+    {
+         printf("\n DISTANCE : NOT AVAILABLE" );
+         return;
+    }    
   
     while(read(serial_port, &read_buf, sizeof(read_buf)) && read_buf[0] != 'E')
     {
@@ -75,10 +80,6 @@ void Get_Data_Checksum( float* frame_data)//, int* checksum_host)
         
         
         frame_data[index] = index_data;
-        //*checksum_host = (*checksum_host + frame_data[index]) * seed;
-        
-        //if(*checksum_host > limit)
-        //*checksum_host = *checksum_host % limit;
         
         printf("\n DISTANCE : %d cm", (int)index_data);
         index++;

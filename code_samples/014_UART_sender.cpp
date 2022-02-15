@@ -101,6 +101,17 @@ int main(int argc, char *argv[])
 {
    	
     signal(SIGINT, signalHandler);
+    
+    cv::VideoCapture cap;
+
+    while(!cap.open("/dev/pal5")) 
+    {
+		cout << "\n\n[INFO] CAMERA NOT CONNECTED, CONNECT THE CAMERA \n\n" << endl;
+		system("clear");
+		
+    }
+	
+    cap.release();
 
     bool useDepth = false;
 
@@ -159,6 +170,12 @@ int main(int argc, char *argv[])
             printf("Error %i from tcsetattr: %s\n", errno, strerror(errno));
             return 1;
     }
+
+
+
+	
+
+
 
 
 	int width, height;
