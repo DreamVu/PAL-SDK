@@ -99,7 +99,8 @@ int int_length(__uint16_t a)
 
 int main(int argc, char *argv[])
 {
-   	
+   
+
     signal(SIGINT, signalHandler);
     
     cv::VideoCapture cap;
@@ -171,13 +172,6 @@ int main(int argc, char *argv[])
             return 1;
     }
 
-
-
-	
-
-
-
-
 	int width, height;
 	if (PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
 	{
@@ -219,7 +213,7 @@ int main(int argc, char *argv[])
     const char* End = "E";   // Mark end of the frame
     const char* new_frame = "D"; // Start of new index 
     const char* Check = "C"; // Mark Checksum 
-
+	PAL::Acknowledgement cam_ack;
 
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(!g_bExit)
@@ -227,9 +221,16 @@ int main(int argc, char *argv[])
 		PAL::Image left, right, depth, disparity;
 		Mat img, d;
 		if (useDepth)
-			PAL::GrabFrames(&left, &right, &depth);
+			cam_ack = PAL::GrabFrames(&left, &right, &depth);
 		else
-			PAL::GrabFrames(&left, &right);
+			cam_ack = PAL::GrabFrames(&left, &right);
+
+		if(cam_ack == PAL::Acknowledgement::FAILURE)
+		{
+			PAL::CameraStatus();
+			continue;
+		}
+		
 		
 		//Convert PAL::Image to Mat
 		img = Mat(left.rows, left.cols, CV_8UC3, left.Raw.u8_data);
@@ -246,42 +247,44 @@ int main(int argc, char *argv[])
 
 		if(num)
 		{
-            // Writing Start of the frame to the serial port
-            write(serial_port, Start, 1);    
+		    // Writing Start of the frame to the serial port
+		    write(serial_port, Start, 1);    
 
-            printf("[INFO] START OF NEW FRAME\n");
-            char num_buffer[int_length(num)]; 
-            my_itoa(num, num_buffer);
-            write(serial_port, num_buffer, sizeof(num_buffer));
-            printf("Num of person detected: %d\n" , num);
-		        
-            if(useDepth)
-            {
-                for(int i=0; i<num; i++)
-                {
-                    bool invalid = std::isnan(depthValues[i]) || (depthValues[i]<0) || (depthValues[i]>1000);                    
-                    depthValues[i] = (invalid) ? 100: depthValues[i];
-                }
+		    printf("[INFO] START OF NEW FRAME\n");
+		    char num_buffer[int_length(num)]; 
+		    my_itoa(num, num_buffer);
+		    write(serial_port, num_buffer, sizeof(num_buffer));
+		    printf("Num of person detected: %d\n" , num);
+				
+		    if(useDepth)
+		    {
+		        for(int i=0; i<num; i++)
+		        {
+		            bool invalid = std::isnan(depthValues[i]) || (depthValues[i]<0) || (depthValues[i]>1000);                    
+		            depthValues[i] = (invalid) ? 100: depthValues[i];
+		        }
 
-                for(int i=0; i<num; i++)
-                {
-                    char buffer[int_length(depthValues[i])]; 
-                    my_itoa(depthValues[i], buffer);
-                    printf(" DISTANCE : %d cm\n", (int)depthValues[i]);
+		        for(int i=0; i<num; i++)
+		        {
+		            char buffer[int_length(depthValues[i])]; 
+		            my_itoa(depthValues[i], buffer);
+		            printf(" DISTANCE : %d cm\n", (int)depthValues[i]);
 
-                    write(serial_port, new_frame, 1);
-                    write(serial_port, buffer, sizeof(buffer));
-                }
-            }
-            // Writing End of the frame to the serial port		                
-            write(serial_port, End, 1);			                
-            printf("[INFO] END OF THE FRAME\n\n");
+		            write(serial_port, new_frame, 1);
+		            write(serial_port, buffer, sizeof(buffer));
+		        }
+		    }
+		    // Writing End of the frame to the serial port		                
+		    write(serial_port, End, 1);			                
+		    printf("[INFO] END OF THE FRAME\n\n");
 		}
+
+		
 		
 		boxes.clear();
 		ids.clear();
 		if(useDepth)
-		        depthValues.clear();
+		depthValues.clear();
 		colours.clear();		
 		
 	}

@@ -11,7 +11,6 @@ g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/li
 
 
 
-
 >>>>>> Execute the binary file by typing the following command...
 
 ./013_object_tracking_GPIO.out
@@ -32,6 +31,13 @@ g++ 013_object_tracking_GPIO.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/li
 # include "PAL.h"
 #include <JetsonGPIO.h>
 #include "unistd.h"
+
+// Linux headers
+# include <fcntl.h> // Contains file controls like O_RDWR
+# include <errno.h> // Error integer and strerror() function
+# include <termios.h> // Contains POSIX terminal control definitions
+# include <unistd.h> // write(), read(), close()
+
 
 
 static bool g_bExit = false;
@@ -72,8 +78,7 @@ namespace PAL
 
 int main(int argc, char *argv[])
 {
-   	
-
+	
 	signal(SIGINT, signalHandler);
 
 	PAL::Internal::EnableDepth(false);
@@ -162,19 +167,43 @@ int main(int argc, char *argv[])
 	bool useDepth = false;
 
 	bool bDetectionPinActive = false;
-	int key = ' ';
+
+
+	int factor = 0; 
+	PAL::Acknowledgement cam_ack;
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while (!g_bExit)
 	{
+
+
+		
 		PAL::Image left, right, depth, disparity;
 		Mat img, d;
 		if (useDepth)
-			PAL::GrabFrames(&left, &right, &depth);
+			cam_ack = PAL::GrabFrames(&left, &right, &depth);
 		else
-			PAL::GrabFrames(&left, &right);
+			cam_ack = PAL::GrabFrames(&left, &right);
+		
+		if(cam_ack == PAL::Acknowledgement::FAILURE)
+		{
+			GPIO::output(camera_pin, 1);
+			GPIO::output(camera_pin_1, 1);
+			GPIO::output(camera_pin_2, 1);
+			GPIO::output(camera_pin_3, 1);
+			GPIO::output(detection_pin, 1);
+			PAL::CameraStatus();
+			GPIO::output(camera_pin, 0);
+			GPIO::output(camera_pin_1, 0);
+			GPIO::output(camera_pin_2, 0);
+			GPIO::output(camera_pin_3, 0);
+			continue;
+		}
 		
 		//Convert PAL::Image to Mat
 		img = Mat(left.rows, left.cols, CV_8UC3, left.Raw.u8_data);
+
+
+
 		if (useDepth)
 		{
 			d = Mat(depth.rows, depth.cols, CV_32FC1, depth.Raw.f32_data);
@@ -184,6 +213,7 @@ int main(int argc, char *argv[])
 			d = cv::Mat::zeros(cv::Size(1, 1), CV_32FC1);
 		}
 		
+
 		num = PAL::RunTrack(img, d, boxes, ids, depthValues, colours);
 
 
@@ -208,6 +238,7 @@ int main(int argc, char *argv[])
 			}
 
 		}
+
 
 		
 		boxes.clear();
