@@ -169,6 +169,8 @@ namespace PAL
 	PAL::Acknowledgement GetDepth(std::vector<PAL::BoundingBox> bboxes, std::vector<float> &depths);
 	//Destroys all the resources related to Camera communication	
 	void Destroy();
+
+	bool CameraStatus();
 }
 
 # endif //PAL_H
