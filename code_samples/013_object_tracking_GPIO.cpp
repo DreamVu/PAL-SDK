@@ -127,7 +127,7 @@ int main(int argc, char *argv[])
 	GPIO::output(camera_pin_1, 0);
 	GPIO::output(camera_pin_2, 0);
 	GPIO::output(camera_pin_3, 0);
-
+	GPIO::output(detection_pin, 1);
 
 	PAL::CameraProperties data; 
 	PAL::Acknowledgement ack = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
