@@ -25,7 +25,9 @@ namespace PAL
         	FOV = 0x10000,
 		PROJECTION = 0x20000,
 		DISPARITY_COMPUTATION = 0x40000,
-		ALL = 0x7FFFF,
+		CAMERA_HEIGHT = 0x80000,		
+		DETECTION_MODE = 0x100000,
+		ALL = 0x1FFFFF,
 	};
 
 	struct Resolution
@@ -38,7 +40,7 @@ namespace PAL
 	namespace AvailableResolutions
 	{
 		const Resolution _5290x1819 = { .width = 5290,.height = 1819 };
-		const Resolution _1744x600 = { .width = 1744,.height = 600 };
+		const Resolution _3544x1218 = { .width = 3544,.height = 1218 };
 		const Resolution _1322x454 = { .width = 1322,.height = 454 };
 		const Resolution _660x227 = { .width = 660,.height = 227 };
 	}
@@ -78,6 +80,14 @@ namespace PAL
 		HIGH_QUALITY_B = 2,
 	};
 	
+	enum DetectionMode
+	{
+		FLOOR = 1,
+		INTERMEDIATE = 2,
+		TABLE_TOP = 3,
+		CEILING = 4,
+		AUTO = 5,
+	};
 
 	struct CameraProperties
 	{
@@ -111,6 +121,12 @@ namespace PAL
 		//Should this be fast but of lower quality?
 		//or of high quality but slow
 		DisparityComputation computation;
+			
+		//height of camera centre from floor in cm 
+		int camera_height;
+		
+		//Modes of the camera position to be used in person detection
+		DetectionMode detection_mode;
         
        		static const int MAX_BRIGHTNESS = 15;
 		static const int MIN_BRIGHTNESS = -15;
@@ -130,7 +146,7 @@ namespace PAL
 
 		static const int MAX_GAIN = 100;
 		static const int MIN_GAIN = 0;
-		static const int DEFAULT_GAIN = 0;
+		static const int DEFAULT_GAIN = 4;
 
 		static const int MAX_WHITE_BAL_TEMP = 10000;
 		static const int MIN_WHITE_BAL_TEMP = 1000;
@@ -161,6 +177,9 @@ namespace PAL
 		static const Projection DEFAULT_PROJECTION = PERSPECTIVE;
 		static const DisparityComputation DEFAULT_COMPUTATION = HIGH_QUALITY_A;
 
+		static const DetectionMode DEFAULT_DETECTION_MODE = INTERMEDIATE;
+
+		static const int DEFAULT_CAMERA_HEIGHT = 100;
 
 		CameraProperties() :
 			brightness           (DEFAULT_BRIGHTNESS),
@@ -182,7 +201,9 @@ namespace PAL
 			fov_start            (DEFAULT_FOV_START),
 			fov_end              (DEFAULT_FOV_END),
 			projection           (DEFAULT_PROJECTION),
-			computation          (DEFAULT_COMPUTATION)
+			computation          (DEFAULT_COMPUTATION),
+			camera_height	     (DEFAULT_CAMERA_HEIGHT),			
+			detection_mode 	     (DEFAULT_DETECTION_MODE)
 		{
 		}
 	};
