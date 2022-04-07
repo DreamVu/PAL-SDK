@@ -35,6 +35,13 @@ else
 	echo "[INFO] Skipping Rebuilding Engines"
 fi
 
+
+cd ../data_installer
+
+chmod +x run ./*.sh
+
+./validate.sh
+
 cd ..
 
 source dreamvu_ws/bin/activate

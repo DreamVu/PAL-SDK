@@ -10,6 +10,7 @@ python3 -m venv dreamvu_ws
 source ./dreamvu_ws/bin/activate
 pip install --upgrade setuptools pip
 
+pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 pip install -U grpcio absl-py 
 
 #torch installation
