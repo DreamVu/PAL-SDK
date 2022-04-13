@@ -36,11 +36,14 @@ else
 fi
 
 
-cd ../data_installer
+cd ../activation
 
 chmod +x run ./*.sh
 
-./validate.sh
+sudo cp *.json /usr/local/bin/data
+sudo chown -R $USER:$USER /usr/local/bin/data/*.json
+
+./activation.sh
 
 cd ..
 
