@@ -36,13 +36,6 @@ Confirm the following dependencies. These are must have to proceed further
             
 Once complete please reboot the system.
 
-## Step 4. Installing Camera Data File 
-The data files are delivered along with the purchase of the PAL USB camera. In case you have not received them, please request for the files by filling out a [form](https://support.dreamvu.com/portal/en/newticket)
-
-      chmod +x setup.sh
-      sudo ./setup.sh
-
-
 ## Documentation 
 For rest of the evaluation of the PAL-USB SDK, please read the [Evaluation Manual](https://docs.google.com/document/d/e/2PACX-1vT3rc_7S621PJHJ6QuV-rR2CyXbMvPBZztaDoiPnkT_g18Gz327OOA91pf11JMkqIeK0smel81rNbNg/pub)
 
