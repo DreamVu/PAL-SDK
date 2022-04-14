@@ -18,14 +18,14 @@ Confirm the following dependencies. These are must have to proceed further
   Follow these steps to install the required OpenCV dependencies. 
 -      cd installations
        chmod +x ./*.sh
-       sudo ./opencv.sh
+       ./opencv.sh
 
 - ### Python 3.6 libraries (pytorch, torchvision, numpy, PIL, etc.)
 
 ## Step 3. Installing PAL USB SDK
       cd installations
       chmod +x ./*.sh
-      sudo ./install.sh arg1 arg2
+      ./install.sh arg1 arg2
 
   - arg1: It can be either 0, 1 or can be skipped.  On selecting 1, installation will build the whole software based on the particular Nvidia Jetson architecture and will enable higher performance. This may take a few hours to complete the installation. On selecting 0, it will quickly build the software by using some of the pre-configured libraries provided. If arg1 is skipped, then arg2 must also be skipped.
 
