@@ -5,8 +5,16 @@ chmod +x ./*.sh
 
 ./dependencies.sh
 
-
 ./ros_cmake.sh
+
+cd activation
+
+chmod +x run ./*.sh
+
+sudo cp *.json /usr/local/bin/data
+sudo chown -R $USER:$USER /usr/local/bin/data/*.json
+
+cd ..
 
 ./setup_python_env.sh
 
@@ -36,19 +44,17 @@ else
 fi
 
 
-cd ../activation
+cd ..
 
-chmod +x run ./*.sh
+source dreamvu_ws/bin/activate
+python test_py_installations.py
 
-sudo cp *.json /usr/local/bin/data
-sudo chown -R $USER:$USER /usr/local/bin/data/*.json
+cd activation
 
 ./activation.sh
 
 cd ..
 
-source dreamvu_ws/bin/activate
-python test_py_installations.py
 
 ./timeout_patch.sh
 
