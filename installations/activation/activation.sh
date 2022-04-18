@@ -17,7 +17,7 @@ if test -f "$File1"; then
     cp -r inv_er/ /usr/local/bin/data/
     
     cp unit.txt /usr/local/bin/data/    
-        
+    rm unit.txt    
     rm -rf lut/ er/ inv_er/
     validated=true
 fi
