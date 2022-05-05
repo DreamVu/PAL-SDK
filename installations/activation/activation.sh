@@ -9,16 +9,18 @@ validated=false
 
 if test -f "$File1"; then  
     cp -r lut/ ../bin_files/data/
+    cp -r lut_stereo/ ../bin_files/data/    
     cp -r er/ ../bin_files/data/
     cp -r inv_er/ ../bin_files/data/ 
     
     cp -r lut/ /usr/local/bin/data/
+    cp -r lut_stereo/ /usr/local/bin/data/   
     cp -r er/ /usr/local/bin/data/
     cp -r inv_er/ /usr/local/bin/data/
     
     cp unit.txt /usr/local/bin/data/    
-    rm unit.txt    
-    rm -rf lut/ er/ inv_er/
+        
+    rm -rf lut/ er/ inv_er/ lut_stereo/
     validated=true
 fi
 
