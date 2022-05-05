@@ -171,6 +171,9 @@ namespace PAL
 	void Destroy();
 
 	bool CameraStatus();
+	int GetScreenReso();
+	
+	cv::Mat GetCroppedStereo(int width , int height, int x_cor, int y_cor,  timeval &timestamp, bool RGB);
 }
 
 # endif //PAL_H

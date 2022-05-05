@@ -8,8 +8,7 @@ This code will save the panoramas into still images or videos - depending on the
 >>>>>> Compile this code using the following command....
 
 
-g++ 003_video_capture.cpp ../lib/PAL.a `pkg-config --libs --cflags opencv`    -O3 -o 003_video_capture -I../include/ -lv4l2
-
+g++ 003_video_capture.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DEPTH_HQ.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so `pkg-config --libs --cflags opencv`    -O3  -o 003_video_capture.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lX11
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -30,7 +29,7 @@ g++ 003_video_capture.cpp ../lib/PAL.a `pkg-config --libs --cflags opencv`    -O
 # include <opencv2/opencv.hpp>
 # include <opencv2/highgui.hpp>
 # include "PAL.h"
-
+#include <X11/Xlib.h>
 using namespace cv;
 using namespace std;
 
@@ -38,13 +37,13 @@ int main( int argc, char** argv )
 {
     namedWindow( "PAL Video Capture", WINDOW_NORMAL );
     
-    int width, height;
-    if(PAL::Init(width, height,-1) != PAL::SUCCESS)
-    {
-        printf("Init failed\n");
-        return 1;
-    }
-
+   int width, height;
+	if (PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
+	{
+		printf("Init failed\n");
+		return 1;
+	}
+	
     PAL::CameraProperties data; 
     PAL::Acknowledgement ack = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
     if(ack != PAL::SUCCESS)
@@ -52,25 +51,41 @@ int main( int argc, char** argv )
         printf("Error Loading settings\n");
     }
 
-    PAL::CameraProperties prop;
+	PAL::CameraProperties prop;
 
-    unsigned int flag = PAL::MODE;
-    flag = flag | PAL::FILTER_SPOTS;
-    flag = flag | PAL::VERTICAL_FLIP;
-    flag = flag | PAL::FD;
-    
-    prop.fd = 1;
-    prop.mode = PAL::Mode::FAST_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
-    prop.filter_spots = 1;
-    prop.vertical_flip =0;
-    PAL::SetCameraProperties(&prop, &flag);
-    
-    //width and height are the dimensions of each panorama.
-    //Each of the panoramas are displayed at quarter their original resolution.
-    //Since the left+right+disparity are vertically stacked, the window height should be thrice the quarter-height
-    int window_width = width/4;
-    int window_height = (height/4)*2;
-    resizeWindow("PAL Video Capture", window_width, window_height);
+	unsigned int flag = PAL::MODE;
+	//flag = flag | PAL::FD;
+	flag = flag | PAL::NR;
+	flag = flag | PAL::FILTER_SPOTS;
+	flag = flag | PAL::VERTICAL_FLIP;
+
+	prop.mode = PAL::Mode::HIGH_QUALITY_DEPTH;//FAST_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
+	//prop.fd = 1;
+	prop.nr = 0;
+	prop.filter_spots = 1;
+	prop.vertical_flip =0;
+	
+
+	PAL::SetCameraProperties(&prop, &flag);
+
+	bool isDisparityNormalized = true;
+
+
+	//width and height are the dimensions of each panorama.
+	//Each of the panoramas are displayed at quarter their original resolution.
+	//Since the left+right+disparity are vertically stacked, the window height should be thrice the quarter-height
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("PAL Video Capture", sc_width, sc_height);//width/4, (height/4)*2);
+
+
+
+	size_t currentResolution = 0;
+
 
     int key = ' ';
     bool record = false;
@@ -97,10 +112,30 @@ int main( int argc, char** argv )
         //Convert PAL::Image to cv::Mat
         Mat l = Mat(left.rows, left.cols, CV_8UC3, left.Raw.u8_data);
         Mat d = Mat(depth.rows, depth.cols, CV_32FC1, depth.Raw.f32_data);
-	    d.convertTo(d, CV_8UC1);
-        cvtColor(d, d, cv::COLOR_GRAY2BGR);
+        cv::Mat tempDisp = cv::Mat::zeros(left.rows, left.cols, CV_8UC1);
+		unsigned char *dst = tempDisp.data;
+		float *src = (float *)d.data;
+		PAL::CameraProperties prop;
+		PAL::GetCameraProperties(&prop);
+		for (int i = 0; i < left.rows; i++)
+		{
+			for (int j = 0; j < left.cols; j++)
+			{
+				float value = *src++;
+				value = (value * (1 / 8.0f)) * prop.depth_scale_factor;
+				if (value > 255.0f)
+					value = 255.0f;
+				if (value < 0.0f)
+					value = 0.0f;
+				*dst++ = (unsigned char)value;
+			}
+		}
+
+		
+		applyColorMap(tempDisp, tempDisp, cv::COLORMAP_JET);
+		cvtColor(tempDisp, tempDisp, COLOR_RGB2BGR);
         
-        vconcat(l, d, output);
+        vconcat(l, tempDisp, output);
         //Display the final vertically concatinated image
         imshow( "PAL Video Capture", output);  
         key = waitKey(1) & 255;

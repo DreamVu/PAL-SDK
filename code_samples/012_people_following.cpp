@@ -7,7 +7,7 @@
    >>>>>> Compile this code using the following command....
 
 
-   g++ 011_object_tracking.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so libPAL_Track.so `pkg-config --libs --cflags opencv`   -g  -o 011_object_tracking.out -I../include/ -I/usr/local/include/eigen3     -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl
+g++ 012_people_following.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so ../lib/libPAL_Track.so `pkg-config --libs --cflags opencv`   -O3  -o 012_people_following.out -I../include/ -lv4l2 -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lpthread -lX11
 
 
    >>>>>> Execute the binary file by typing the following command...
@@ -32,7 +32,7 @@
 # include <chrono>
 # include <bits/stdc++.h>
 # include "PAL.h"
-
+#include <X11/Xlib.h>
 using namespace cv;
 using namespace std;
 
@@ -110,7 +110,13 @@ int main(int argc, char *argv[])
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at quarter their original resolution.
 	//Since the left+right+disparity are vertically stacked, the window height should be thrice the quarter-height
-	resizeWindow("Pal Object Tracking", width / 4, (height / 4) * 3);
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("Pal Object Tracking", sc_width, sc_height);//width/4, (height/4)*2);
 
 	int key = ' ';
 

@@ -7,8 +7,7 @@ This code sample allows users to access the region map within a depth range.
 
 >>>>>> Compile this code using the following command....
 
-g++  006_occupancy_map.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so `pkg-config --libs --cflags opencv`   -g  -o  006_occupancy_map.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lstdc++fs
-
+g++  006_occupancy_map.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so `pkg-config --libs --cflags opencv`   -O3  -o  006_occupancy_map.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lstdc++fs -lX11
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -28,7 +27,7 @@ g++  006_occupancy_map.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.s
 # include <stdio.h>
 # include <opencv2/opencv.hpp>
 # include "PAL.h"
-
+#include <X11/Xlib.h>
 using namespace cv;
 using namespace std;
 
@@ -82,8 +81,8 @@ int main(int argc, char *argv[])
 	PAL::CameraProperties prop;
 	
 	unsigned int flag = PAL::MODE | PAL::FD | PAL::NR | PAL::FILTER_SPOTS | PAL::VERTICAL_FLIP;
-	prop.mode = PAL::Mode::FAST_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
-	prop.fd = 1;
+	prop.mode = PAL::Mode::HIGH_QUALITY_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
+	prop.fd = 0;
 	prop.nr = 1;
 	prop.filter_spots = 1;
 	prop.vertical_flip =0;
@@ -122,7 +121,13 @@ int main(int argc, char *argv[])
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at quarter their original resolution.
 	//Since the left+right+disparity are vertically stacked, the window height should be thrice the quarter-height
-	resizeWindow("PAL Occupancy Map", width/4, (height/4)*3);
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("PAL Occupancy Map", sc_width, sc_height);//width/4, (height/4)*2);
 
 	int key = ' ';
 
@@ -150,6 +155,14 @@ int main(int argc, char *argv[])
 		
 		depth = cv::Mat(depth_img.rows, depth_img.cols, CV_32FC1, depth_img.Raw.f32_data);
 		rgb = cv::Mat(left_img.rows, left_img.cols, CV_8UC3, left_img.Raw.u8_data);
+		cv::resize(depth, depth , cv::Size(rgb.cols, rgb.rows));
+		
+		PAL::CameraProperties data;
+		PAL::GetCameraProperties(&data);
+		
+		
+		if(data.fd == 0)
+		depth /= 4;
         
         if(isDepthEnabled)      
         {
@@ -167,7 +180,7 @@ int main(int argc, char *argv[])
 
 			for(int i=0; i<rgb.cols; i++,poccupancy1D++,pr++)
 			{
-				if(!(*poccupancy1D))
+				if((*poccupancy1D))
 				{
 					*pr = (*pr)*2;
 				}
@@ -182,7 +195,7 @@ int main(int argc, char *argv[])
 			merge(channels, final_img);
 			resize(final_img, final_img, rgb.size());
  			cv::Mat colored_out = rgb.mul(final_img);
-			imshow("PAL Occupancy Map", colored_out);
+			imshow("PAL Occupancy Map", colored_out);//colored_out);
         }
         else
         {	

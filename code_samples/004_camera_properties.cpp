@@ -6,9 +6,7 @@ This code allows users to modify the camera properties and visualize the changes
 
 >>>>>> Compile this code using the following command....
 
-
-g++ 004_camera_properties.cpp ../lib/libPAL.so `pkg-config --libs --cflags opencv`   -g  -o 004_camera_properties.out -I../include/ -lv4l2 -lpthread
-
+g++ 004_camera_properties.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DE.so ../lib/libPAL_EDET.so  `pkg-config --libs --cflags opencv`   -O3  -o 004_camera_properties.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lX11
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -41,46 +39,57 @@ g++ 004_camera_properties.cpp ../lib/libPAL.so `pkg-config --libs --cflags openc
 # include <stdio.h>
 # include <opencv2/opencv.hpp>
 # include "PAL.h"
-
+#include <X11/Xlib.h>
 using namespace cv;
 using namespace std;
 
 int main( int argc, char** argv )
 {    
     namedWindow( "PAL Camera Properties", WINDOW_NORMAL ); // Create a window for display.
-    
-    int width, height;
-    if(PAL::Init(width, height,-1) != PAL::SUCCESS) //Connect to the PAL camera
-    {
-        printf("Init failed\n");
-        return 1;
-    }
-
+   int width, height;
+	if (PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
+	{
+		printf("Init failed\n");
+		return 1;
+	}
+	
     PAL::CameraProperties data; 
     PAL::Acknowledgement ack = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
     if(ack != PAL::SUCCESS)
     {
         printf("Error Loading settings\n");
     }
-    
-    PAL::CameraProperties camera_data;
 
-    unsigned int flag = PAL::MODE;
-    flag = flag | PAL::FILTER_SPOTS;
-    flag = flag | PAL::VERTICAL_FLIP;
-    flag = flag | PAL::FD;
-    
-    camera_data.mode = PAL::FAST_DEPTH;
-    camera_data.fd = 1;
-    camera_data.filter_spots = 1;
-    camera_data.vertical_flip =0;
-    PAL::SetCameraProperties(&camera_data, &flag);
-    
-    //width and height are the dimensions of each panorama.
-    //Each of the panoramas are displayed after scaling by scaleFactor w.r.t their original resolution.
-    //Since the panoramas are vertically stacked, the window height should be twice the scaled height
-    float scaleFactor = 5.0f/8.0f; 
-    resizeWindow("PAL Camera Properties", (int)(width*scaleFactor), int(height*2*scaleFactor));
+	PAL::CameraProperties camera_data;;
+
+	unsigned int flag = PAL::MODE;
+	//flag = flag | PAL::FD;
+	flag = flag | PAL::NR;
+	flag = flag | PAL::FILTER_SPOTS;
+	flag = flag | PAL::VERTICAL_FLIP;
+
+	camera_data.mode = PAL::Mode::HIGH_QUALITY_DEPTH;//FAST_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
+	//prop.fd = 1;
+	camera_data.nr = 0;
+	camera_data.filter_spots = 1;
+	camera_data.vertical_flip =0;
+	
+
+	PAL::SetCameraProperties(&camera_data, &flag);
+
+	bool isDisparityNormalized = true;
+
+
+	//width and height are the dimensions of each panorama.
+	//Each of the panoramas are displayed at quarter their original resolution.
+	//Since the left+right+disparity are vertically stacked, the window height should be thrice the quarter-height
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("PAL Camera Properties", sc_width, sc_height);//width/4, (height/4)*2);
     
     int key = ' ';
     bool filter_spots = true;   
@@ -123,11 +132,31 @@ int main( int argc, char** argv )
         Mat l = Mat(left.rows, left.cols, CV_8UC3, left.Raw.u8_data);
         Mat r = Mat(right.rows, right.cols, CV_8UC3, right.Raw.u8_data);
 	    Mat d = Mat(depth.rows, depth.cols, CV_32FC1, depth.Raw.f32_data);
-	    d.convertTo(d, CV_8UC1);
-        cvtColor(d, d, cv::COLOR_GRAY2BGR);
+        cv::Mat tempDisp = cv::Mat::zeros(left.rows, left.cols, CV_8UC1);
+		unsigned char *dst = tempDisp.data;
+		float *src = (float *)d.data;
+		PAL::CameraProperties prop;
+		PAL::GetCameraProperties(&prop);
+		for (int i = 0; i < left.rows; i++)
+		{
+			for (int j = 0; j < left.cols; j++)
+			{
+				float value = *src++;
+				value = (value * (1 / 8.0f)) * prop.depth_scale_factor;
+				if (value > 255.0f)
+					value = 255.0f;
+				if (value < 0.0f)
+					value = 0.0f;
+				*dst++ = (unsigned char)value;
+			}
+		}
+
+		
+		applyColorMap(tempDisp, tempDisp, cv::COLORMAP_JET);
+		cvtColor(tempDisp, tempDisp, COLOR_RGB2BGR);
         
         //Vertical concatenation of left and right images
-        vconcat(l, d, output);
+        vconcat(l, tempDisp, output);
         
         //Display the concatenated image
         imshow( "PAL Camera Properties", output);

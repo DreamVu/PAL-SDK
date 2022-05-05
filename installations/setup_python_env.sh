@@ -28,10 +28,10 @@ export BUILD_VERSION=0.8.1
 python3 setup.py install     
 cd ../ 
 pip install geffnet
-
+pip install pyparsing==3.0.8
 
 echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":`pwd`/../lib" >> ~/.bashrc 
-echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":/opt/nvidia/vpi-0.4/lib" >> ~/.bashrc 
+echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":/opt/nvidia/vpi1/lib64" >> ~/.bashrc 
 
 echo "source `pwd`/dreamvu_ws/bin/activate" >> ~/.bashrc
 

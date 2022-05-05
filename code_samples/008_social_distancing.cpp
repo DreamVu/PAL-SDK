@@ -6,7 +6,7 @@
 
    >>>>>> Compile this code using the following command....
 
-   g++  008_social_distancing.cpp  /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so `pkg-config --libs --cflags opencv`   -g  -o 008_social_distancing.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lstdc++fs
+g++  008_social_distancing.cpp  /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so `pkg-config --libs --cflags opencv`   -O3  -o 008_social_distancing.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lstdc++fs -lX11
 
 
    >>>>>> Execute the binary file by typing the following command...
@@ -30,7 +30,7 @@
 # include <stdio.h>
 # include <opencv2/opencv.hpp>
 # include "PAL.h"
-
+#include <X11/Xlib.h>
 using namespace cv;
 using namespace std;
 
@@ -131,7 +131,13 @@ int main( int argc, char** argv )
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at quarter their original resolution.
 	//Since the left+right+disparity are vertically stacked, the window height should be thrice the quarter-height
-	resizeWindow("PAL Social Distancing", width/4, (height/4)*3);
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("PAL Social Distancing", sc_width, sc_height);//width/4, (height/4)*2);
 
 	int key = ' ';
 

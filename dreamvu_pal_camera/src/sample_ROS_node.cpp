@@ -467,7 +467,7 @@ int main(int argc, char** argv)
 	PAL::GetCameraProperties(&prop);
 	unsigned int flag = PAL::MODE;
 	
-	prop.mode = PAL::Mode::TRACKING; //DETECTION; // Change mode 
+	prop.mode = PAL::Mode::POINT_CLOUD_25D;//FAST_DEPTH; //DETECTION; // Change mode 
 
 	if (prop.mode==PAL::Mode::POINT_CLOUD_3D)
 	{
@@ -597,11 +597,14 @@ int main(int argc, char** argv)
 
 		if(stereo_Subnumber && (prop.mode==PAL::Mode::STEREO))
 		{
-			PAL::Acknowledgement ack4 = PAL::GrabFrames(&left_img2, &right_img2, 0);
-			left5  = Mat(left_img2.rows, left_img2.cols, CV_8UC3, left_img2.Raw.u8_data);
-			right5 = Mat(right_img2.rows, right_img2.cols, CV_8UC3, right_img2.Raw.u8_data);
-			if (leftSubnumber > 0) OnLeftPanorama(&left5);
-			if (rightSubnumber > 0) OnRightPanorama(&right5);
+			//PAL::Acknowledgement ack4 = PAL::GrabFrames(&left_img2, &right_img2, 0);
+			//left5  = Mat(left_img2.rows, left_img2.cols, CV_8UC3, left_img2.Raw.u8_data);
+			//right5 = Mat(right_img2.rows, right_img2.cols, CV_8UC3, right_img2.Raw.u8_data);
+			timeval timestamp;
+			cv::Mat output = PAL::GetCroppedStereo(5288, 3640, 0, 0, timestamp,1);
+			
+			if (leftSubnumber > 0) OnLeftPanorama(&output);
+			//if (rightSubnumber > 0) OnRightPanorama(&right5);
 		}
 
 		if(detection_Subnumber && (prop.mode==PAL::Mode::DETECTION))

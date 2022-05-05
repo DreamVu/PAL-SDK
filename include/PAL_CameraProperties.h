@@ -30,7 +30,9 @@ namespace PAL
 		MODE = 0x200000,
 		FD = 0x400000,
 		NR = 0x800000,
-		ALL = 0xFFFFFF,
+		DEPTH_SCALE_FACTOR = 0x1000000,
+		POINT_CLOUD_DENSITY = 0x2000000,
+		ALL = 0x3FFFFFF,
 	};
 
 	struct Resolution
@@ -89,7 +91,7 @@ namespace PAL
 		DETECTION = 2,
 		HIGH_QUALITY_DEPTH = 4,
 		POINT_CLOUD_3D = 4,
-		FAST_DEPTH = 5,
+		FAST_DEPTH = 6,
 		POINT_CLOUD_25D = 6,
 		TRACKING = 7,
 	};
@@ -111,6 +113,9 @@ namespace PAL
 		Resolution resolution;
 		ColorSpace color_space;
 		PowerLineFrequency power_line_frequency;
+		int depth_scale_factor;
+		int point_cloud_density;
+		
 
 			
 		bool  vertical_flip;
@@ -134,7 +139,7 @@ namespace PAL
 		//Modes of the camera position to be used in person detection
 		DetectionMode detection_mode;
         
-       		static const int MAX_BRIGHTNESS = 15;
+       	static const int MAX_BRIGHTNESS = 15;
 		static const int MIN_BRIGHTNESS = -15;
 		static const int DEFAULT_BRIGHTNESS = 0;
 		
@@ -152,7 +157,7 @@ namespace PAL
 
 		static const int MAX_GAIN = 100;
 		static const int MIN_GAIN = 0;
-		static const int DEFAULT_GAIN = 1; //changed
+		static const int DEFAULT_GAIN = 5; //changed
 
 		static const int MAX_WHITE_BAL_TEMP = 10000;
 		static const int MIN_WHITE_BAL_TEMP = 1000;
@@ -160,14 +165,14 @@ namespace PAL
 		
 		static const int MAX_SHARPNESS = 127;
 		static const int MIN_SHARPNESS = 0;
-		static const int DEFAULT_SHARPNESS = 15;
+		static const int DEFAULT_SHARPNESS = 0;
 		
 		static const int MAX_EXPOSURE = 10000;
 		static const int MIN_EXPOSURE = 1;
-		static const int DEFAULT_EXPOSURE = 312;
+		static const int DEFAULT_EXPOSURE = 1000;
 				
 		static const bool DEFAULT_AUTO_WHITE_BAL = 1;
-		static const bool DEFAULT_AUTO_EXPOSURE = 0;
+		static const bool DEFAULT_AUTO_EXPOSURE = 1;
 
 		static const Resolution DEFAULT_RESOLUTION;
 		static const ColorSpace DEFAULT_COLOR_SPACE = RGB;
@@ -189,19 +194,29 @@ namespace PAL
 		static const int DEFAULT_MODE = STEREO;
 		static const bool DEFAULT_FD = true;
 		static const bool DEFAULT_NR = false;
+		
+		static const int MAX_DEPTH_SCALE_FACTOR = 10;
+		static const int MIN_DEPTH_SCALE_FACTOR = 1;
+		static const int DEFAULT_DEPTH_SCALE_FACTOR = 5;
+		
+		
+		static const int MAX_POINT_CLOUD_DENSITY= 25;
+		static const int MIN_POINT_CLOUD_DENSITY = 1;
+		static const int DEFAULT_POINT_CLOUD_DENSITY = 4;
+		
 		CameraProperties() :
 			brightness           (DEFAULT_BRIGHTNESS),
-			contrast  	     (DEFAULT_CONTRAST), 
+			contrast  	     	 (DEFAULT_CONTRAST), 
 			saturation           (DEFAULT_SATURATION),
 			gamma                (DEFAULT_GAMMA),
 			gain                 (DEFAULT_GAIN),
 			white_bal_temp       (DEFAULT_WHITE_BAL_TEMP),
 			sharpness            (DEFAULT_SHARPNESS),
-			exposure 	     (DEFAULT_EXPOSURE),
+			exposure 	     	 (DEFAULT_EXPOSURE),
 			auto_white_bal       (DEFAULT_AUTO_WHITE_BAL),
 			auto_exposure        (DEFAULT_AUTO_EXPOSURE),
-			mode		     (DEFAULT_MODE),
-			fd		     (DEFAULT_FD),
+			mode		     	 (DEFAULT_MODE),
+			fd		     		 (DEFAULT_FD),
 			nr                   (DEFAULT_NR),
 			resolution           (DEFAULT_RESOLUTION),
 			color_space          (DEFAULT_COLOR_SPACE),
@@ -214,7 +229,9 @@ namespace PAL
 			projection           (DEFAULT_PROJECTION),
 			computation          (DEFAULT_COMPUTATION),
 			camera_height	     (DEFAULT_CAMERA_HEIGHT),			
-			detection_mode 	     (DEFAULT_DETECTION_MODE)
+			detection_mode 	     (DEFAULT_DETECTION_MODE),
+			depth_scale_factor 	 (DEFAULT_DEPTH_SCALE_FACTOR),
+			point_cloud_density 	 (DEFAULT_POINT_CLOUD_DENSITY)
 		{
 		}
 	};

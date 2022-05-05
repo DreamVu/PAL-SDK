@@ -7,7 +7,7 @@
    >>>>>> Compile this code using the following command....
 
 
-   g++ 001_stereo_panorama.cpp ../lib/libPAL.so `pkg-config --libs --cflags opencv`   -g  -o 001_stereo_panorama.out -I../include/ -lv4l2 -lpthread
+  g++ 001_stereo_panorama.cpp  /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so  ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DE.so ../lib/libPAL_EDET.so  `pkg-config --libs --cflags opencv`    -O3  -o 001_stereo_panorama.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lX11
 
 
    >>>>>> Execute the binary file by typing the following command...
@@ -29,7 +29,7 @@
 # include <stdio.h>
 # include <opencv2/opencv.hpp>
 # include "PAL.h"
-
+#include <X11/Xlib.h>
 using namespace cv;
 using namespace std;
 
@@ -37,6 +37,11 @@ using namespace std;
 int main( int argc, char** argv )
 {
 	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
+
+
+
+
+	
 
 	int width, height;
 	if(PAL::Init(width, height,-1) != PAL::SUCCESS) //Connect to the PAL camera
@@ -65,7 +70,14 @@ int main( int argc, char** argv )
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at one fourth their original resolution.
 	//Since the panoramas are vertically stacked, the window height should be twice of 1/4th height
-	resizeWindow("PAL Stereo Panorama", width/4, (height/4)*2);
+	
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("PAL Stereo Panorama", sc_width-60, sc_height-60);//width/4, (height/4)*2);
 
 	printf("Press ESC to close the window.\n");
 	printf("Press f/F to toggle filter rgb property\n");
@@ -79,23 +91,18 @@ int main( int argc, char** argv )
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
 	//Display the concatenated image
-	imshow( "PAL Stereo Panorama", output);
+	//imshow( "PAL Stereo Panorama", output);
 
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
-		PAL::Image left, right;
-		PAL::GrabFrames(&left, &right, 0);
-
-		//Convert PAL::Image to Mat
-		Mat l = Mat(left.rows, left.cols, CV_8UC3, left.Raw.u8_data);
-		Mat r = Mat(right.rows, right.cols, CV_8UC3, right.Raw.u8_data);
-
-		//Vertical concatenation of left and right images
-		vconcat(l, r, output);
-
+		
+		timeval timestamp;
+		cv::Mat output = PAL::GetCroppedStereo(5290, 3638, 0, 0, timestamp,1);
+		
 		//Display the concatenated image
-		imshow( "PAL Stereo Panorama", output);  
+		//imshow( "PAL Stereo Panorama", output);  
+		imshow("PAL Stereo Panorama",output);
 
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;

@@ -1,5 +1,5 @@
 sudo apt-get update -y
-sudo apt-get upgrade -y 
+#sudo apt-get upgrade -y 
 sudo apt-get install -y build-essential cmake unzip pkg-config
 sudo apt-get install -y libjpeg-dev libpng-dev libtiff-dev
 sudo apt-get install -y libjasper-dev
