@@ -1,18 +1,18 @@
 # PAL USB
 The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
 
-Please follow the instructions given below on any of the Nvidia Jetson embedded boards with Jetpack 4.4.1 to install the software.
+Please follow the instructions given below on any of the Nvidia Jetson embedded boards with Jetpack 4.6 to install the software.
 
 ## Step 1. Clone the repository 
 -     sudo apt-get install git-lfs
-      git clone -b JetPack-4.4.1 --single-branch https://github.com/DreamVu/PAL-USB.git
+      git clone -b JetPack-4.6 --single-branch https://github.com/DreamVu/PAL-USB.git
       cd PAL-USB
       git lfs pull
       
 ## Step 2. Installing Dependencies 
 Confirm the following dependencies. These are must have to proceed further
 
-- ### Jetpack 4.4.1
+- ### Jetpack 4.6
 
 - ### CUDA enabled OpenCV 4.4.0 and OpenCV Contrib 4.4.0 libraries. 
   Follow these steps to install the required OpenCV dependencies. 
