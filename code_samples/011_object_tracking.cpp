@@ -23,6 +23,7 @@ g++ 011_object_tracking.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.
 		Press f/F to toggle filter rgb property.
 		Press d/D to toggle fast depth property
 		Press r/R to toggle near range property
+		Press s/S to toggle depth calculation functionality.
 
 */
 
@@ -48,7 +49,7 @@ namespace PAL
 int main(int argc, char *argv[])
 {
    	
-	namedWindow("Pal Object Tracking", WINDOW_NORMAL); // Create a window for display.
+	namedWindow("PAL Object Tracking", WINDOW_NORMAL); // Create a window for display.
 
 	int width, height;
 	if (PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
@@ -90,7 +91,7 @@ int main(int argc, char *argv[])
 	int sc_height = scrn->height;
 	int sc_width  = scrn->width;
 	
-	resizeWindow("Pal Object Tracking", sc_width, sc_height);//width/4, (height/4)*2);
+	resizeWindow("PAL Object Tracking", sc_width, sc_height);//width/4, (height/4)*2);
 
 	int key = ' ';
 
@@ -157,7 +158,7 @@ int main(int argc, char *argv[])
 		colours.clear();
 
 		//Display the final output image
-		imshow("Pal Object Tracking", img);
+		imshow("PAL Object Tracking", img);
 		
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;

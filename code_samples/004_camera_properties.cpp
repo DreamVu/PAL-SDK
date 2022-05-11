@@ -63,13 +63,13 @@ int main( int argc, char** argv )
 	PAL::CameraProperties camera_data;;
 
 	unsigned int flag = PAL::MODE;
-	//flag = flag | PAL::FD;
+	flag = flag | PAL::FD;
 	flag = flag | PAL::NR;
 	flag = flag | PAL::FILTER_SPOTS;
 	flag = flag | PAL::VERTICAL_FLIP;
 
 	camera_data.mode = PAL::Mode::HIGH_QUALITY_DEPTH;//FAST_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
-	//prop.fd = 1;
+	camera_data.fd = 1;
 	camera_data.nr = 0;
 	camera_data.filter_spots = 1;
 	camera_data.vertical_flip =0;

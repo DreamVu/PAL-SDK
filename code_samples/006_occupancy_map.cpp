@@ -81,8 +81,8 @@ int main(int argc, char *argv[])
 	PAL::CameraProperties prop;
 	
 	unsigned int flag = PAL::MODE | PAL::FD | PAL::NR | PAL::FILTER_SPOTS | PAL::VERTICAL_FLIP;
-	prop.mode = PAL::Mode::HIGH_QUALITY_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
-	prop.fd = 0;
+	prop.mode = PAL::Mode::POINT_CLOUD_25D; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
+	prop.fd = 1;
 	prop.nr = 1;
 	prop.filter_spots = 1;
 	prop.vertical_flip =0;
@@ -134,7 +134,6 @@ int main(int argc, char *argv[])
 	printf("Press ESC to close the window\n");    
 	printf("Press v/V to toggle vertical flip property\n");
 	printf("Press f/F to toggle filter rgb property\n");
-	printf("Press d/D to toggle fast depth property\n");
 	printf("Press r/R to toggle near range property\n");
 	
 	size_t currentResolution = 0;
@@ -161,9 +160,6 @@ int main(int argc, char *argv[])
 		PAL::GetCameraProperties(&data);
 		
 		
-		if(data.fd == 0)
-		depth /= 4;
-        
         if(isDepthEnabled)      
         {
 
@@ -223,14 +219,7 @@ int main(int argc, char *argv[])
 			unsigned int flags = PAL::VERTICAL_FLIP;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
-		if(key == 'd' || key == 'D')
-		{
-			PAL::CameraProperties prop;
-			fd = !fd;
-			prop.fd = fd;
-			unsigned int flags = PAL::FD; 
-			PAL::SetCameraProperties(&prop, &flags);
-		}
+		
 		if(key == 'r' || key == 'R')
 		{		
 			PAL::CameraProperties prop;

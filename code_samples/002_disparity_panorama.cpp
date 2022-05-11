@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
 	PAL::CameraProperties prop;
 
 	unsigned int flag = PAL::MODE;
-	//flag = flag | PAL::FD;
+	flag = flag | PAL::FD;
 	flag = flag | PAL::NR;
 	flag = flag | PAL::FILTER_SPOTS;
 	flag = flag | PAL::VERTICAL_FLIP;
 
 	prop.mode = PAL::Mode::HIGH_QUALITY_DEPTH;//FAST_DEPTH; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
-	//prop.fd = 1;
+	prop.fd = 1;
 	prop.nr = 0;
 	prop.filter_spots = 1;
 	prop.vertical_flip =0;
@@ -139,8 +139,6 @@ int main(int argc, char *argv[])
 		cvtColor(tempDisp, tempDisp, COLOR_RGB2BGR);
 				
 
-
-		
 		//Vertical concatenation of temp and disparity into the final output
 		vconcat(l, tempDisp, output);
 
@@ -172,12 +170,7 @@ int main(int argc, char *argv[])
 			fd = !fd;
 			prop.fd = fd;
 			unsigned int flags = PAL::FD;
-			flags = flags | PAL::MODE;
-			if(!fd)
-				prop.mode = prop.mode = PAL::Mode::HIGH_QUALITY_DEPTH;
-			else 	
-				prop.mode = prop.mode = PAL::Mode::FAST_DEPTH;
-				
+			
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		if(key == 'r' || key == 'R')

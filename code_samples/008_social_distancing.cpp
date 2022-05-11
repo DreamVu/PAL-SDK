@@ -109,7 +109,7 @@ int main( int argc, char** argv )
 	PAL::SetCameraProperties(&prop, &flag);
 
 	float threshold = (argc>1) ? atof(argv[1]) : 0.35;
-	float threshold_distance = (argc>2) ? atof(argv[2]) : 100.0f; //threshold_distane should be between 1m to 2m.
+	float threshold_distance = (argc>2) ? atof(argv[2]) : 100.0f; //threshold_distance should be between 1m to 2m.
 
 	if(threshold_distance > 200)
 	{

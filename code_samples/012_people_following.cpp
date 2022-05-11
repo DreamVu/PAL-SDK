@@ -1,7 +1,7 @@
 /*
 
-   CODE SAMPLE # 011: Object Tracking
-   This code will grab the basic stereo panoramas (left and right images) and ALSO the Disparity panorama, execute tracking for objects on it and then display in an opencv window
+   CODE SAMPLE # 012: Object Following
+   This code will grab the basic stereo panoramas (left and right images) and ALSO the Disparity panorama, execute People-following for objects on it and then display in an opencv window
 
 
    >>>>>> Compile this code using the following command....
@@ -13,7 +13,7 @@ g++ 012_people_following.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL
    >>>>>> Execute the binary file by typing the following command...
 
 
-   ./011_object_tracking.out
+   ./011_people_following.out
 
 
    >>>>>> KEYBOARD CONTROLS:
@@ -67,7 +67,7 @@ string getCmdOutput(string cmd)
 int main(int argc, char *argv[])
 {
 
-	namedWindow("Pal Object Tracking", WINDOW_NORMAL); // Create a window for display.
+	namedWindow("PAL People Following", WINDOW_NORMAL); // Create a window for display.
 
 	int width, height;
 	if (PAL::Init(width, height, -1) != PAL::SUCCESS) //Connect to the PAL camera
@@ -116,7 +116,7 @@ int main(int argc, char *argv[])
 	int sc_height = scrn->height;
 	int sc_width  = scrn->width;
 	
-	resizeWindow("Pal Object Tracking", sc_width, sc_height);//width/4, (height/4)*2);
+	resizeWindow("PAL People Following", sc_width, sc_height);//width/4, (height/4)*2);
 
 	int key = ' ';
 
@@ -222,7 +222,7 @@ int main(int argc, char *argv[])
 			}
 		}
 		//Display the final output image
-		imshow("Pal Object Tracking", img);
+		imshow("PAL People Following", img);
 
 		boxes.clear();
 		ids.clear();
