@@ -92,7 +92,7 @@ namespace PAL
 		HIGH_QUALITY_DEPTH = 4,
 		POINT_CLOUD_3D = 4,
 		FAST_DEPTH = 6,
-		POINT_CLOUD_25D = 6,
+		POINT_CLOUD_25D = 8,
 		TRACKING = 7,
 	};
 	struct CameraProperties
