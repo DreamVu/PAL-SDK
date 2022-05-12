@@ -457,17 +457,20 @@ int main(int argc, char** argv)
 	}
 
 	PAL::CameraProperties data; 
-	PAL::Acknowledgement ack = PAL::LoadProperties("/home/dreamvu/catkin_ws/src/dreamvu_pal_camera/src/SavedPalProperties.txt", &data);
+	PAL::Acknowledgement ack = PAL::LoadProperties("../catkin_ws/src/dreamvu_pal_camera/src/SavedPalProperties.txt", &data);
 	if(ack != PAL::SUCCESS)
 	{
 		printf("Error Loading settings\n");
 	}
 
 	PAL::CameraProperties prop;
+	PAL::CameraProperties prop_temp;
 	PAL::GetCameraProperties(&prop);
 	unsigned int flag = PAL::MODE;
 	
-	prop.mode = PAL::Mode::POINT_CLOUD_25D;//FAST_DEPTH; //DETECTION; // Change mode 
+	prop.mode = PAL::Mode::FAST_DEPTH;//FAST_DEPTH; //DETECTION; // Change mode 
+
+	prop_temp.mode = prop.mode;
 
 	if (prop.mode==PAL::Mode::POINT_CLOUD_3D)
 	{
@@ -480,6 +483,7 @@ int main(int argc, char** argv)
 	   flag = flag | PAL::FD;
 		prop.fd = 1;
 	}
+	
 	
 	PAL::SetCameraProperties(&prop, &flag);
 
@@ -561,10 +565,13 @@ int main(int argc, char** argv)
 	vector<PAL::Loc3D> Loc3Ds;
 	std::vector<PAL::Point> pc;
 	vector<vector<float>> boxes3; 
-   vector<int> ids; 
-   vector<float> depthValues3; 
-   vector<Scalar> colours; 
-   int num;
+	vector<int> ids; 
+	vector<float> depthValues3; 
+	vector<Scalar> colours; 
+	int num;
+
+	cv::Mat left_img_S = cv::Mat::zeros(1819, 5290, CV_8UC3);
+	cv::Mat right_img_S = cv::Mat::zeros(1819, 5290, CV_8UC3);
 
 	while(g_bRosOK)
 	{
@@ -585,8 +592,8 @@ int main(int argc, char** argv)
 		int objectdetection_Subnumber = leftSubnumber+rightSubnumber+depthSubnumber+objectDet_number;
 		int fastdepth_Subnumber  = leftSubnumber+rightSubnumber+depthSubnumber+occupancyMap_number;
 		int stereo_Subnumber    = leftSubnumber+rightSubnumber;
-      int pointcloud25dSubnumber = leftSubnumber+rightSubnumber+depthSubnumber+pointcloudSubnumber;
-      int track_Subnumber = leftSubnumber+rightSubnumber+depthSubnumber+personTrack_number;
+      	int pointcloud25dSubnumber = leftSubnumber+rightSubnumber+pointcloudSubnumber;
+     	int track_Subnumber = leftSubnumber+rightSubnumber+depthSubnumber+personTrack_number;
         
 		DepthValues.clear();
 		DepthValues2.clear();
@@ -595,19 +602,22 @@ int main(int argc, char** argv)
 		Loc3Ds.clear();
 		pc.clear();
 
-		if(stereo_Subnumber && (prop.mode==PAL::Mode::STEREO))
+		if(stereo_Subnumber && (prop_temp.mode==PAL::Mode::STEREO))
 		{
 			//PAL::Acknowledgement ack4 = PAL::GrabFrames(&left_img2, &right_img2, 0);
 			//left5  = Mat(left_img2.rows, left_img2.cols, CV_8UC3, left_img2.Raw.u8_data);
 			//right5 = Mat(right_img2.rows, right_img2.cols, CV_8UC3, right_img2.Raw.u8_data);
 			timeval timestamp;
-			cv::Mat output = PAL::GetCroppedStereo(5288, 3640, 0, 0, timestamp,1);
+			cv::Mat output = PAL::GetCroppedStereo(5290, 3638, 0, 0, timestamp,1);
+		
+			memcpy(left_img_S.data, output.data , left_img_S.step*left_img_S.rows);
+			memcpy(right_img_S.data, output.data + left_img_S.step*left_img_S.rows, left_img_S.step*left_img_S.rows);
 			
-			if (leftSubnumber > 0) OnLeftPanorama(&output);
-			//if (rightSubnumber > 0) OnRightPanorama(&right5);
+			if (leftSubnumber > 0) OnLeftPanorama(&left_img_S);
+			if (rightSubnumber > 0) OnRightPanorama(&right_img_S);
 		}
 
-		if(detection_Subnumber && (prop.mode==PAL::Mode::DETECTION))
+		if(detection_Subnumber && (prop_temp.mode==PAL::Mode::DETECTION))
 		{
 			PAL::Acknowledgement ack2 = PAL::GetPeopleDetection(rgb, right, depth, &Boxes, DepthValues, &Loc3Ds, NULL);
 			rgb4 = rgb.clone();
@@ -624,7 +634,7 @@ int main(int argc, char** argv)
 			if (depthSubnumber > 0) OnDepthPanorama(&depth);
 		}
 
-		if(objectdetection_Subnumber  && (prop.mode==PAL::Mode::DETECTION))
+		if(objectdetection_Subnumber  && (prop_temp.mode==PAL::Mode::DETECTION))
 		{ 
 			PAL::Acknowledgement ack3 = PAL::GetAllDetection(rgb2, right2, depth2, &Boxes2, DepthValues2);
 			if (objectDet_number > 0) OnObjectDetection(Boxes2, rgb2); 
@@ -634,7 +644,7 @@ int main(int argc, char** argv)
 			if (depthSubnumber > 0) OnDepthPanorama(&depth2);
 		}
 
-		if(fastdepth_Subnumber && ((prop.mode==PAL::Mode::FAST_DEPTH) || (prop.mode==PAL::Mode::HIGH_QUALITY_DEPTH)))
+		if(fastdepth_Subnumber && ((prop_temp.mode==PAL::Mode::FAST_DEPTH) || (prop_temp.mode==PAL::Mode::HIGH_QUALITY_DEPTH)))
 		{
 			PAL::Acknowledgement ack3 = PAL::GrabFrames(&left_img, &right_img, &depth_img);
 			depth3 = cv::Mat(depth_img.rows, depth_img.cols, CV_32FC1, depth_img.Raw.f32_data);
@@ -647,13 +657,13 @@ int main(int argc, char** argv)
 			if (depthSubnumber > 0) OnDepthPanorama(&depth3);
 		}
 		
-		if(pointcloudSubnumber && (prop.mode==PAL::Mode::POINT_CLOUD_3D))
+		if(pointcloudSubnumber && (prop_temp.mode==PAL::Mode::POINT_CLOUD_3D))
 		{
 			PAL::Acknowledgement ack = PAL::GetPointCloud(&pc, 0, &g_imgLeft, &g_imgRight, &g_imgDepth);
 			OnPointCloud(pc);
 		}
 		
-		if(pointcloud25dSubnumber && (prop.mode==PAL::Mode::POINT_CLOUD_25D))
+		if(pointcloud25dSubnumber && (prop_temp.mode==PAL::Mode::POINT_CLOUD_25D))
 		{
 			PAL::Acknowledgement ack = PAL::GetPointCloud(&pc, 0, &g_imgLeft, &g_imgRight, &g_imgDepth);
 			
@@ -667,7 +677,7 @@ int main(int argc, char** argv)
 			if (pointcloudSubnumber > 0) OnPointCloud(pc);
 		}
 
-		if(track_Subnumber  && (prop.mode==PAL::Mode::TRACKING))
+		if(track_Subnumber  && (prop_temp.mode==PAL::Mode::TRACKING))
 		{
 			PAL::Acknowledgement ack = PAL::GrabFrames(&left_img3, &right_img3); 
 			rgb7 = Mat(left_img3.rows, left_img3.cols, CV_8UC3, left_img3.Raw.u8_data);

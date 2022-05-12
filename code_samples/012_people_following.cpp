@@ -1,7 +1,7 @@
 /*
 
-   CODE SAMPLE # 012: Object Following
-   This code will grab the basic stereo panoramas (left and right images) and ALSO the Disparity panorama, execute People-following for objects on it and then display in an opencv window
+   CODE SAMPLE # 012: People Following
+   This code will grab the basic stereo panoramas (left and right images) and ALSO the Disparity panorama, execute People-following  and then display in an opencv window
 
 
    >>>>>> Compile this code using the following command....
@@ -13,7 +13,7 @@ g++ 012_people_following.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL
    >>>>>> Execute the binary file by typing the following command...
 
 
-   ./011_people_following.out
+   ./012_people_following.out
 
 
    >>>>>> KEYBOARD CONTROLS:
@@ -45,6 +45,7 @@ namespace PAL
 			vector<int> &ids, vector<float> &depthValues, vector<Scalar> &colours);
 }
 
+
 string getCmdOutput(string cmd)
 {
    string outputString;
@@ -61,6 +62,12 @@ string getCmdOutput(string cmd)
       pclose(outpStream);
    }
    return outputString;
+}
+
+bool is_number(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(), 
+        s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
 }
 
 
@@ -125,6 +132,7 @@ int main(int argc, char *argv[])
 	printf("Press f/F to toggle filter rgb property.\n");
 	printf("Press d/D to toggle fast depth property\n");
 	printf("Press r/R to toggle near range property\n");
+	printf("Press i/I to print the id that is being followed\n");
 
 	size_t currentResolution = 0;
 
@@ -193,7 +201,7 @@ int main(int argc, char *argv[])
 		{
 			//putText(img, format("ID=%d , Depth=%.2fm", ids[i], depthValues[i]/100), Point(boxes[i][0], boxes[i][1]+25+boxes[i][3]), 
 			//         0, 0.6, Scalar(0, 0, 255), 1, LINE_AA);
-			putText(img, format("ID=%d", ids[i]), Point(boxes[i][0], boxes[i][1]+25+boxes[i][3]), 0, 0.6, Scalar(0, 0, 255), 1, LINE_AA);
+			putText(img, format("ID=%d", ids[i]), Point(boxes[i][0], boxes[i][1]-5), 0, 0.6, Scalar(0, 0, 255), 1, LINE_AA);
 			//putText(img, format("ID=%d , Depth=%.2fm", ids[i], depthValues[i]/100), Point(boxes[i][0], boxes[i][1] - 5), 
 			//0, 0.6, Scalar(0, 0, 255), 1, LINE_AA);
 			rectangle(img, Rect(boxes[i][0], boxes[i][1], boxes[i][2], boxes[i][3]), colours[i], 2);
@@ -232,12 +240,29 @@ int main(int argc, char *argv[])
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;
 
-                if (key == 'i' || key == 'I')
-		{
-			string zenityCmd = "zenity --entry --text \"Enter ID to Track\" --title \"PAL People Following\" --entry-text=\"\"";
-                        string output = getCmdOutput(zenityCmd);
-                        followID = stoi(output);
-		}
+      
+		if (key == 'i' || key == 'I')
+        {
+            string zenityCmd = "zenity --entry --text \"Enter ID to Track\" --title \"PAL People Following\" --entry-text=\"\"";
+            string output = getCmdOutput(zenityCmd);
+
+            output.erase(std::remove(output.begin(), output.end(), ' '), output.end());
+            output.erase(std::remove(output.begin(), output.end(), '\n'), output.end());
+            output.erase(std::remove(output.begin(), output.end(), '\t'), output.end());
+	
+            if(is_number(output))
+            {
+                followID = stoi(output);
+            }    
+            else
+            {
+                string errorCmd = "zenity --warning  --text \"Not a valid input\" --title \"PAL People Following\"";
+                FILE *outpStream = popen(errorCmd.c_str(), "r");
+                pclose(outpStream);      
+            }
+        }
+		
+		
 
 		if (key == 'v' || key == 'V')
 		{
