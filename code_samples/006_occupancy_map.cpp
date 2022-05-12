@@ -18,7 +18,6 @@ g++  006_occupancy_map.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.s
 	Press ESC to close the window
 	Press v/V to toggle vertical flip property
 	Press f/F to toggle filter rgb property
-	Press d/D to toggle fast depth property
 	Press r/R to toggle near range property
 
 */
