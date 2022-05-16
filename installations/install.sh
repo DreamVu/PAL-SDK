@@ -24,22 +24,15 @@ cd bin_files
 chmod +x setup.sh
 ./setup.sh
 
-if [ $# -ge 1 ]; 
+if [ $1 -eq 1 ]; 
 then 
-	echo "[INFO] Rebuilding Engines"
-	if [ "$1" -eq 1 ];
+	chmod +x build_engines.sh 
+	if [ $# -eq 2 ];
 	then
-		chmod +x build_engines.sh 
-		if [ $# -eq 2 ];
-		then
-			./build_engines.sh $2
-		else
-			./build_engines.sh 3500
-	    	fi
+		./build_engines.sh $2
 	else
-		echo "[INFO] Skipping Rebuilding Engines"	
-	fi    
-
+		./build_engines.sh 3500
+	fi   
 else
 	echo "[INFO] Skipping Rebuilding Engines"
 fi

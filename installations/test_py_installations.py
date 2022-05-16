@@ -5,29 +5,11 @@ import collections
 import copy
 import glob
 import time
+import random
+import numpy as np
 
 sys.path.append('/opt/ros/melodic/lib/python2.7/dist-packages')
 sys.path.remove('/opt/ros/melodic/lib/python2.7/dist-packages')
-
-import cv2
-
-import random
-
-from imageio import imread, imwrite
-
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torch.utils.model_zoo as model_zoo
-from torch import load as th_load
-from torchvision.transforms import Compose
-
-from typing import Any, Dict, Text, Tuple, Union, List
-
-import numpy as np
-from PIL import Image
-
-import geffnet 
 
 print('')
 print('[INFO] Python Installations Successfull')
