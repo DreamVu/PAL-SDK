@@ -23,6 +23,7 @@ g++ 012_people_following.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL
    Press f/F to toggle filter rgb property.
    Press d/D to toggle fast depth property
    Press r/R to toggle near range property
+   Press i/I to print the id that is being followed.
 
 */
 
