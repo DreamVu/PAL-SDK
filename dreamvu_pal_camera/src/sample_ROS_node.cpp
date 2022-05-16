@@ -332,7 +332,7 @@ void OnOccupancyMap(cv::Mat rgb, cv::Mat depth, const int threshold_cm, const in
 
 	for(int i=0; i<rgb.cols; i++,poccupancy1D++,pr++)
 	{
-		if(!(*poccupancy1D))
+		if((*poccupancy1D))
 		{
 			*pr = (*pr)*2;
 		}
@@ -468,7 +468,7 @@ int main(int argc, char** argv)
 	PAL::GetCameraProperties(&prop);
 	unsigned int flag = PAL::MODE;
 	
-	prop.mode = PAL::Mode::FAST_DEPTH;//FAST_DEPTH; //DETECTION; // Change mode 
+	prop.mode = PAL::Mode::DETECTION; // Change mode 
 
 	prop_temp.mode = prop.mode;
 
@@ -650,7 +650,7 @@ int main(int argc, char** argv)
 			depth3 = cv::Mat(depth_img.rows, depth_img.cols, CV_32FC1, depth_img.Raw.f32_data);
 			rgb3 = cv::Mat(left_img.rows, left_img.cols, CV_8UC3, left_img.Raw.u8_data);
 			right3 = cv::Mat(right_img.rows, right_img.cols, CV_8UC3, right_img.Raw.u8_data);
-			if (occupancyMap_number > 0) OnOccupancyMap(rgb3, depth3, threshold_cm, context_threshold);
+			
 
 			if (leftSubnumber > 0) OnLeftPanorama(&rgb3);
 			if (rightSubnumber > 0) OnRightPanorama(&right3);
@@ -670,6 +670,8 @@ int main(int argc, char** argv)
 			depth6 = cv::Mat(g_imgDepth.rows, g_imgDepth.cols, CV_32FC1, g_imgDepth.Raw.f32_data);
 			rgb6 = cv::Mat(g_imgLeft.rows, g_imgLeft.cols, CV_8UC3, g_imgLeft.Raw.u8_data);
 			right6 = cv::Mat(g_imgRight.rows, g_imgRight.cols, CV_8UC3, g_imgRight.Raw.u8_data);
+			if (occupancyMap_number > 0) OnOccupancyMap(rgb6, depth6, threshold_cm, context_threshold);
+
 
 			if (leftSubnumber > 0) OnLeftPanorama(&rgb6);
 			if (rightSubnumber > 0) OnRightPanorama(&right6);
