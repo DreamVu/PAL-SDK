@@ -198,5 +198,5 @@ sudo make install
 sudo ldconfig
 pkg-config --modversion opencv
 
-rm -rf opencv opencv_contrib
-rm opencv.zip opencv_contrib.zip
+rm -rf ~/opencv ~/opencv_contrib
+rm ~/opencv.zip ~/opencv_contrib.zip
