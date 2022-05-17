@@ -663,13 +663,16 @@ int main(int argc, char** argv)
 			OnPointCloud(pc);
 		}
 		
-		if(pointcloud25dSubnumber && (prop_temp.mode==PAL::Mode::POINT_CLOUD_25D))
+		if((pointcloud25dSubnumber && (prop_temp.mode==PAL::Mode::POINT_CLOUD_25D)) || occupancyMap_number)
 		{
 			PAL::Acknowledgement ack = PAL::GetPointCloud(&pc, 0, &g_imgLeft, &g_imgRight, &g_imgDepth);
 			
 			depth6 = cv::Mat(g_imgDepth.rows, g_imgDepth.cols, CV_32FC1, g_imgDepth.Raw.f32_data);
 			rgb6 = cv::Mat(g_imgLeft.rows, g_imgLeft.cols, CV_8UC3, g_imgLeft.Raw.u8_data);
 			right6 = cv::Mat(g_imgRight.rows, g_imgRight.cols, CV_8UC3, g_imgRight.Raw.u8_data);
+			
+			cv::resize(depth6, depth6, cv::Size(rgb6.cols, rgb6.rows));
+			
 			if (occupancyMap_number > 0) OnOccupancyMap(rgb6, depth6, threshold_cm, context_threshold);
 
 
