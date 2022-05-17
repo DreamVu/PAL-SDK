@@ -3,6 +3,7 @@ sudo apt-get install -y libjasper-dev, python3.6-dev, python3.6-venv, libglew2.0
 
 cd ..
 sudo apt-get install -y git-lfs
+git lfs pull
 cd ./installation
 
 
