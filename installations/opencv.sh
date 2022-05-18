@@ -191,7 +191,7 @@ cmake -D CMAKE_BUILD_TYPE=RELEASE \
     -D OPENCV_ENABLE_NONFREE=OFF \
     -D BUILD_EXAMPLES=OFF ..
 
-make -j4
+make -j6
 sudo make install
 sudo ldconfig
 pkg-config --modversion opencv
