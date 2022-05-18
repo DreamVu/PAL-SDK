@@ -24,7 +24,11 @@ cd bin_files
 chmod +x setup.sh
 ./setup.sh
 
-if [[ $1 -eq "Y" ]]; 
+echo "###########################################"
+echo $1
+echo "###########################################"
+
+if [[ $1 -eq "Y" || $1 -eq "y" ]]; 
 then 
 	chmod +x build_engines.sh 
 	if [ $# -eq 2 ];
@@ -44,7 +48,6 @@ source dreamvu_ws/bin/activate
 python test_py_installations.py
 
 cd activation
-
 ./activation.sh
 
 cd ..
@@ -52,4 +55,4 @@ cd ..
 
 ./timeout_patch.sh
 
-sudo ./PAL_udev.sh
+./PAL_udev.sh
