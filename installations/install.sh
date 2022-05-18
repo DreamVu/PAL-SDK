@@ -24,10 +24,8 @@ cd bin_files
 chmod +x setup.sh
 ./setup.sh
 
-echo "###########################################"
+echo "Status"
 echo $1
-echo "###########################################"
-
 if [[ $1 -eq "Y" || $1 -eq "y" ]]; 
 then 
 	chmod +x build_engines.sh 
