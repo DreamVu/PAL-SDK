@@ -7,7 +7,7 @@ then
         echo "Requirements not complete. Installing..."
         FOLDER=/usr/src/tensorrt/samples/trtexec/
         if [ -d "$FOLDER" ]; then
-            sudo chown -R $USER: /usr/src/tensorrt/
+            sudo chown -R $SUDO_USER: /usr/src/tensorrt/
             cd /usr/src/tensorrt/samples/trtexec/
             make
             cd -

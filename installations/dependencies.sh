@@ -22,7 +22,7 @@ sudo make install
 sudo ldconfig
 
 sudo groupadd -f -r gpio
-sudo usermod -a -G gpio $USER
+sudo usermod -a -G gpio $SUDO_USER
 
 cd ../..
 sudo cp JetsonGPIO/99-gpio.rules /etc/udev/rules.d/

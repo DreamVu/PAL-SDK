@@ -8,16 +8,16 @@ cd activation
 chmod +x run ./*.sh
 
 sudo cp *.json /usr/local/bin/data
-sudo chown -R $USER:$USER /usr/local/bin/data/*.json
+sudo chown -R $SUDO_USER:$SUDO_USER /usr/local/bin/data/*.json
 
 cd ..
 
-#./dependencies.sh
+./dependencies.sh
 
 ./ros_cmake.sh
 
 
-#./setup_python_env.sh
+./setup_python_env.sh
 
 cd bin_files
 
@@ -26,7 +26,9 @@ chmod +x setup.sh
 
 echo "Status"
 echo $1
-if [[ $1 -eq "Y" || $1 -eq "y" ]]; 
+
+
+if [[ $1 == "Y" || $1 == "y" ]]; 
 then 
 	chmod +x build_engines.sh 
 	if [ $# -eq 2 ];
