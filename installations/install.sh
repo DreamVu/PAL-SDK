@@ -12,12 +12,12 @@ sudo chown -R $USER:$USER /usr/local/bin/data/*.json
 
 cd ..
 
-./dependencies.sh
+#./dependencies.sh
 
 ./ros_cmake.sh
 
 
-./setup_python_env.sh
+#./setup_python_env.sh
 
 cd bin_files
 
