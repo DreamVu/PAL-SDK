@@ -24,8 +24,6 @@ cd bin_files
 chmod +x setup.sh
 ./setup.sh
 
-echo "Status"
-echo $1
 
 
 if [[ $1 == "Y" || $1 == "y" ]]; 
