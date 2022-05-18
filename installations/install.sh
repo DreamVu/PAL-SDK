@@ -24,7 +24,7 @@ cd bin_files
 chmod +x setup.sh
 ./setup.sh
 
-if [ $1 -eq 1 ]; 
+if [[ $1 -eq "Y" ]]; 
 then 
 	chmod +x build_engines.sh 
 	if [ $# -eq 2 ];
@@ -53,4 +53,3 @@ cd ..
 ./timeout_patch.sh
 
 sudo ./PAL_udev.sh
-
