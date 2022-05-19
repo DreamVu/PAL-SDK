@@ -11,7 +11,7 @@ Please follow the instructions given below on any of the Nvidia Jetson embedded 
     sudo apt install pal-usb
 
 
-Provide argument "Y" or "y" for the dependency to install. 
+Provide argument "Y" or "y" for continuing installing the dependencies whenever prompted.
 
 Then a message will be displayed on the terminal,
 
