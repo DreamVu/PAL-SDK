@@ -1,10 +1,8 @@
 # PAL USB
 The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
 
-
 ## System Requirements
-Jetpack 4.6
-
+* Jetpack 4.6
 
 ## Installation
 
@@ -12,9 +10,9 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command from Downloads directory.
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command,
 
-    sudo apt install ./palusb_3.4_arm64.deb
+    sudo apt install ./palusb_jetpack_3.4_arm64.deb
 
 ### Method 2. Using PPA Repository
 
@@ -32,7 +30,6 @@ The Package can be installed by adding the PPA Repository. Steps are as follows:
 Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. To preview the PAL USB camera run the below command 
     
     ~/DreamVu/PAL-USB/Explorer/Explorer
-
 
 ## Documentation 
 For rest of the evaluation of the PAL-USB SDK, please read the [Evaluation Manual](https://docs.google.com/document/d/e/2PACX-1vT3rc_7S621PJHJ6QuV-rR2CyXbMvPBZztaDoiPnkT_g18Gz327OOA91pf11JMkqIeK0smel81rNbNg/pub)
