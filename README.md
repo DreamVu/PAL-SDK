@@ -3,11 +3,13 @@ The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal
 
 Please follow the instructions given below on any of the Nvidia Jetson embedded boards with Jetpack 4.6 to install the software.
 
-The Package can be downloaded in two ways:
+The Package can be installed in two ways:
 
 ## Approach 1. Using Deb packages
 
-The Package can be downloaded directly from [HERE](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed using `sudo apt install ~/Downloads/palusb_3.4_arm64.deb` 
+The Package can be downloaded directly from [HERE](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command from Downloads directory.
+
+    sudo apt install ~/Downloads/palusb_3.4_arm64.deb
 
 ## Approach 2. Using PPA
 
