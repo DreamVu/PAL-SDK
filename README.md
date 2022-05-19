@@ -8,14 +8,12 @@ The Package can be downloaded directly from [HERE](https://github.com/DreamVu/pp
 ## Step 1. Adding DreamVu PPAs
     curl -SsL "https://dreamvu.github.io/ppa/KEY.gpg" | sudo apt-key add -
     sudo curl -SsL -o /etc/apt/sources.list.d/dreamvu.list "https://dreamvu.github.io/ppa/dreamvu.list"
-
     
 ## Step 2. Installing PAL USB
     sudo apt update
     sudo apt install pal-usb
 
-Once complete please reboot the system.
-To start the PAL USB, use the command 
+Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. To preview the PAL USB camera run the below command 
     
     ~/DreamVu/PAL-USB/Explorer/Explorer
 
