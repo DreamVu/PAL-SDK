@@ -9,7 +9,7 @@ The Package can be installed in two ways:
 
 The Package can be downloaded directly from [HERE](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command from Downloads directory.
 
-    sudo apt install ~/Downloads/palusb_3.4_arm64.deb
+    sudo apt install ./palusb_3.4_arm64.deb
 
 ## Approach 2. Using PPA
 
