@@ -3,26 +3,17 @@ The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal
 
 Please follow the instructions given below on any of the Nvidia Jetson embedded boards with Jetpack 4.6 to install the software.
 
-## Steps
+The Package can be downloaded directly from [HERE](https://github.com/DreamVu/ppa/raw/main/palusb/PAL_USB_4.6_all.deb) or by adding the PPA. Steps for PPA are as follows:
+
+## Step 1. Adding DreamVu PPAs
+    curl -SsL "https://dreamvu.github.io/ppa/KEY.gpg" | sudo apt-key add -
+    sudo curl -SsL -o /etc/apt/sources.list.d/dreamvu.list 
+
     
-    curl -SsL "https://DreamVu.github.io/palusbPPA/KEY.gpg" | sudo apt-key add -
-    sudo curl -SsL -o /etc/apt/sources.list.d/my_list_file.list "https://DreamVu.github.io/palusbPPA/my_list_file.list"
+## Step 2. Installing PAL USB
     sudo apt update
     sudo apt install pal-usb
 
-
-Provide argument "Y" or "y" for continuing installing the dependencies whenever prompted.
-
-Then a message will be displayed on the terminal,
-
-"Please select either (Y/N). On selecting 'Y', installation will build the whole software based on the particular Nvidia Jetson architecture and will enable higher performance. This may take a few hours to complete the installation. On selecting 'N', it will quickly build the software by using some of the pre-configured libraries provided. (Y/N)"
-
-Based on the requirement enter the character. In case of rebuilding following are the recommended values for different Nvidia Jetson architectures.
-
-    For Jetson Xavier NX arg2: 3500
-    For Jetson Xavier AGX arg2: 8000
-    For Jetson Nano arg2: 1000
-            
 Once complete please reboot the system.
 To start the PAL USB, use the command 
     
