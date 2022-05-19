@@ -5,13 +5,13 @@ Please follow the instructions given below on any of the Nvidia Jetson embedded 
 
 The Package can be installed in two ways:
 
-## Approach 1. Using Deb packages
+## Method 1. Using Deb packages
 
-The Package can be downloaded directly from [HERE](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command from Downloads directory.
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command from Downloads directory.
 
     sudo apt install ~/Downloads/palusb_3.4_arm64.deb
 
-## Approach 2. Using PPA
+## Method 2. Using PPA
 
 The Package can be installed by adding the PPA. Steps for PPA are as follows:
 
