@@ -10,7 +10,7 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_3.4_arm64.deb) and installed by running the below command,
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_jetpack_3.4_arm64.deb) and installed by running the below command,
 
     sudo apt install ./palusb_jetpack_3.4_arm64.deb
 
