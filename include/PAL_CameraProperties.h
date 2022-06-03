@@ -32,7 +32,8 @@ namespace PAL
 		NR = 0x800000,
 		DEPTH_SCALE_FACTOR = 0x1000000,
 		POINT_CLOUD_DENSITY = 0x2000000,
-		ALL = 0x3FFFFFF,
+		AUTO_EXPOSURE_LIMIT = 0x4000000, 
+		ALL = 0x4FFFFFF, //0x3FFFFFF,
 	};
 
 	struct Resolution
@@ -115,6 +116,8 @@ namespace PAL
 		PowerLineFrequency power_line_frequency;
 		int depth_scale_factor;
 		int point_cloud_density;
+		
+		int auto_exposure_limit;
 		
 
 			
@@ -204,6 +207,11 @@ namespace PAL
 		static const int MIN_POINT_CLOUD_DENSITY = 1;
 		static const int DEFAULT_POINT_CLOUD_DENSITY = 4;
 		
+		
+		static const int MAX_AUTO_EXPOSURE_LIMIT= 10000;
+		static const int MIN_AUTO_EXPOSURE_LIMIT = 20;
+		static const int DEFAULT_AUTO_EXPOSURE_LIMIT = 1000;
+		
 		CameraProperties() :
 			brightness           (DEFAULT_BRIGHTNESS),
 			contrast  	     	 (DEFAULT_CONTRAST), 
@@ -231,7 +239,8 @@ namespace PAL
 			camera_height	     (DEFAULT_CAMERA_HEIGHT),			
 			detection_mode 	     (DEFAULT_DETECTION_MODE),
 			depth_scale_factor 	 (DEFAULT_DEPTH_SCALE_FACTOR),
-			point_cloud_density 	 (DEFAULT_POINT_CLOUD_DENSITY)
+			point_cloud_density  (DEFAULT_POINT_CLOUD_DENSITY),
+			auto_exposure_limit  (DEFAULT_AUTO_EXPOSURE_LIMIT)
 		{
 		}
 	};
