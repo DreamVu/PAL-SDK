@@ -10,9 +10,9 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/palusb_jetpack_4.6_arm64.deb) and installed by running the below command,
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/pal-usb.deb) and installed by running the below command,
 
-    sudo apt install ./palusb_jetpack_4.6_arm64.deb
+    sudo apt install ./pal-usb.deb
 
 ### Method 2. Using PPA Repository
 
