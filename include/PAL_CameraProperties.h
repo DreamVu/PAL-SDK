@@ -188,7 +188,7 @@ namespace PAL
 		static const int DEFAULT_FOV_START = 0;
 		static const int DEFAULT_FOV_END = 360;
 
-		static const Projection DEFAULT_PROJECTION = PERSPECTIVE;
+		static const Projection DEFAULT_PROJECTION = EQUI_RECTANGULAR;
 		static const DisparityComputation DEFAULT_COMPUTATION = HIGH_QUALITY_A;
 
 		static const DetectionMode DEFAULT_DETECTION_MODE = TABLE_TOP;
