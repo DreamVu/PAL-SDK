@@ -10,7 +10,7 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/pal-usb.deb) and installed by running the below command,
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/raw/main/palusb/pal-usb.deb) and installed by running the below command from the location where it is downloaded,
 
     sudo apt install ./pal-usb.deb
 
