@@ -248,5 +248,3 @@ namespace PAL
 }//namespace
 
 # endif //PAL_CAMERA_PROPERTIES_H
-
-

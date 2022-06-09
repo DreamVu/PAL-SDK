@@ -28,15 +28,3 @@ cd ../..
 sudo cp JetsonGPIO/99-gpio.rules /etc/udev/rules.d/
 sudo udevadm control --reload-rules && sudo udevadm trigger
 
-
-echo '#!/bin/bash'  > ./autostart.sh
-echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":`pwd`/../lib" >> ./autostart.sh
-echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":/opt/nvidia/vpi-0.4/lib" >> ./autostart.sh
-echo "source `pwd`/dreamvu_ws/bin/activate" >> ./autostart.sh
-
-echo "cd " `pwd`/../code_samples >> ./autostart.sh
-echo "./013_object_tracking_GPIO.out" >> ./autostart.sh
-chmod +x autostart.sh
-
-
-

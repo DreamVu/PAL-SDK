@@ -1,4 +1,4 @@
-cat ../dreamvu_pal_camera/cmake_template/header.txt > ../dreamvu_pal_camera/CMakeLists.txt
-echo "set(PAL_INCLUDE_DIR" `pwd`/../include ")" >> ../dreamvu_pal_camera/CMakeLists.txt
-echo "set(PAL_LIBRARY" `pwd`/../lib/libPAL.so  `pwd`/../lib/libPAL_CAMERA.so `pwd`/../lib/libPAL_Track.so ")" >> ../dreamvu_pal_camera/CMakeLists.txt
-cat ../dreamvu_pal_camera/cmake_template/footer.txt >> ../dreamvu_pal_camera/CMakeLists.txt
+cat /home/$SUDO_USER/DreamVu/PAL-USB/dreamvu_pal_camera/cmake_template/header.txt > /home/$SUDO_USER/DreamVu/PAL-USB/dreamvu_pal_camera/CMakeLists.txt
+echo "set(PAL_INCLUDE_DIR" /home/$SUDO_USER/DreamVu/PAL-USB/include ")" >> /home/$SUDO_USER/DreamVu/PAL-USB/dreamvu_pal_camera/CMakeLists.txt
+echo "set(PAL_LIBRARY" /home/$SUDO_USER/DreamVu/PAL-USB/lib/libPAL_PAL.so  /home/$SUDO_USER/DreamVu/PAL-USB/lib/libPAL_CAMERA_PAL.so /home/$SUDO_USER/DreamVu/PAL-USB/lib/libPAL_Track_PAL.so ")" >> /home/$SUDO_USER/DreamVu/PAL-USB/dreamvu_pal_camera/CMakeLists.txt
+cat /home/$SUDO_USER/DreamVu/PAL-USB/dreamvu_pal_camera/cmake_template/footer.txt >> /home/$SUDO_USER/DreamVu/PAL-USB/dreamvu_pal_camera/CMakeLists.txt

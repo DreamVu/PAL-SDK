@@ -12,6 +12,6 @@ pip install pyyaml imageio opencv-python-headless
 
 pip install pyparsing==3.0.8
 
-echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":`pwd`/../lib" >> ~/.bashrc 
+echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":/usr/local/lib" >> ~/.bashrc 
 echo "export LD_LIBRARY_PATH=$"LD_LIBRARY_PATH":/opt/nvidia/vpi1/lib64" >> ~/.bashrc 
 echo "source `pwd`/dreamvu_ws/bin/activate" >> ~/.bashrc
