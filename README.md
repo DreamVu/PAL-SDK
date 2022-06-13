@@ -12,7 +12,7 @@ The Package can be installed in two ways:
 
 The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal-usb/pal-usb?raw=true) and installed by running the below command from the location where it is downloaded,
 
-    ./pal-usb
+    chmod +x pal-usb && ./pal-usb
 
 ### Method 2. Using PPA Repository
 
