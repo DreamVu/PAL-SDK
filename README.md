@@ -19,8 +19,8 @@ The Package can be downloaded directly from [here](https://github.com/DreamVu/pp
 The Package can be installed by adding the PPA Repository. Steps are as follows:
 
 #### Step 1. Adding DreamVu PPAs
-    curl -SsL "https://dreamvu.github.io/ppa/KEY.gpg" | sudo apt-key add -
-    sudo curl -SsL -o /etc/apt/sources.list.d/dreamvu.list "https://dreamvu.github.io/ppa/dreamvu.list"
+    sudo wget -qO - https://dreamvu.github.io/ppa/KEY.gpg | sudo apt-key add -
+    sudo wget -qO /etc/apt/sources.list.d/dreamvu.list https://dreamvu.github.io/ppa/dreamvu.list
     
 #### Step 2. Installing PAL USB
     sudo apt update
