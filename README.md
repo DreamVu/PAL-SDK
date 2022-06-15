@@ -34,7 +34,7 @@ Once complete please reboot the system. The packages will be installed in \~/Dre
 
 ## ROS Melodic Installations
 
-The Package can be installed by running the below command,
+The Package can be installed by running the below command after installing PAL USB,
 
     sudo apt update
     sudo apt install dreamvu-ros
