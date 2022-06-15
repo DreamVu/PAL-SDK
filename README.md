@@ -31,11 +31,13 @@ Once complete please reboot the system. The packages will be installed in \~/Dre
     
     ~/DreamVu/PAL-USB/Explorer/Explorer
 
+
 ## ROS Melodic Installations
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/common/ros-melodic-dvu?raw=true) and installed by running the below command from the location where it is downloaded,
+The Package can be installed by running the below command,
 
-    chmod +x ros-melodic-dvu && ./ros-melodic-dvu
+    sudo apt update
+    sudo apt install dreamvu-ros
 
 ## Documentation 
 - [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQvz5Ms3WfdZyYbyvzPIqjyyGyXEdKc9-4SrJUJa0WAnXnlB5WTftUWCWAfgfV6Xbaqmxh0S25kFsTu/pub)
