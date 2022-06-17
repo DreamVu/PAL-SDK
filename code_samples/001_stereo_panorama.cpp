@@ -40,7 +40,7 @@ int main( int argc, char** argv )
 
 
 	cout<<"Testing for case no. 9 and 10\n";
-
+	cout<<"Second Testing for case no. 9 and 10\n";
 	
 
 	int width, height;
