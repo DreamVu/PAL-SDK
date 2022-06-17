@@ -38,11 +38,6 @@ int main( int argc, char** argv )
 {
 	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
 
-
-
-
-	
-
 	int width, height;
 	if(PAL::Init(width, height,-1) != PAL::SUCCESS) //Connect to the PAL camera
 	{
