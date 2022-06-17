@@ -39,7 +39,7 @@ int main( int argc, char** argv )
 	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
 
 
-
+	cout<<"Testing for case no. 9 and 10\n";
 
 	
 
