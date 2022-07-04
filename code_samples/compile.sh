@@ -25,3 +25,5 @@ g++ 012_people_following.cpp `pkg-config --libs --cflags opencv pal` -O3  -o 012
 g++ 013_object_tracking_GPIO.cpp `pkg-config --libs --cflags opencv pal` -O3  -o 013_object_tracking_GPIO.out -lJetsonGPIO -w
 
 g++ 014_UART_sender.cpp `pkg-config --libs --cflags opencv pal` -O3  -o 014_UART_sender.out -lJetsonGPIO -w
+
+chmod +x ./autostart.sh
