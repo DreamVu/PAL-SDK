@@ -28,7 +28,7 @@ catkin_package(
   message_runtime
 )
 set(PAL_INCLUDE_DIR /home/dreamvu/Desktop/PAL-USB/installations/../include )
-set(PAL_LIBRARY /home/dreamvu/Desktop/PAL-USB/installations/../lib/libPAL.so /home/dreamvu/Desktop/PAL-USB/installations/../lib/libPAL_CAMERA.so /home/dreamvu/Desktop/PAL-USB/installations/../lib/libPAL_Track.so )
+set(PAL_LIBRARY /home/dreamvu/Desktop/PAL-USB/installations/../lib/libPAL_PAL.so /home/dreamvu/Desktop/PAL-USB/installations/../lib/libPAL_CAMERA_PAL.so /home/dreamvu/Desktop/PAL-USB/installations/../lib/libPAL_Track_PAL.so )
 include_directories( 
         ${catkin_INCLUDE_DIRS} 
         ${PAL_INCLUDE_DIR}

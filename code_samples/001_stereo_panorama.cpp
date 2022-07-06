@@ -38,6 +38,11 @@ int main( int argc, char** argv )
 {
 	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
 
+
+
+
+	
+
 	int width, height;
 	if(PAL::Init(width, height,-1) != PAL::SUCCESS) //Connect to the PAL camera
 	{
@@ -89,18 +94,21 @@ int main( int argc, char** argv )
 	//imshow( "PAL Stereo Panorama", output);
 
 	//27 = esc key. Run the loop until the ESC key is pressed
+	cv::Mat resize_stereo;
 	while(key != 27)
 	{
-		
+
 		timeval timestamp;
 		cv::Mat output = PAL::GetCroppedStereo(5290, 3638, 0, 0, timestamp,1);
-		
+
 		//Display the concatenated image
-		//imshow( "PAL Stereo Panorama", output);  
-		imshow("PAL Stereo Panorama",output);
+		//imshow( "PAL Stereo Panorama", output);
+		cv::resize(output,resize_stereo, cv::Size(sc_width/1.2, sc_height/1.2)); 
+		imshow("PAL Stereo Panorama",resize_stereo);
 
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;
+
 
 		if (key == 'f' || key == 'F')
 		{   

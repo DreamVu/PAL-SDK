@@ -18,6 +18,8 @@
 #include "dreamvu_pal_camera/BoundingBox.h"
 #include "dreamvu_pal_camera/BoundingBoxArray.h"
 
+#include "TimeLogger.h"
+
 using namespace std;
 using namespace cv;
 //using namespace PAL;
@@ -572,7 +574,7 @@ int main(int argc, char** argv)
 
 	cv::Mat left_img_S = cv::Mat::zeros(1819, 5290, CV_8UC3);
 	cv::Mat right_img_S = cv::Mat::zeros(1819, 5290, CV_8UC3);
-
+	
 	while(g_bRosOK)
 	{
 		//Getting no of subscribers for each publisher
@@ -601,20 +603,27 @@ int main(int argc, char** argv)
 		Boxes2.clear();
 		Loc3Ds.clear();
 		pc.clear();
-
+		
 		if(stereo_Subnumber && (prop_temp.mode==PAL::Mode::STEREO))
 		{
-			//PAL::Acknowledgement ack4 = PAL::GrabFrames(&left_img2, &right_img2, 0);
-			//left5  = Mat(left_img2.rows, left_img2.cols, CV_8UC3, left_img2.Raw.u8_data);
-			//right5 = Mat(right_img2.rows, right_img2.cols, CV_8UC3, right_img2.Raw.u8_data);
-			timeval timestamp;
-			cv::Mat output = PAL::GetCroppedStereo(5290, 3638, 0, 0, timestamp,1);
-		
-			memcpy(left_img_S.data, output.data , left_img_S.step*left_img_S.rows);
-			memcpy(right_img_S.data, output.data + left_img_S.step*left_img_S.rows, left_img_S.step*left_img_S.rows);
 			
-			if (leftSubnumber > 0) OnLeftPanorama(&left_img_S);
-			if (rightSubnumber > 0) OnRightPanorama(&right_img_S);
+			
+			timeval timestamp;
+			cv::Mat stereo_output = PAL::GetCroppedStereo(5290, 3638, 0, 0, timestamp,1);
+		
+			
+			if (leftSubnumber > 0) 
+			{
+				memcpy(left_img_S.data, stereo_output.data , left_img_S.step*left_img_S.rows);
+				OnLeftPanorama(&left_img_S);
+				
+			}
+			if (rightSubnumber > 0) 
+			{
+				memcpy(right_img_S.data, stereo_output.data + left_img_S.step*left_img_S.rows, left_img_S.step*left_img_S.rows);
+				OnRightPanorama(&right_img_S);
+				
+			}	
 		}
 
 		if(detection_Subnumber && (prop_temp.mode==PAL::Mode::DETECTION))
@@ -698,7 +707,7 @@ int main(int argc, char** argv)
 			if (rightSubnumber > 0) OnRightPanorama(&right7);
 		}
 
-		ros::spinOnce();
+		//ros::spinOnce();
 		loop_rate.sleep();
 		g_bRosOK = ros::ok();		
 	}
