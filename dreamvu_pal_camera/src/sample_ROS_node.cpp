@@ -19,6 +19,9 @@
 #include "dreamvu_pal_camera/BoundingBoxArray.h"
 
 #include "TimeLogger.h"
+#include <fstream>
+#include<boost/algorithm/string.hpp>
+
 
 using namespace std;
 using namespace cv;
@@ -71,6 +74,65 @@ ros::Publisher boxespub;
 bool isDepthEnabled = true; 
 vector<float> DepthValues;
 vector<float> DepthValues2;
+
+
+
+std::string PAL_nvidia_device;
+
+std::string getDeviceName()
+{
+   	std::string file_name = "/proc/device-tree/nvidia,dtsfilename";
+	std::string result;
+	std::ifstream file(file_name);
+	if(file.is_open())
+	{
+		while(file)
+		{
+			std::getline(file, result);
+		}
+	}
+	file.close();
+
+	std::vector<std::string> strs, strs2;
+	boost::split(strs, result, boost::is_any_of("/"));
+	boost::split(strs2, strs[strs.size()-1], boost::is_any_of("-"));
+	
+	std::string device_name;
+	if (strs2[1] == "p3448")
+	{
+		device_name = "NANO";
+	}
+	else if (strs2[1] == "p3668")
+	{
+		device_name = "NX";
+	}
+	else if (strs2[1] == "p2888")
+	{
+		device_name = "AGX";
+	}
+	else if (strs2[1] == "p3701")
+	{
+		device_name = "AGX-ORIN";
+	}
+	else if (strs2[1] == "p3310")
+	{
+		device_name = "TX2";
+	}
+	else if (strs2[1] == "p3489")
+	{
+		device_name = "TX2-VARIANT";
+	}
+	else if (strs2[1] == "2180")
+	{
+		device_name = "TX1";
+	}
+	else
+	{
+		device_name="TK1";
+	}
+	return device_name;
+}		
+
 
 
 void setLabel(cv::Mat& input, const std::string label, const cv::Point org, cv::Scalar clr)
@@ -214,16 +276,19 @@ void OnPersonDetection3D(const std::vector<PAL::BoundingBox> Boxes, cv::Mat rgb,
 	char text[128];
 	for(int i =0; i<num_of_persons; i++)
 	{
+		if(isDepthEnabled)
 		sprintf(text, "x:%.1fm y:%.1fm z:%.1fm", Loc3Ds[i].x/100, Loc3Ds[i].y/100, Loc3Ds[i].z/100);
 
 		if(DepthValues[i] > 3)
 		{
 		    cv::circle(rgb, Point((Boxes[i].x1+Boxes[i].x2)/2, (Boxes[i].y1+Boxes[i].y2)/2), 10, cv::Scalar(0,255,0), -1);
+			if(isDepthEnabled)
 		    setLabel(rgb, text, Point((Boxes[i].x1+Boxes[i].x2)/2, (Boxes[i].y1+Boxes[i].y2)/2-15), CV_RGB(0,255,0));
 		}
 		else
 		{
 		    cv::circle(rgb, Point((Boxes[i].x1+Boxes[i].x2)/2, (Boxes[i].y1+Boxes[i].y2)/2), 10, cv::Scalar(0,0,255), -1);
+			if(isDepthEnabled)
 		    setLabel(rgb, text, Point((Boxes[i].x1+Boxes[i].x2)/2, (Boxes[i].y1+Boxes[i].y2)/2-15), CV_RGB(255,0,0));
 		}
 	}
@@ -298,16 +363,19 @@ void OnSafeZoneDetection(const std::vector<PAL::BoundingBox> Boxes, cv::Mat rgb,
 	char text[128];
 	for(int i =0; i<num_of_persons; i++)
 	{
+		if(isDepthEnabled)
 		sprintf(text, "Depth:%.2fm", DepthValues[i]/100);
 
 		if(DepthValues[i] > safe_distance)
 		{
 			cv::rectangle(rgb, cv::Point(Boxes[i].x1, Boxes[i].y1), cv::Point(Boxes[i].x2, Boxes[i].y2), cv::Scalar(0,255,0), 2);
+			if(isDepthEnabled)
 			setLabel(rgb, text, cv::Point(Boxes[i].x1, Boxes[i].y1), CV_RGB(0,255,0));
 		}
 		else
 		{
-			cv::rectangle(rgb, cv::Point(Boxes[i].x1, Boxes[i].y1), cv::Point(Boxes[i].x2, Boxes[i].y2), cv::Scalar(0,0,255), 2);        
+			cv::rectangle(rgb, cv::Point(Boxes[i].x1, Boxes[i].y1), cv::Point(Boxes[i].x2, Boxes[i].y2), cv::Scalar(0,0,255), 2);
+			if(isDepthEnabled)        
 			setLabel(rgb, text, cv::Point(Boxes[i].x1, Boxes[i].y1), CV_RGB(255,0,0));
 		}
 	}
@@ -446,10 +514,45 @@ int main(int argc, char** argv)
 	personTrack_pub       = it.advertise("/dreamvu/pal/persons/get/person_track", 1);
 
 
+
+	PAL_nvidia_device = getDeviceName();
+	
+	
+	
+	
+	
+	PAL::CameraProperties prop;
+	PAL::CameraProperties prop_temp;
+	PAL::GetCameraProperties(&prop);
+	unsigned int flag = PAL::MODE;
+	
+	
+	
+	
+	prop.mode = PAL::Mode::STEREO; // Change mode 
+	
+	
+	
+	
+	prop_temp.mode = prop.mode;
+	if((PAL_nvidia_device != "NANO" ) || (prop.mode == PAL::Mode::FAST_DEPTH)  || (prop.mode == PAL::Mode::HIGH_QUALITY_DEPTH)
+	  || (prop.mode == PAL::Mode::POINT_CLOUD_25D) || (prop.mode == PAL::Mode::POINT_CLOUD_3D))
+	{ 
+		PAL::Internal::EnableDepth(isDepthEnabled);//isDepthEnabled);
+		PAL::Internal::MinimiseCompute(false);
+	}
+	else
+	{
+		isDepthEnabled = false;
+		PAL::Internal::EnableDepth(isDepthEnabled);//isDepthEnabled);
+		PAL::Internal::MinimiseCompute(true);
+	}
+	
+
+
 	//Initialising PAL
 
-	PAL::Internal::EnableDepth(isDepthEnabled);
-	PAL::Internal::MinimiseCompute(false);
+	
 
 	int width, height;
 	if(PAL::Init(width, height,-1) != PAL::SUCCESS) //Connect to the PAL camera
@@ -465,14 +568,7 @@ int main(int argc, char** argv)
 		printf("Error Loading settings\n");
 	}
 
-	PAL::CameraProperties prop;
-	PAL::CameraProperties prop_temp;
-	PAL::GetCameraProperties(&prop);
-	unsigned int flag = PAL::MODE;
 	
-	prop.mode = PAL::Mode::DETECTION; // Change mode 
-
-	prop_temp.mode = prop.mode;
 
 	if (prop.mode==PAL::Mode::POINT_CLOUD_3D)
 	{
@@ -541,10 +637,25 @@ int main(int argc, char** argv)
 		printf("context threshold set below miminum range. Setting to 50%\n");
 	}
 
-	if(PAL::InitPersonDetection(threshold)!= PAL::SUCCESS) //Initialise person detection pipeline
+
+	if(PAL_nvidia_device != "NANO")
 	{
-		printf("Person Detection Init failed\n");
-		return 1;
+		if(PAL::InitPersonDetection(threshold)!= PAL::SUCCESS) //Initialise person detection pipeline
+		{
+			printf("Person Detection Init failed\n");
+			return 1;
+		}
+	}
+	else 
+	{
+		if(prop.mode == PAL::Mode::DETECTION)
+		{
+			if(PAL::InitPersonDetection(threshold)!= PAL::SUCCESS) //Initialise person detection pipeline
+			{
+				printf("Person Detection Init failed\n");
+				return 1;
+			}
+		}	
 	}
 
 	ros::Rate loop_rate(30);
@@ -553,7 +664,7 @@ int main(int argc, char** argv)
 	cv::Mat rgb, depth, output,right;
 	cv::Mat rgb2, depth2, output2, right2;
 	cv::Mat rgb3, depth3, right3;
-	cv::Mat rgb4;
+	cv::Mat rgb4, rgb8;
 	cv::Mat left5, right5;
 	cv::Mat rgb6, right6, depth6;
 	cv::Mat rgb7, right7, depth7;
@@ -629,6 +740,19 @@ int main(int argc, char** argv)
 		if(detection_Subnumber && (prop_temp.mode==PAL::Mode::DETECTION))
 		{
 			PAL::Acknowledgement ack2 = PAL::GetPeopleDetection(rgb, right, depth, &Boxes, DepthValues, &Loc3Ds, NULL);
+#if 1			
+			if(!isDepthEnabled)
+			{
+				Loc3Ds.clear();
+				Loc3Ds.resize(Boxes.size());
+				for(int i=0 ; i< Boxes.size(); i++)
+				{
+					Loc3Ds[i].x = -1;
+					Loc3Ds[i].y = -1;
+					Loc3Ds[i].z = -1;		
+				}
+			}	
+#endif			
 			rgb4 = rgb.clone();
 			if (personDet_number > 0) OnPersonDetection(Boxes, rgb4);
 			rgb4 = rgb.clone();
@@ -646,9 +770,10 @@ int main(int argc, char** argv)
 		if(objectdetection_Subnumber  && (prop_temp.mode==PAL::Mode::DETECTION))
 		{ 
 			PAL::Acknowledgement ack3 = PAL::GetAllDetection(rgb2, right2, depth2, &Boxes2, DepthValues2);
+			rgb8 = rgb.clone();
 			if (objectDet_number > 0) OnObjectDetection(Boxes2, rgb2); 
 
-			if (leftSubnumber > 0) OnLeftPanorama(&rgb2);
+			if (leftSubnumber > 0) OnLeftPanorama(&rgb8);
 			if (rightSubnumber > 0) OnRightPanorama(&right2);
 			if (depthSubnumber > 0) OnDepthPanorama(&depth2);
 		}
