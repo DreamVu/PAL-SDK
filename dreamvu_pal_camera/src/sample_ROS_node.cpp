@@ -527,11 +527,7 @@ int main(int argc, char** argv)
 	unsigned int flag = PAL::MODE;
 	
 	
-	
-	
-	prop.mode = PAL::Mode::STEREO; // Change mode 
-	
-	
+	prop.mode = PAL::Mode::DETECTION; // Change mode 
 	
 	
 	prop_temp.mode = prop.mode;
