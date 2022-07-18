@@ -84,7 +84,6 @@ int main( int argc, char** argv )
 	printf("Press v/V to toggle vertical flip property\n");
 
 	int key = ' ';
-
 	bool filter_spots = true;   
 	bool flip = false;
 
