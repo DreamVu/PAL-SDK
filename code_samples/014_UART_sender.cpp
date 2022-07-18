@@ -227,6 +227,7 @@ int main(int argc, char *argv[])
 		if(cam_ack == PAL::Acknowledgement::FAILURE)
 		{
 			PAL::CameraStatus();
+			PAL::Acknowledgement ack6 = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
 			continue;
 		}
 		
