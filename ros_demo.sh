@@ -1,4 +1,4 @@
-cp -r ~/DreamVu/PAL-USB/dreamvu_pal_camera/ ~/catkin_ws/src/
+cp -r ./dreamvu_pal_camera/ ~/catkin_ws/src/
 cd ~/catkin_ws/
 source ~/catkin_ws/devel/setup.bash
 catkin_make
