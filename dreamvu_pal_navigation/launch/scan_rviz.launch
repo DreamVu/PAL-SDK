@@ -1,0 +1,9 @@
+<launch>
+        <node name="depth_scan_node" pkg="dreamvu_pal_navigation" type="publisher" output="screen" />
+        
+        <node name="rviz" pkg="rviz" type="rviz" args="-f pal -d $(find dreamvu_pal_navigation)/launch/scan.rviz" output="screen"/>
+              
+      
+</launch>  
+
+

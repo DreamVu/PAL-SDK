@@ -1,17 +1,16 @@
 /*
 
-CODE SAMPLE # 001: Stereo Panorama
-This code will grab the left & right panorama and display in a window using opencv
+CODE SAMPLE # 002: PAL Depth Panorama
+This code will grab the left & depth panorama and display in a window using opencv
 
 
 >>>>>> Compile this code using the following command....
 
 ./compile.sh
 
-
 >>>>>> Execute the binary file by typing the following command...
 
-./001_stereo_panorama.out
+./002_depth_panorama.out
 
 
 >>>>>> KEYBOARD CONTROLS:
@@ -37,7 +36,7 @@ using namespace std;
 int main( int argc, char** argv )
 {
 
-	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
+	namedWindow( "PAL Depth Panorama", WINDOW_NORMAL ); // Create a window for display.
 
 	int width, height;
 	PAL::Mode mode = PAL::Mode::LASER_SCAN;
@@ -64,8 +63,7 @@ int main( int argc, char** argv )
 		return 1;
 	}
 	
-	PAL::SetAPIMode(PAL::API_Mode::STEREO);
-	
+	PAL::SetAPIMode(PAL::API_Mode::DEPTH);
 	usleep(1000000);
 
 	PAL::CameraProperties data;
@@ -83,7 +81,7 @@ int main( int argc, char** argv )
 
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at otheir original resolution.
-	resizeWindow("PAL Stereo Panorama", width, height);
+	resizeWindow("PAL Depth Panorama", width, height);
 
 	int key = ' ';
 
@@ -92,7 +90,7 @@ int main( int argc, char** argv )
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
 	//Display the overlayed image
-	imshow( "PAL Stereo Panorama", output);
+	imshow( "PAL Depth Panorama", output);
 
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
@@ -101,16 +99,20 @@ int main( int argc, char** argv )
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();	
+		
+		Mat display;
+		Mat l = data[0].left;
+		Mat d = data[0].distance.clone();
+		d.convertTo(d, CV_8UC1);
+		cvtColor(d, d, cv::COLOR_GRAY2BGR);
 
-        cv::Mat display;
-        
-        vconcat(data[0].stereo_left, data[0].stereo_right, display);
-        
-		//Display the stereo images
-		imshow( "PAL Stereo Panorama", display);  
+		//Vertical concatenation of rgb and depth into the final output
+		vconcat(l, d, display);
+
+		//Display the depth with rgb panorama
+		imshow( "PAL Depth Panorama", display);  
 
 		//Wait for the keypress - with a timeout of 1 ms
-
 		key = waitKey(1) & 255;
 
 	}

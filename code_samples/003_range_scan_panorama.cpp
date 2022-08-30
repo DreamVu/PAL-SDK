@@ -1,17 +1,16 @@
 /*
 
-CODE SAMPLE # 001: Stereo Panorama
-This code will grab the left & right panorama and display in a window using opencv
+CODE SAMPLE # 003: Range scan panorama
+This code will grab the left panorama with range scan overlayed on it and would be displayed in a window using opencv
 
 
 >>>>>> Compile this code using the following command....
 
 ./compile.sh
 
-
 >>>>>> Execute the binary file by typing the following command...
 
-./001_stereo_panorama.out
+./003_range_scan_panorama.out
 
 
 >>>>>> KEYBOARD CONTROLS:
@@ -37,11 +36,9 @@ using namespace std;
 int main( int argc, char** argv )
 {
 
-	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
+	namedWindow( "PAL Range Scan", WINDOW_NORMAL ); // Create a window for display.
 
 	int width, height;
-	PAL::Mode mode = PAL::Mode::LASER_SCAN;
-
 	std::vector<int> camera_indexes{5};
 	
 	if(argc > 1) 
@@ -63,9 +60,8 @@ int main( int argc, char** argv )
 		cout<<"Init failed"<<endl;
 		return 1;
 	}
-	
-	PAL::SetAPIMode(PAL::API_Mode::STEREO);
-	
+
+	PAL::SetAPIMode(PAL::API_Mode::RANGE_SCAN);
 	usleep(1000000);
 
 	PAL::CameraProperties data;
@@ -83,7 +79,7 @@ int main( int argc, char** argv )
 
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at otheir original resolution.
-	resizeWindow("PAL Stereo Panorama", width, height);
+	resizeWindow("PAL Range Scan", width, height);
 
 	int key = ' ';
 
@@ -92,7 +88,7 @@ int main( int argc, char** argv )
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
 	//Display the overlayed image
-	imshow( "PAL Stereo Panorama", output);
+	imshow( "PAL Range Scan", output);
 
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
@@ -102,12 +98,8 @@ int main( int argc, char** argv )
 
 		data =  PAL::GrabRangeScanData();	
 
-        cv::Mat display;
-        
-        vconcat(data[0].stereo_left, data[0].stereo_right, display);
-        
-		//Display the stereo images
-		imshow( "PAL Stereo Panorama", display);  
+		//Display the overlayed image
+		imshow( "PAL Range Scan", data[0].marked_left);  
 
 		//Wait for the keypress - with a timeout of 1 ms
 

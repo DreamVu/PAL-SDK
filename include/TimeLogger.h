@@ -12,6 +12,28 @@
 double Diff_ms(TimeType start, TimeType finish);
 
 
+
+struct MinMax
+{
+    double min;
+    double max;
+    std::string name;
+    int count;
+    double accumulated;    
+    int skip;
+    
+    MinMax();
+
+    MinMax(std::string id);
+    
+    void Print(const char* name);
+    
+    void Update(double value);
+    
+};
+
+
+
 struct TimeLogger
 {
     struct EventPoint
@@ -26,6 +48,8 @@ struct TimeLogger
 	void Start();
 
 	void Log(int line, std::string name);
+
+	void Log(std::string name);
 
 	double Display();
 };

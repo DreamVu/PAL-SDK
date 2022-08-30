@@ -7,7 +7,7 @@ This code sample allows users to access the region map within a depth range.
 
 >>>>>> Compile this code using the following command....
 
-g++  006_occupancy_map.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.so ../lib/libPAL_CAMERA.so ../lib/libPAL_DEPTH_HQ.so ../lib/libPAL_DEPTH_128.so  ../lib/libPAL_DE.so ../lib/libPAL_EDET.so `pkg-config --libs --cflags opencv`   -O3  -o  006_occupancy_map.out -I../include/ -lv4l2 -lpthread -lcudart -L/usr/local/cuda/lib64 -lnvinfer -lnvvpi -lnvparsers -lnvinfer_plugin -lnvonnxparser -lmyelin -lnvrtc -lcudart -lcublas -lcudnn -lrt -ldl -lstdc++fs -lX11
+./compile.sh
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -18,26 +18,18 @@ g++  006_occupancy_map.cpp /usr/src/tensorrt/bin/common/logger.o ../lib/libPAL.s
 	Press ESC to close the window
 	Press v/V to toggle vertical flip property
 	Press f/F to toggle filter rgb property
-	Press r/R to toggle near range property
-
 */
 
 
 # include <stdio.h>
+# include <unistd.h>
 # include <opencv2/opencv.hpp>
 # include "PAL.h"
-#include <X11/Xlib.h>
+# include <X11/Xlib.h>
+
 using namespace cv;
 using namespace std;
 
-namespace PAL
-{
-	namespace Internal
-	{
-		void EnableDepth(bool flag);
-		void MinimiseCompute(bool flag);
-	}
-}
 
 cv::Mat Getoccupancy1D(Mat rgb_image, Mat depth_mat, int depth_thresh, float context_threshold) 
 {
@@ -59,34 +51,48 @@ int main(int argc, char *argv[])
 {
 	namedWindow( "PAL Occupancy Map", WINDOW_NORMAL ); // Create a window for display.
 
-	//Depth should be enable for occupancy map as a prerequisite	
-	bool isDepthEnabled = true;
-	PAL::Internal::EnableDepth(isDepthEnabled);
-	PAL::Internal::MinimiseCompute(false);
+
 	int width, height;
-	if(PAL::Init(width, height,-1) != PAL::SUCCESS) //Connect to the PAL camera
+	PAL::Mode mode = PAL::Mode::LASER_SCAN;
+
+	std::vector<int> camera_indexes{5};
+	
+	if(argc > 1) 
+		camera_indexes[0] = std::atoi(argv[1]);
+
+
+	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
+
+	char path[1024];
+	sprintf(path,"/data%d/",camera_indexes[0]);
+
+	char path2[1024];
+	sprintf(path2,"/data%d/",6);
+
+	PAL::SetPathtoData(path, path2);
+
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
 	{
-		printf("Camera Init failed\n");
+		cout<<"Init failed"<<endl;
 		return 1;
 	}
+	
+	PAL::SetAPIMode(PAL::API_Mode::DEPTH);
+	usleep(1000000);
 
-	PAL::CameraProperties data; 
-	PAL::Acknowledgement ack = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
-	if(ack != PAL::SUCCESS)
-	{
-	    printf("Error Loading settings\n");
-	}
+	//discarding initial frames
+	std::vector<PAL::Data::ODOA_Data> discard;
+	for(int i=0; i<5;i++)
+		discard =  PAL::GrabRangeScanData();		
 
 	PAL::CameraProperties prop;
-	
-	unsigned int flag = PAL::MODE | PAL::FD | PAL::NR | PAL::FILTER_SPOTS | PAL::VERTICAL_FLIP;
-	prop.mode = PAL::Mode::POINT_CLOUD_25D; // The other available option is PAL::Mode::HIGH_QUALITY_DEPTH
-	prop.fd = 1;
-	prop.nr = 1;
-	prop.filter_spots = 1;
-	prop.vertical_flip =0;
-	PAL::SetCameraProperties(&prop, &flag);
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &prop);
 
+	if(ack_load != PAL::SUCCESS)
+	{
+		cout<<"Error Loading settings! Loading default values."<<endl;
+	}
+	
 	//depth threshold in cm
 	//The depth threshold should be kept within 1m to 2m range.
 	int threshold_cm = (argc>1) ? atof(argv[1]) : 100;
@@ -126,88 +132,68 @@ int main(int argc, char *argv[])
 	int sc_height = scrn->height;
 	int sc_width  = scrn->width;
 	
-	resizeWindow("PAL Occupancy Map", sc_width, sc_height);//width/4, (height/4)*2);
+	resizeWindow("PAL Occupancy Map", width, height);//sc_width, sc_height);
 
 	int key = ' ';
 
 	printf("Press ESC to close the window\n");    
 	printf("Press v/V to toggle vertical flip property\n");
 	printf("Press f/F to toggle filter rgb property\n");
-	printf("Press r/R to toggle near range property\n");
 	
-	size_t currentResolution = 0;
-	//std::vector<PAL::Resolution> resolutions = PAL::GetAvailableResolutions();
 	bool filter_spots = true;	
 	bool flip = false;
-	bool nr = true;
-	bool fd = true;
-
-	//27 = esc key. Run the loop until the ESC key is pressed
 	
+	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
    	{
-		cv::Mat rgb, depth, output, right;
-		PAL::Image left_img, right_img, depth_img, disparity;
-		
-		PAL::GrabFrames(&left_img, &right_img, &depth_img);
-		
-		depth = cv::Mat(depth_img.rows, depth_img.cols, CV_32FC1, depth_img.Raw.f32_data);
-		rgb = cv::Mat(left_img.rows, left_img.cols, CV_8UC3, left_img.Raw.u8_data);
-		cv::resize(depth, depth , cv::Size(rgb.cols, rgb.rows));
-		
-		PAL::CameraProperties data;
-		PAL::GetCameraProperties(&data);
-		
-		
-        if(isDepthEnabled)      
-        {
+		std::vector<PAL::Data::ODOA_Data> data;
 
-			depth.convertTo(depth, CV_8UC1);
-			
-			cv::Mat occupancy1D = Getoccupancy1D(rgb, depth,threshold_cm,context_threshold);
+		data =  PAL::GrabRangeScanData();
+		
+		cv::Mat depth = data[0].distance.clone();
+		cv::Mat rgb = data[0].left.clone();
+		
 
-			cv::Mat r = cv::Mat::ones(1, rgb.cols, CV_8UC1);
- 			cv::Mat g = cv::Mat::ones(1, rgb.cols, CV_8UC1);
-			cv::Mat b = cv::Mat::ones(1, rgb.cols, CV_8UC1);
+		depth.convertTo(depth, CV_8UC1);
+		
+		cv::Mat occupancy1D = Getoccupancy1D(rgb, depth,threshold_cm,context_threshold);
 
-  			unsigned char* poccupancy1D = (unsigned char* )occupancy1D.data;
-  			unsigned char* pr = (unsigned char* )r.data;
+		cv::Mat r = cv::Mat::ones(1, rgb.cols, CV_8UC1);
+		cv::Mat g = cv::Mat::ones(1, rgb.cols, CV_8UC1);
+		cv::Mat b = cv::Mat::ones(1, rgb.cols, CV_8UC1);
 
-			for(int i=0; i<rgb.cols; i++,poccupancy1D++,pr++)
+		unsigned char* poccupancy1D = (unsigned char* )occupancy1D.data;
+		unsigned char* pr = (unsigned char* )r.data;
+
+		for(int i=0; i<rgb.cols; i++,poccupancy1D++,pr++)
+		{
+			if(!(*poccupancy1D))
 			{
-				if((*poccupancy1D))
-				{
-					*pr = (*pr)*2;
-				}
+				*pr = (*pr)*2;
 			}
-			
-			cv::Mat final_img;
-			vector<Mat> channels;
-			channels.push_back(b);
-			channels.push_back(g);
-			channels.push_back(r);
+		}
+		
+		cv::Mat final_img;
+		vector<Mat> channels;
+		channels.push_back(b);
+		channels.push_back(g);
+		channels.push_back(r);
 
-			merge(channels, final_img);
-			resize(final_img, final_img, rgb.size());
- 			cv::Mat colored_out = rgb.mul(final_img);
-			imshow("PAL Occupancy Map", colored_out);//colored_out);
-        }
-        else
-        {	
-            //Display the final rgb image
-            imshow( "PAL Occupancy Map", rgb); 
-        }		
+		merge(channels, final_img);
+		resize(final_img, final_img, rgb.size());
+		cv::Mat colored_out = rgb.mul(final_img);
 
+		imshow("PAL Occupancy Map", colored_out);
+		
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;
-
 
 		if (key == 'f' || key == 'F')
 		{	
 			PAL::CameraProperties prop;
 			filter_spots = !filter_spots;
 			prop.filter_spots = filter_spots;
-			unsigned int flags = PAL::FILTER_SPOTS;
+			unsigned long int flags = PAL::FILTER_SPOTS;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		if (key == 'v' || key == 'V')
@@ -215,18 +201,10 @@ int main(int argc, char *argv[])
 			PAL::CameraProperties prop;
 			flip = !flip;
 			prop.vertical_flip = flip;
-			unsigned int flags = PAL::VERTICAL_FLIP;
+			unsigned long int flags = PAL::VERTICAL_FLIP;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		
-		if(key == 'r' || key == 'R')
-		{		
-			PAL::CameraProperties prop;
-			nr = !nr;
-			prop.nr = nr;
-			unsigned int flags = PAL::NR;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
     }
 
     printf("exiting the application\n");
