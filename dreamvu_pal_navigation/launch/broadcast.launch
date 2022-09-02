@@ -1,0 +1,7 @@
+<launch>
+
+        <rosparam command="load" file="$(find dreamvu_pal_navigation)/laser_filter.yml" />
+        <node name="broadcast_scan_node" pkg="dreamvu_pal_navigation" type="broadcast" output="screen" />   
+      
+</launch>        
+          

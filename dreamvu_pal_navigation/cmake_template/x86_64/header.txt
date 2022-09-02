@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 2.8.3)
+project(dreamvu_pal_navigation)
+
+find_package(catkin REQUIRED COMPONENTS
+  cv_bridge
+  image_transport
+  roscpp
+  rospy
+  sensor_msgs
+  geometry_msgs
+  std_msgs
+  message_generation
+  message_runtime
+  
+)
+
+
+catkin_package(
+   LIBRARIES dreamvu_pal_camera 
+   CATKIN_DEPENDS cv_bridge image_transport roscpp rospy sensor_msgs std_msgs message_generation nav_msgs geometry_msgs
+  message_runtime
+)

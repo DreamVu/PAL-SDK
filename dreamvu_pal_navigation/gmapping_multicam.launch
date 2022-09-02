@@ -1,0 +1,32 @@
+<launch>
+  <node name="depth_scan_node" pkg="dreamvu_pal_navigation" type="multi_publisher" output="screen" />
+  <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger" output="screen">
+	     <param name="destination_frame" value="pal"/>
+	     <param name="scan_destination_topic" value="/dreamvu/pal/odoa/get/scan"/>
+	     <param name="laserscan_topics" value ="/dreamvu/pal/odoa/get/scan1 /dreamvu/pal/odoa/get/scan2" /> 
+	     <param name="angle_min" value="-3.14"/>
+	     <param name="angle_max" value="3.14"/>
+	     <param name="range_min" value="0.01"/>
+	     <param name="range_max" value="50.0"/>
+  </node>
+  <node name="rviz" pkg="rviz" type="rviz" args="-f pal -d $(find dreamvu_pal_navigation)/launch/gmapping_multicam.rviz" output="screen"/>
+  
+  <arg name="scan_topic" default="/dreamvu/pal/odoa/get/scan" />
+   <node pkg="gmapping" type="slam_gmapping" name="gmapping_thing" output="screen">
+      <remap from="scan" to="$(arg scan_topic)"/>
+      <remap from="base_link" to="pal"/>
+      <remap from="odom" to="odom"/>
+      <param name="angularUpdate" value="0.1"/>
+      <param name="linearUpdate" value="0.1"/>
+      <param name="particles" value="1"/> 
+      <param name="xmin" value="-10.0"/>
+      <param name="ymin" value="-10.0"/>
+      <param name="xmax" value="10.0"/>
+      <param name="ymax" value="10.0"/>
+      <param name="maxUrange" value="3.5"/>
+      <param name="map_update_interval" value="1.0" />
+      <param name="minimumScore" value="10000.0" />
+      <param name="occ_thresh" value="0.15" />
+    </node>
+
+</launch>
