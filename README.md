@@ -1,5 +1,5 @@
-# PAL USB
-The only single sensor 360° 3D Vision System. [PAL USB](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
+# PAL
+The only single sensor 360° 3D Vision System. [PAL](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
 
 ## System Requirements
 * Jetpack 4.6
@@ -10,9 +10,9 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal-usb/pal-usb?raw=true) and installed by running the below command from the location where it is downloaded,
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal/pal?raw=true) and installed by running the below command from the location where it is downloaded,
 
-    chmod +x pal-usb && ./pal-usb
+    chmod +x pal && ./pal
 
 ### Method 2. Using PPA Repository
 
@@ -22,22 +22,45 @@ The Package can be installed by adding the PPA Repository. Steps are as follows:
     sudo wget -qO - https://dreamvu.github.io/ppa/KEY.gpg | sudo apt-key add -
     sudo wget -qO /etc/apt/sources.list.d/dreamvu.list https://dreamvu.github.io/ppa/dreamvu.list
     
-#### Step 2. Installing PAL USB
+#### Step 2. Installing PAL 
     sudo apt update
-    sudo apt install pal-usb
+    sudo apt install pal
 
 
-Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. To preview the PAL USB camera run the below command 
+Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. 
+
+To preview the PAL camera for x86_64 architecture run the below command 
+ 
+    ~/DreamVu/PAL/Explorer/x86_64/Explorer
     
-    ~/DreamVu/PAL-USB/Explorer/Explorer
+ To preview the PAL camera for ARM64 architecture run the below command
+ 	
+    ~/DreamVu/PAL/Explorer/arm64/Explorer	 
+    
+## ROS Installations
 
+### Ubuntu 18.04 supports ROS Melodic. 
 
-## ROS Melodic Installations
+#### To install ROS Melodic Navigation package use the below command:
 
-The Package can be installed by running the below command after installing PAL USB,
+    sudo apt install pal-melodic-navigation
+    
+### Ubuntu 20.04 supports ROS Noetic and ROS2 Foxy.
 
-    sudo apt update
-    sudo apt install dreamvu-ros
+#### To install ROS Noetic Navigation package use the below command:
+
+    sudo apt install pal-noetic-navigation
+
+#### To install ROS2 Foxy Navigation package use the below command:
+
+    sudo apt install pal-foxy-navigation
+    
+## Turtlebot-Nav
+  
+Turtlebot-Nav support is also provided for both the version and can be installed using following command,
+
+    sudo apt install ros-melodic-turtlebot-nav    
+      
 
 ## Documentation 
 - [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQvz5Ms3WfdZyYbyvzPIqjyyGyXEdKc9-4SrJUJa0WAnXnlB5WTftUWCWAfgfV6Xbaqmxh0S25kFsTu/pub)
