@@ -1,8 +1,0 @@
-obstacle_range: 3.0
-raytrace_range: 3.5
-robot_radius: 0.30
-inflation_radius: 0.30
-cost_scaling_factor: 1
-transform_tolerance: 10.0
-observation_sources: scan 
-scan: {sensor_frame: pal, data_type: LaserScan, topic: /dreamvu/pal/odoa/get/scan, marking: true, clearing: true}
