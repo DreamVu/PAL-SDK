@@ -38,7 +38,7 @@ namespace PAL
 		//This should be used only when asynchronous is true in GrabFrames function arguments
 		void Synchronize();
 
-        PAL::Acknowledgement SetPathtoData(const char* path1, const char* path2=0);
+        PAL::Acknowledgement SetPathtoData(std::string path1, std::string path2="");
 
 		//Writes the current camera properties into the provided memory location
 		PAL::Acknowledgement GetCameraProperties(PAL::CameraProperties* properties);
@@ -140,7 +140,7 @@ namespace PAL
 		void SetCliffMaskFlag(bool flag);
 		void PauseComputation(bool flag);
 		void SetAPIMode(int mode);
-		
+		void SetRemapRGBMode(bool rgb);
 	
 }
 
