@@ -1,8 +1,10 @@
 # PAL
 The only single sensor 360° 3D Vision System. [PAL](https://dreamvu.com/pal-usb/) is the only single sensor omnidirectional vision system to provide 360° stereoscopic sensing with depth perception. 
 
-## System Requirements
-* Jetpack 4.6
+## Pre-requisites Installation
+ This section is only applicable for Ubuntu 18.04 system with Nvidia GPU.
+ 
+ Please follow the steps on the official links of [CUDA](https://developer.nvidia.com/cuda-10.2-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=deblocal) 10.2 & [TensorRT](https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing-debian) to install the required GPU libraries.
 
 ## Installation
 
