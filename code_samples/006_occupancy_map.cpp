@@ -200,8 +200,8 @@ int main(int argc, char *argv[])
 		{		    
 			PAL::CameraProperties prop;
 			flip = !flip;
-			prop.vertical_flip = flip;
-			unsigned long int flags = PAL::VERTICAL_FLIP;
+			prop.pitch = flip?180:0;
+			unsigned long int flags = PAL::PITCH;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		
