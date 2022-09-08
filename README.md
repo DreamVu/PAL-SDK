@@ -26,6 +26,7 @@ The Package can be installed by adding the PPA Repository. Steps are as follows:
     
 #### Step 2. Installing PAL 
     sudo apt update
+    sudo apt install ppa-pal
     sudo apt install pal
 
 
