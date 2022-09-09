@@ -1,3 +1,4 @@
+cp -r dreamvu_pal_navigation ~/catkin_ws/src/
 if [ -e /opt/ros/foxy/ ] 
 then
 	cd ~/catkin_ws/
