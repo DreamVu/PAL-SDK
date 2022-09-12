@@ -67,10 +67,7 @@ Turtlebot-Nav support is also provided for both the version and can be installed
 
 ## Documentation 
 - [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQlEcAMp0yOgwLTvRZiYtiqG0MSRcgofzaiUCI_luNu4fQdQTowv8Cn7qHEgorE51ncfpGL7slKEQxJ/pub)
-- [Code Samples](https://docs.google.com/document/d/e/2PACX-1vQ32SF48KvE6VvsHW94KX-23A8a3baPhGHiT65xJ2AeR5tbdD72ZcA02KOfkAmuUBnsYT8Wf7iR5DlE/pub)
-- [ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vTN9U7ZocPkSLjN90oEgiOtFgr4e81qbgLsfpibcUGtQnvx3zpwMETmWvJ4BujKfcuOYSs_Yh95_4fm/pub)
-- [GPIO & UART Application Note](https://docs.google.com/document/d/e/2PACX-1vTN9U7ZocPkSLjN90oEgiOtFgr4e81qbgLsfpibcUGtQnvx3zpwMETmWvJ4BujKfcuOYSs_Yh95_4fm/pub)
-- [API Documentation](https://docs.google.com/document/d/e/2PACX-1vSrv7mq6tkspG0TiyJVDDMPw5PTJAG6Ecv41tnu8IERx5wKkCf7xXf26-udCOf1WvpbKkAmcXr-1UgT/pub)
+- [ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vRrbqXkhQ5cnHNl_Idakk5dnGZ90bDOQk1Be2Jc-jlVJyCgOJZfUgyNGaco9sPDilcSS8gjk1wnR_dq/pub)
 
 ## Support 
 If you need help or more informations check our [Help Center](https://support.dreamvu.com/portal/en/home) or join our [Community](https://support.dreamvu.com/portal/en/community/dreamvu-inc). 
