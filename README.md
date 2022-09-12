@@ -66,7 +66,7 @@ Turtlebot-Nav support is also provided for both the version and can be installed
       
 
 ## Documentation 
-- [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQvz5Ms3WfdZyYbyvzPIqjyyGyXEdKc9-4SrJUJa0WAnXnlB5WTftUWCWAfgfV6Xbaqmxh0S25kFsTu/pub)
+- [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQlEcAMp0yOgwLTvRZiYtiqG0MSRcgofzaiUCI_luNu4fQdQTowv8Cn7qHEgorE51ncfpGL7slKEQxJ/pub)
 - [Code Samples](https://docs.google.com/document/d/e/2PACX-1vQ32SF48KvE6VvsHW94KX-23A8a3baPhGHiT65xJ2AeR5tbdD72ZcA02KOfkAmuUBnsYT8Wf7iR5DlE/pub)
 - [ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vTN9U7ZocPkSLjN90oEgiOtFgr4e81qbgLsfpibcUGtQnvx3zpwMETmWvJ4BujKfcuOYSs_Yh95_4fm/pub)
 - [GPIO & UART Application Note](https://docs.google.com/document/d/e/2PACX-1vTN9U7ZocPkSLjN90oEgiOtFgr4e81qbgLsfpibcUGtQnvx3zpwMETmWvJ4BujKfcuOYSs_Yh95_4fm/pub)
