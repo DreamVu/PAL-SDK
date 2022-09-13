@@ -7,7 +7,7 @@ This code sample allows users to access the region map within a depth range.
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh
+./compile.sh 6
 
 >>>>>> Execute the binary file by typing the following command...
 

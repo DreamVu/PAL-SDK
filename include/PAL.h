@@ -129,6 +129,7 @@ namespace PAL
 		void Destroy();
 		
 		void UpdateZoomParams(int updated_Width, int updated_Height, int x_c, int y_c);
+		void SetMidasFlag(bool flag);
 
 		std::vector<PAL::Data::Stereo> GetStereoData();
 		PAL::Data::Depth  GetDepthData();

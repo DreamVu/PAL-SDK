@@ -6,7 +6,7 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh
+./compile.sh 2
 
 >>>>>> Execute the binary file by typing the following command...
 

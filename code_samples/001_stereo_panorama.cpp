@@ -6,7 +6,7 @@ This code will grab the left & right panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh
+./compile.sh 1
 
 
 >>>>>> Execute the binary file by typing the following command...

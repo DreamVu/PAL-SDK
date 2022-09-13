@@ -82,13 +82,13 @@ namespace PAL
 	static const int MIN_DEPTH_TEMPORAL = 0;
 	static const int MIN_BIAS = 0;
     
-    static const int DEFAULT_DEPTH_THRESHOLD = 212;
+    static const int DEFAULT_DEPTH_THRESHOLD = 200;
 	static const int DEFAULT_DEPTH_SIGMA = 0;
-	static constexpr float DEFAULT_DEPTH_REF = 0.5;
-	static constexpr float DEFAULT_DEPTH_REF2 = 0.0;
-	static constexpr float DEFAULT_WEIGHTAGE = 0.5;
-	static const int DEFAULT_DEPTH_TEMPORAL = 1;
-	static const int DEFAULT_BIAS = 12;
+	static constexpr float DEFAULT_DEPTH_REF = 2.0;
+	static constexpr float DEFAULT_DEPTH_REF2 = 2.0;
+	static constexpr float DEFAULT_WEIGHTAGE = 1.0;
+	static const int DEFAULT_DEPTH_TEMPORAL = 0;
+	static const int DEFAULT_BIAS = 25;
 	
 	ODOA_Properties () :
 	depth_context_threshold (DEFAULT_DEPTH_THRESHOLD),
@@ -256,7 +256,7 @@ namespace PAL
 
 		static const int MAX_GAIN = 100;
 		static const int MIN_GAIN = 0;
-		static const int DEFAULT_GAIN = 1;
+		static const int DEFAULT_GAIN = 4;
 
 		static const int MAX_WHITE_BAL_TEMP = 10000;
 		static const int MIN_WHITE_BAL_TEMP = 1000;
@@ -323,9 +323,9 @@ namespace PAL
 		static const int DEFAULT_RANGE = 500;
 		static const int DEFAULT_START_HFOV = 0;
 		static const int DEFAULT_HFOV_RANGE = 360;
-		static const int DEFAULT_START_VFOV = 53;
+		static const int DEFAULT_START_VFOV = 43;
 		static const int DEFAULT_END_VFOV = -57;
-		static constexpr float DEFAULT_CAMERA_HEIGHT = 25;
+		static constexpr float DEFAULT_CAMERA_HEIGHT = 65;
 	
 		CameraProperties() :
 			brightness           (DEFAULT_BRIGHTNESS),

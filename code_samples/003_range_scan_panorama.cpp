@@ -6,7 +6,7 @@ This code will grab the left panorama with range scan overlayed on it and would 
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh
+./compile.sh 3
 
 >>>>>> Execute the binary file by typing the following command...
 
