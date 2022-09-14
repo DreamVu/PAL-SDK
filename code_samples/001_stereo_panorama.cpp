@@ -57,6 +57,8 @@ int main( int argc, char** argv )
 	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
 
 	PAL::SetPathtoData(path, path2);
+	
+	PAL::SetMidasFlag(true);
 
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
 	{
