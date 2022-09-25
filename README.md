@@ -68,6 +68,7 @@ Turtlebot-Nav support is also provided for both the version and can be installed
 ## Documentation 
 - [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQlEcAMp0yOgwLTvRZiYtiqG0MSRcgofzaiUCI_luNu4fQdQTowv8Cn7qHEgorE51ncfpGL7slKEQxJ/pub)
 - [ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vRrbqXkhQ5cnHNl_Idakk5dnGZ90bDOQk1Be2Jc-jlVJyCgOJZfUgyNGaco9sPDilcSS8gjk1wnR_dq/pub)
+- [Design Integration Guide](https://docs.google.com/document/d/e/2PACX-1vTivOhDfGu0S9OJQ9klA4CMnAqKRzOjTXihousnYK1ukarJE1vM67VRXgHpJzVE00UqPGpq1Gb6_7qQ/pub)
 
 ## Support 
 If you need help or more informations check our [Help Center](https://support.dreamvu.com/portal/en/home) or join our [Community](https://support.dreamvu.com/portal/en/community/dreamvu-inc). 
