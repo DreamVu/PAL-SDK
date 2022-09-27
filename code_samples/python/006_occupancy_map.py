@@ -22,6 +22,9 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
+	
+	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
+	PAL_PYTHON.SetPathtoDataP(path)
 		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
