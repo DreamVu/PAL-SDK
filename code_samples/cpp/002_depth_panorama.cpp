@@ -16,7 +16,6 @@ This code will grab the left & depth panorama and display in a window using open
 >>>>>> KEYBOARD CONTROLS:
 
     ESC key closes the window
-	Press v/V to toggle vertical flip property
 	Press f/F to toggle filter rgb property       
 
 */
@@ -68,7 +67,7 @@ int main( int argc, char** argv )
 	usleep(1000000);
 
 	PAL::CameraProperties data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
 
 	if(ack_load != PAL::SUCCESS)
 	{
@@ -87,11 +86,9 @@ int main( int argc, char** argv )
 	int key = ' ';
 
 	cout<<"Press ESC to close the window."<<endl;
-	printf("Press v/V to toggle vertical flip property\n");
 	printf("Press f/F to toggle filter rgb property\n");
 	
 	bool filter_spots = true;	
-	bool flip = false;
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
 	//Display the overlayed image
@@ -126,14 +123,6 @@ int main( int argc, char** argv )
 			filter_spots = !filter_spots;
 			prop.filter_spots = filter_spots;
 			unsigned long int flags = PAL::FILTER_SPOTS;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
-		if (key == 'v' || key == 'V')
-		{		    
-			PAL::CameraProperties prop;
-			flip = !flip;
-			prop.pitch = flip?180:0;
-			unsigned long int flags = PAL::PITCH;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 

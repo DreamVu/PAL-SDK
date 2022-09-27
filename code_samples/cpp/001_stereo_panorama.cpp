@@ -57,8 +57,6 @@ int main( int argc, char** argv )
 	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
 
 	PAL::SetPathtoData(path, path2);
-	
-	PAL::SetMidasFlag(true);
 
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
 	{
@@ -71,7 +69,7 @@ int main( int argc, char** argv )
 	usleep(1000000);
 
 	PAL::CameraProperties data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &data);
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
 
 	if(ack_load != PAL::SUCCESS)
 	{
@@ -79,9 +77,9 @@ int main( int argc, char** argv )
 	}
 
 	//discarding initial frames
-	std::vector<PAL::Data::ODOA_Data> discard;
-	for(int i=0; i<5;i++)
-		discard =  PAL::GrabRangeScanData();		
+	//std::vector<PAL::Data::ODOA_Data> discard;
+	//for(int i=0; i<5;i++)
+		//discard =  PAL::GrabRangeScanData();		
 
 	//width and height are the dimensions of each panorama.
 	//Each of the panoramas are displayed at otheir original resolution.
@@ -100,9 +98,9 @@ int main( int argc, char** argv )
 	while(key != 27)
 	{
 
-		std::vector<PAL::Data::ODOA_Data> data;
+		std::vector<PAL::Data::Stereo> data;
 
-		data =  PAL::GrabRangeScanData();	
+		data =  PAL::GetStereoData();	
 
         cv::Mat display;
         

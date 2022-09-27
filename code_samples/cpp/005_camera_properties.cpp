@@ -67,7 +67,7 @@ int main( int argc, char** argv )
 	usleep(1000000);
 
 	PAL::CameraProperties camera_data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &camera_data);
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &camera_data);
 
 	if(ack_load != PAL::SUCCESS)
 	{

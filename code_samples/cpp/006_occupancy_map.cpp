@@ -16,7 +16,6 @@ This code sample allows users to access the region map within a depth range.
 
 >>>>>> KEYBOARD CONTROLS:
 	Press ESC to close the window
-	Press v/V to toggle vertical flip property
 	Press f/F to toggle filter rgb property
 */
 
@@ -86,7 +85,7 @@ int main(int argc, char *argv[])
 		discard =  PAL::GrabRangeScanData();		
 
 	PAL::CameraProperties prop;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../Explorer/SavedPalProperties.txt", &prop);
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &prop);
 
 	if(ack_load != PAL::SUCCESS)
 	{
@@ -137,11 +136,9 @@ int main(int argc, char *argv[])
 	int key = ' ';
 
 	printf("Press ESC to close the window\n");    
-	printf("Press v/V to toggle vertical flip property\n");
 	printf("Press f/F to toggle filter rgb property\n");
 	
 	bool filter_spots = true;	
-	bool flip = false;
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
@@ -194,14 +191,6 @@ int main(int argc, char *argv[])
 			filter_spots = !filter_spots;
 			prop.filter_spots = filter_spots;
 			unsigned long int flags = PAL::FILTER_SPOTS;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
-		if (key == 'v' || key == 'V')
-		{		    
-			PAL::CameraProperties prop;
-			flip = !flip;
-			prop.pitch = flip?180:0;
-			unsigned long int flags = PAL::PITCH;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		
