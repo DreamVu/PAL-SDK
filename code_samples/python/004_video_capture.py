@@ -102,18 +102,7 @@ def main():
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		if key == 118:		    
-			
-			flag = PAL_PYTHON.PITCHP
-						
-			if flip == False:
-				pitch = pitch-180
-			else:
-				pitch = pitch+180
-				
-			flip = not(flip)	
-			loaded_prop["pitch"] = pitch
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+		
 
 		
 

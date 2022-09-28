@@ -49,7 +49,6 @@ def main():
 	key = ' '
 
 	print("Press ESC to close the window.")
-	print("Press v/V to flip vertically.")
 
 	flip = False
 	pitch = int(loaded_prop["pitch"])
@@ -69,18 +68,7 @@ def main():
 		# Wait for 1ms
 		key = cv2.waitKey(1) & 255
 		
-		if key == 118:		    
-			
-			flag = PAL_PYTHON.PITCHP
-						
-			if flip == False:
-				pitch = pitch-180
-			else:
-				pitch = pitch+180
-				
-			flip = not(flip)	
-			loaded_prop["pitch"] = pitch
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+		
 
 
 	# Destroying connections

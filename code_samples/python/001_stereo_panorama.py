@@ -29,7 +29,10 @@ def main():
 
 	PAL_PYTHON.SetAPIModeP(PAL_PYTHON.STEREOP)
 	
-	PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt")
+	loaded_prop = {}
+	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
+	
+	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
 	
 	# Creating a window
 	source_window = 'PAL Stereo Panorama'
@@ -42,8 +45,9 @@ def main():
 	cv2.resizeWindow(source_window, (int(width*2), int(height*2)))
 
 	key = ' '
-
+	filter_spots = bool(loaded_prop["filter_spots"])
 	print("Press ESC to close the window.\n")
+	print("Press f/F to toggle filter rgb property.")
 
 	# ESC
 	while key != 27:
@@ -63,6 +67,12 @@ def main():
 
 		# Wait for 1ms
 		key = cv2.waitKey(1) & 255
+		
+		if key == 102:		    
+			flag = PAL_PYTHON.FILTER_SPOTSP
+			filter_spots = not(filter_spots)
+			loaded_prop["filter_spots"] = filter_spots
+			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
 	# Destroying connections
 	print("exiting the application\n")
