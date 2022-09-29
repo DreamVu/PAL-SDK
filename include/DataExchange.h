@@ -168,6 +168,7 @@ namespace PAL
 	        
 	        cv::Mat stereo_left;
 	        cv::Mat stereo_right;
+	        cv::Mat fused_depth;
 	    };
     }
 

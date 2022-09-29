@@ -16,7 +16,8 @@ This code will grab the left & right panorama and display in a window using open
 
 >>>>>> KEYBOARD CONTROLS:
 
-       ESC key closes the window
+    ESC key closes the window
+	Press f/F to toggle filter rgb property       
        
 
 */
@@ -88,9 +89,10 @@ int main( int argc, char** argv )
 	int key = ' ';
 
 	cout<<"Press ESC to close the window."<<endl;
+	printf("Press f/F to toggle filter rgb property\n");
 
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
-
+	bool filter_spots = true;	
 	//Display the overlayed image
 	imshow( "PAL Stereo Panorama", output);
 
@@ -112,6 +114,15 @@ int main( int argc, char** argv )
 		//Wait for the keypress - with a timeout of 1 ms
 
 		key = waitKey(1) & 255;
+		
+		if (key == 'f' || key == 'F')
+		{	
+			PAL::CameraProperties prop;
+			filter_spots = !filter_spots;
+			prop.filter_spots = filter_spots;
+			unsigned long int flags = PAL::FILTER_SPOTS;
+			PAL::SetCameraProperties(&prop, &flags);
+		}
 
 	}
 

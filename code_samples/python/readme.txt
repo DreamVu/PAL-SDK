@@ -9,6 +9,6 @@ Example:
 
 To run 001 code sample use the fllowing command:
 
-	python stereo_panaroma.py 
+	python 001_stereo_panaroma.py 
 
 

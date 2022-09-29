@@ -17,6 +17,9 @@ def main():
 	if arg == 2:
 		camera_index = int(sys.argv[1])
 		
+	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
+	PAL_PYTHON.SetPathtoDataP(path)
+		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
 	if ack_init != PAL_PYTHON.SUCCESSP:
@@ -46,7 +49,6 @@ def main():
 	key = ' '
 
 	print("Press ESC to close the window.")
-	print("Press v/V to flip vertically.")
 	print("Press f/F to toggle filter rgb property.")
 
 	flip = False
@@ -79,18 +81,7 @@ def main():
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		if key == 118:		    
-			
-			flag = PAL_PYTHON.PITCHP
-						
-			if flip == False:
-				pitch = pitch-180
-			else:
-				pitch = pitch+180
-				
-			flip = not(flip)	
-			loaded_prop["pitch"] = pitch
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+		
 
 		
 

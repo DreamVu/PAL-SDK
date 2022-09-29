@@ -40,15 +40,16 @@ namespace PAL
 		DEPTH_STABILIZATION = 0x100000000,
 		AUTO_EXPOSURE_LIMIT = 0x200000000,
 		MODE = 		          0x400000000, 
-		ALL = 0x7FFFFFFFF,
+		RAW_DEPTH           = 0x800000000, 
+		ALL                 = 0xFFFFFFFFF, //0x7FFFFFFFF,
 		
-		ODOA_DEPTHTHRESH = 0x800000000,
-		ODOA_DEPTHSIGMA = 0x1000000000,
-		ODOA_DEPTHREF = 0x2000000000,
-		ODOA_DEPTHTEMPORAL = 0x40000000000,
-		ODOA_BIAS = 0x8000000000,
-		ODOA_WEIGHTAGE = 0x10000000000, 
-		ODOA_ALL = 0x1F800000000,
+		ODOA_DEPTHTHRESH = 0x1000000000,
+		ODOA_DEPTHSIGMA = 0x2000000000,
+		ODOA_DEPTHREF = 0x4000000000,
+		ODOA_DEPTHTEMPORAL = 0x8000000000,
+		ODOA_BIAS = 0x10000000000,
+		ODOA_WEIGHTAGE = 0x20000000000, 
+		ODOA_ALL = 0x3F000000000,
 	};
 
 	struct Resolution
@@ -180,6 +181,7 @@ namespace PAL
 		
 		int auto_exposure_limit;
 		int mode ;
+		
 
 		Resolution resolution;
 		CaptureType capture_type;
@@ -192,7 +194,7 @@ namespace PAL
 		bool  vertical_flip;
 		bool  filter_disparity;
 		bool  filter_spots;
-        
+        bool raw_depth;
 		//horizontal FOV in degrees
 		int   fov_start; 
 		int   fov_end;
@@ -209,7 +211,9 @@ namespace PAL
         
         int pitch;
         
-        int range; 
+        int range;
+        int min_range;
+         
 		int start_hfov; 
 		int hfov_range; 
 		int start_vfov; 
@@ -303,29 +307,35 @@ namespace PAL
 		static const int DEFAULT_YAW = 0;
 		
 		static const int MAX_PITCH = 180;
-		static const int MIN_PITCH = -180;
+		static const int MIN_PITCH = -155;
 		static const int DEFAULT_PITCH = 0;
 		
 		static const int MAX_RANGE = 1000;
+		static const int MAX_MIN_RANGE = 50;		
 		static const int MAX_START_HFOV = 359;
 		static const int MAX_HFOV_RANGE = 360;
 		static const int MAX_START_VFOV = 56;
 		static const int MAX_END_VFOV = 78;
 		static constexpr float MAX_CAMERA_HEIGHT = 300;
-	
-		static const int MIN_RANGE = 0;
+
+		static const int MIN_RANGE = 51;	
+		static const int MIN_MIN_RANGE = 0;
 		static const int MIN_START_HFOV = 0;
 		static const int MIN_HFOV_RANGE = 1;
 		static const int MIN_START_VFOV = -56;
 		static const int MIN_END_VFOV = -78;
 		static constexpr float MIN_CAMERA_HEIGHT = 0;
-	
-		static const int DEFAULT_RANGE = 500;
+
+		static const int DEFAULT_MIN_RANGE = 0;	
+		static const int DEFAULT_RANGE = 1000;
 		static const int DEFAULT_START_HFOV = 0;
 		static const int DEFAULT_HFOV_RANGE = 360;
 		static const int DEFAULT_START_VFOV = 43;
 		static const int DEFAULT_END_VFOV = -57;
 		static constexpr float DEFAULT_CAMERA_HEIGHT = 65;
+	
+		static const bool DEFAULT_RAW_DEPTH  = false;
+	
 	
 		CameraProperties() :
 			brightness           (DEFAULT_BRIGHTNESS),
@@ -347,6 +357,7 @@ namespace PAL
 			vertical_flip        (DEFAULT_VERTICAL_FLIP),
 			filter_disparity     (DEFAULT_FILTER_DISPARITY),
 			filter_spots 	     (DEFAULT_FILTER_SPOTS),
+			raw_depth    	     (DEFAULT_RAW_DEPTH),
 			fov_start            (DEFAULT_FOV_START),
 			fov_end              (DEFAULT_FOV_END),
 			projection           (DEFAULT_PROJECTION),
@@ -356,6 +367,7 @@ namespace PAL
 			yaw      			 	(DEFAULT_YAW),
 			pitch      				(DEFAULT_PITCH),
 			range        			(DEFAULT_RANGE),
+			min_range			(DEFAULT_MIN_RANGE),
 			start_hfov         (DEFAULT_START_HFOV),
 			hfov_range         (DEFAULT_HFOV_RANGE),
 			start_vfov         (DEFAULT_START_VFOV),
