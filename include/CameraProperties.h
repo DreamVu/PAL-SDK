@@ -277,7 +277,7 @@ namespace PAL
 		
 		static const int MAX_AUTO_EXPOSURE_LIMIT = 10000;
 		static const int MIN_AUTO_EXPOSURE_LIMIT = 20;
-		static const int DEFAULT_AUTO_EXPOSURE_LIMIT = 500;
+		static const int DEFAULT_AUTO_EXPOSURE_LIMIT = 1000;
 		
 		static const int DEFAULT_MODE    =  LS_M;
 				
@@ -307,7 +307,7 @@ namespace PAL
 		static const int DEFAULT_YAW = 0;
 		
 		static const int MAX_PITCH = 180;
-		static const int MIN_PITCH = -180;
+		static const int MIN_PITCH = -155;
 		static const int DEFAULT_PITCH = 0;
 		
 		static const int MAX_RANGE = 1000;
