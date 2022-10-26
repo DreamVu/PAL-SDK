@@ -37,7 +37,7 @@ if [ "$ARCH" = "aarch64" ] || [ $NO_OF_GPU -eq 1 ]; then
 fi	
 
 if [ $flag -eq 1 ] || [ $flag -eq 7 ]; then
-	g++ 001_stereo_panorama.cpp -L/usr/local/lib -lPAL `pkg-config --libs --cflags opencv python3 libusb-1.0`   -O3  -o 001_stereo_panorama.out -I../../include/ -lv4l2 -lpthread  -ludev -std=c++11  $GPU_LIBS
+	g++ 001_stereo_panorama.cpp -L/usr/local/lib -lPAL `pkg-config --libs --cflags opencv python3 libusb-1.0`   -O3  -o 001_stereo_panorama.out -I../../include/ -lv4l2 -lpthread  -ludev -lX11 -std=c++11  $GPU_LIBS
 fi
 
 if [ $flag -eq 2 ] || [ $flag -eq 7 ]; then	
