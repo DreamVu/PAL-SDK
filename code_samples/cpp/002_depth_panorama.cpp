@@ -33,6 +33,16 @@ This code will grab the left & depth panorama and display in a window using open
 using namespace cv;
 using namespace std;
 
+
+Mat getColorMap(Mat img, float scale)
+{
+    Mat img_new = img * scale;
+    img_new.convertTo(img_new, CV_8UC1);
+    img_new = 255-img_new;
+    applyColorMap(img_new, img_new, COLORMAP_JET);
+    return img_new;
+}
+
 int main( int argc, char** argv )
 {
 
@@ -90,6 +100,7 @@ int main( int argc, char** argv )
 	
 	bool filter_spots = true;	
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
+	bool raw_depth = data.raw_depth;
 
 	//Display the overlayed image
 	imshow( "PAL Depth Panorama", output);
@@ -104,9 +115,14 @@ int main( int argc, char** argv )
 		
 		Mat display;
 		Mat l = data[0].left;
-		Mat d = data[0].distance.clone();
-		d.convertTo(d, CV_8UC1);
-		cvtColor(d, d, cv::COLOR_GRAY2BGR);
+		Mat d;
+		if(raw_depth)
+			d = data[0].fused_depth.clone();
+		else
+			d = data[0].distance.clone();
+		
+		
+		d = getColorMap(d, 1);
 
 		//Vertical concatenation of rgb and depth into the final output
 		vconcat(l, d, display);

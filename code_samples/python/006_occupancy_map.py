@@ -67,7 +67,7 @@ def main():
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, _  = PAL_PYTHON.GrabDepthDataP()
 
 		# BGR->RGB FLOAT->RGB
 		left_mat = cv2.cvtColor(left,cv2.COLOR_RGB2BGR)

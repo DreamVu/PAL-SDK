@@ -37,7 +37,7 @@ def main():
 		print("Error Loading settings! Loading default values.")
 	
 	# Creating a window
-	source_window = 'PAL Depth Panorama'
+	source_window = 'PAL Video Capture'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
 	
 	# Current image resolution
@@ -62,7 +62,7 @@ def main():
 	# ESC
 	while closed != True:
 		# GrabFrames function
-		left, right, depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, _  = PAL_PYTHON.GrabDepthDataP()
 
 		# BGR->RGB FLOAT->RGB
 		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)

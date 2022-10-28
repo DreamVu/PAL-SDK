@@ -6,6 +6,8 @@ import PAL_PYTHON
 import cv2
 import numpy as np
 
+
+
 def main():
 
 	# Initialising camera
@@ -53,18 +55,24 @@ def main():
 
 	flip = False
 	filter_spots = bool(loaded_prop["filter_spots"])
+	raw_depth_f = bool(loaded_prop["raw_depth"])
 	pitch = int(loaded_prop["pitch"])
 	
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
 
 		# BGR->RGB FLOAT->RGB
 		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-		depth_mat = np.uint8(depth)
+		if raw_depth_f:
+			depth_mat = np.uint8(raw_depth)
+		else:
+			depth_mat = np.uint8(depth)	
 		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
 		
+		depth_mat = cv2.applyColorMap(depth_mat, cv2.COLORMAP_JET)
+		depth_mat = cv2.cvtColor(depth_mat,cv2.COLOR_BGR2RGB)
 		# Concatenate vertically
 		concat_op = cv2.vconcat([left_mat,depth_mat])
 
