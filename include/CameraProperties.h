@@ -256,7 +256,7 @@ namespace PAL
 
 		static const int MAX_GAMMA = 500;
 		static const int MIN_GAMMA = 40;
-		static const int DEFAULT_GAMMA = 220;
+		static const int DEFAULT_GAMMA = 150;
 
 		static const int MAX_GAIN = 100;
 		static const int MIN_GAIN = 0;
@@ -300,7 +300,7 @@ namespace PAL
 
 		static const DetectionMode DEFAULT_DETECTION_MODE = TABLE_TOP;
 		
-		static const bool DEFAULT_GROUND_DETECTION = false;		
+		static const bool DEFAULT_GROUND_DETECTION = true;		
 		
 		static const int MAX_YAW = 359;
 		static const int MIN_YAW = 0;
