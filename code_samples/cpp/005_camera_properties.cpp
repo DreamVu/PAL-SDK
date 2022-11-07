@@ -6,7 +6,7 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 5
+./compile.sh 005_camera_properties.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 

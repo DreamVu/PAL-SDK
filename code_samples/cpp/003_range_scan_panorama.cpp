@@ -6,7 +6,7 @@ This code will grab the left panorama with range scan overlayed on it and would 
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 3
+./compile.sh 003_range_scan_panorama.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -15,7 +15,8 @@ This code will grab the left panorama with range scan overlayed on it and would 
 
 >>>>>> KEYBOARD CONTROLS:
 
-       ESC key closes the window
+    ESC key closes the window
+	Press v/V to toggle vertical flip property           
 */
 
 
@@ -82,7 +83,9 @@ int main( int argc, char** argv )
 	int key = ' ';
 
 	cout<<"Press ESC to close the window."<<endl;
+	printf("Press v/V to toggle vertical flip property\n");	
 	
+	bool flip = data.vertical_flip;	
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
 	//Display the overlayed image
@@ -102,6 +105,14 @@ int main( int argc, char** argv )
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;
 		
+		if (key == 'v' || key == 'V')
+		{		    
+			PAL::CameraProperties prop;
+			flip = !flip;
+			prop.vertical_flip = flip;
+			unsigned long int flags = PAL::VERTICAL_FLIP;
+			PAL::SetCameraProperties(&prop, &flags);
+		}
 	}
 
 	printf("exiting the application\n");

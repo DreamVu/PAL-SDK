@@ -6,7 +6,7 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 4
+./compile.sh 004_video_capture.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -15,8 +15,9 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> KEYBOARD CONTROLS:
 
-       ESC key closes the window
-       
+    ESC key closes the window
+	Press v/V to toggle vertical flip property    
+	Press f/F to toggle filter rgb property       
 
 */
 
@@ -88,7 +89,12 @@ int main( int argc, char** argv )
     bool closed = false;
     
 	cout<<"Press ESC to close the window."<<endl;
-
+	printf("Press v/V to toggle vertical flip property\n");	
+	printf("Press f/F to toggle filter rgb property\n");
+	
+	bool filter_spots = data.filter_spots;
+	bool flip = data.vertical_flip;	
+	
 	cout<<"Press C to capture a single frame into a PNG file."<<endl;
     cout<<"Press B to begin the video capture."<<endl;
     cout<<"Press E to end the video capture."<<endl;
@@ -122,6 +128,22 @@ int main( int argc, char** argv )
 		//Wait for the keypress - with a timeout of 1 ms
 		key = waitKey(1) & 255;
 		
+		if (key == 'f' || key == 'F')
+		{	
+			PAL::CameraProperties prop;
+			filter_spots = !filter_spots;
+			prop.filter_spots = filter_spots;
+			unsigned long int flags = PAL::FILTER_SPOTS;
+			PAL::SetCameraProperties(&prop, &flags);
+		}
+		if (key == 'v' || key == 'V')
+		{		    
+			PAL::CameraProperties prop;
+			flip = !flip;
+			prop.vertical_flip = flip;
+			unsigned long int flags = PAL::VERTICAL_FLIP;
+			PAL::SetCameraProperties(&prop, &flags);
+		}
 		if(key == 'C' || key == 'c') //capture an image using imwrite
         {
             imwrite("image.png", output);

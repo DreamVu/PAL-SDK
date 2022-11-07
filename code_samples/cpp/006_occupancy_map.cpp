@@ -7,7 +7,7 @@ This code sample allows users to access the region map within a depth range.
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 6
+./compile.sh 006_occupancy_map.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -16,6 +16,7 @@ This code sample allows users to access the region map within a depth range.
 
 >>>>>> KEYBOARD CONTROLS:
 	Press ESC to close the window
+	Press v/V to toggle vertical flip property    	
 	Press f/F to toggle filter rgb property
 */
 
@@ -136,9 +137,11 @@ int main(int argc, char *argv[])
 	int key = ' ';
 
 	printf("Press ESC to close the window\n");    
+	printf("Press v/V to toggle vertical flip property\n");	
 	printf("Press f/F to toggle filter rgb property\n");
 	
-	bool filter_spots = true;	
+	bool filter_spots = prop.filter_spots;
+	bool flip = prop.vertical_flip;	
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
@@ -191,6 +194,14 @@ int main(int argc, char *argv[])
 			filter_spots = !filter_spots;
 			prop.filter_spots = filter_spots;
 			unsigned long int flags = PAL::FILTER_SPOTS;
+			PAL::SetCameraProperties(&prop, &flags);
+		}
+		if (key == 'v' || key == 'V')
+		{		    
+			PAL::CameraProperties prop;
+			flip = !flip;
+			prop.vertical_flip = flip;
+			unsigned long int flags = PAL::VERTICAL_FLIP;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		

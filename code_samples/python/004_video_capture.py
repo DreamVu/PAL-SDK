@@ -51,13 +51,14 @@ def main():
 	closed = False
 
 	print("Press ESC to close the window.")
+	print("Press v/V to flip vertically.")	
+	print("Press f/F to toggle filter rgb property.")
 	print("Press C to capture a single frame into a PNG file.")
 	print("Press B to begin the video capture.")
 	print("Press E to end the video capture.")
-
-	flip = False
+	
+	flip = bool(loaded_prop["vertical_flip"])
 	filter_spots = bool(loaded_prop["filter_spots"])
-	pitch = int(loaded_prop["pitch"])
 	
 	# ESC
 	while closed != True:
@@ -102,7 +103,12 @@ def main():
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		
+		if key == 118:		    
+			flag = PAL_PYTHON.VERTICAL_FLIPP
+			flip = not(flip)	
+			loaded_prop["vertical_flip"] = flip
+			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+
 
 		
 

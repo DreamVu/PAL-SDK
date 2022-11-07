@@ -25,13 +25,14 @@ fi
 if [ "$#" -ge 1 ]
 then
 	filename=$1
-	echo "Compiling code sample $filename"    	
+	echo "[INFO] Compiling code sample $filename"    	
 	g++ $filename -L/usr/local/lib -lPAL `pkg-config --libs --cflags opencv python3 libusb-1.0`   -O3  -o ${filename%.*}.out -I../../include/ -lv4l2 -lpthread  -ludev -std=c++11 -lX11 $GPU_LIBS
 else
-	echo "Compiling all the code samples!"    
+	echo "[INFO] Compiling all the code samples!"    
 
 	for eachfile in $filenames
 	do
+		echo "[INFO] Compiling code sample $eachfile"    	
 		g++ $eachfile -L/usr/local/lib -lPAL `pkg-config --libs --cflags opencv python3 libusb-1.0`   -O3  -o ${eachfile%.*}.out -I../../include/ -lv4l2 -lpthread  -ludev -std=c++11 -lX11 $GPU_LIBS
 	done
 
