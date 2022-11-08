@@ -6,7 +6,7 @@ This code will grab the left & right panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 1
+./compile.sh 001_stereo_panorama.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
