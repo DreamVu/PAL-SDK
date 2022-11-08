@@ -39,17 +39,18 @@ namespace PAL
 		IMAGE_STABILIZATION = 0x80000000,
 		DEPTH_STABILIZATION = 0x100000000,
 		AUTO_EXPOSURE_LIMIT = 0x200000000,
-		MODE = 		          0x400000000, 
+		MODE  				= 0x400000000, 
 		RAW_DEPTH           = 0x800000000, 
-		ALL                 = 0xFFFFFFFFF, //0x7FFFFFFFF,
+		STEREO_IMAGE_STABILIZATION = 0x1000000000,
+		ALL                 = 0x1FFFFFFFFF, //0x7FFFFFFFF,
 		
-		ODOA_DEPTHTHRESH = 0x1000000000,
-		ODOA_DEPTHSIGMA = 0x2000000000,
-		ODOA_DEPTHREF = 0x4000000000,
-		ODOA_DEPTHTEMPORAL = 0x8000000000,
-		ODOA_BIAS = 0x10000000000,
-		ODOA_WEIGHTAGE = 0x20000000000, 
-		ODOA_ALL = 0x3F000000000,
+		ODOA_DEPTHTHRESH = 0x2000000000,
+		ODOA_DEPTHSIGMA = 0x4000000000,
+		ODOA_DEPTHREF = 0x8000000000,
+		ODOA_DEPTHTEMPORAL = 0x10000000000,
+		ODOA_BIAS = 0x20000000000,
+		ODOA_WEIGHTAGE = 0x40000000000, 
+		ODOA_ALL = 0x7E000000000,
 	};
 
 	struct Resolution
@@ -223,12 +224,17 @@ namespace PAL
 		int depth_scale_factor;
 		int point_cloud_density;
 
+		int stereo_image_stabilization;
 		int image_stabilization;
 		int depth_stabilization;
 		
 		static const int MAX_IMAGE_STABILIZATION = 6;
 		static const int MIN_IMAGE_STABILIZATION = 0;
 		static const int DEFAULT_IMAGE_STABILIZATION = 2;
+		
+		static const int MAX_STEREO_IMAGE_STABILIZATION = 6;
+		static const int MIN_STEREO_IMAGE_STABILIZATION = 0;
+		static const int DEFAULT_STEREO_IMAGE_STABILIZATION = 0;
 		
 		static const int MAX_DEPTH_STABILIZATION = 6;
 		static const int MIN_DEPTH_STABILIZATION = 0;
@@ -277,7 +283,7 @@ namespace PAL
 		
 		static const int MAX_AUTO_EXPOSURE_LIMIT = 10000;
 		static const int MIN_AUTO_EXPOSURE_LIMIT = 20;
-		static const int DEFAULT_AUTO_EXPOSURE_LIMIT = 1000;
+		static const int DEFAULT_AUTO_EXPOSURE_LIMIT = 500;
 		
 		static const int DEFAULT_MODE    =  LS_M;
 				
@@ -375,7 +381,8 @@ namespace PAL
 			depth_scale_factor (DEFAULT_DEPTH_SCALE),
 			point_cloud_density (DEFAULT_POINT_CLOUD_DENSITY),
 			image_stabilization  (DEFAULT_IMAGE_STABILIZATION),
-			depth_stabilization  (DEFAULT_DEPTH_STABILIZATION) 
+			depth_stabilization  (DEFAULT_DEPTH_STABILIZATION),
+			stereo_image_stabilization  (DEFAULT_STEREO_IMAGE_STABILIZATION)			 
 		{
 		}
 	};
