@@ -95,11 +95,11 @@ int main(int argc, char *argv[])
 	
 	//depth threshold in cm
 	//The depth threshold should be kept within 1m to 2m range.
-	int threshold_cm = (argc>1) ? atof(argv[1]) : 100;
+	int threshold_cm = (argc>2) ? atof(argv[2]) : 100;
 
 	//context threshold in percentage to be considered for occupancy
 	//The context threshold should be kept within 50(recommended) to 80 range.
-	int context_threshold = (argc>2) ? atof(argv[2]) : 50;	
+	int context_threshold = (argc>3) ? atof(argv[3]) : 50;	
 
 	if (threshold_cm > 200)
 	{
@@ -149,13 +149,17 @@ int main(int argc, char *argv[])
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();
-		
-		cv::Mat depth = data[0].distance.clone();
+		cv::Mat depth;
+		if(prop.raw_depth)
+			depth = data[0].fused_depth.clone();
+		else
+			depth = data[0].distance.clone();
+				
 		cv::Mat rgb = data[0].left.clone();
 		
 
 		depth.convertTo(depth, CV_8UC1);
-		
+
 		cv::Mat occupancy1D = Getoccupancy1D(rgb, depth,threshold_cm,context_threshold);
 
 		cv::Mat r = cv::Mat::ones(1, rgb.cols, CV_8UC1);
@@ -182,7 +186,7 @@ int main(int argc, char *argv[])
 		merge(channels, final_img);
 		resize(final_img, final_img, rgb.size());
 		cv::Mat colored_out = rgb.mul(final_img);
-
+		
 		imshow("PAL Occupancy Map", colored_out);
 		
 		//Wait for the keypress - with a timeout of 1 ms
