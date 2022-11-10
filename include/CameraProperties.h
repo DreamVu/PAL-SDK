@@ -38,7 +38,7 @@ namespace PAL
 		POINTCLOUD_DENSITY = 0x40000000,
 		IMAGE_STABILIZATION = 0x80000000,
 		DEPTH_STABILIZATION = 0x100000000,
-		AUTO_EXPOSURE_LIMIT = 0x200000000,
+		COLOR_DEPTH = 0x200000000,
 		MODE  				= 0x400000000, 
 		RAW_DEPTH           = 0x800000000, 
 		STEREO_IMAGE_STABILIZATION = 0x1000000000,
@@ -180,10 +180,8 @@ namespace PAL
 		bool  auto_white_bal;
 		bool  auto_exposure;
 		
-		int auto_exposure_limit;
 		int mode ;
 		
-
 		Resolution resolution;
 		CaptureType capture_type;
 		ColorSpace color_space;
@@ -196,6 +194,8 @@ namespace PAL
 		bool  filter_disparity;
 		bool  filter_spots;
         bool raw_depth;
+        bool color_depth;
+        
 		//horizontal FOV in degrees
 		int   fov_start; 
 		int   fov_end;
@@ -276,18 +276,13 @@ namespace PAL
 		static const int MIN_SHARPNESS = 0;
 		static const int DEFAULT_SHARPNESS = 0;
 		
-		static const int MAX_EXPOSURE = 10000;
+		static const int MAX_EXPOSURE = 1000;
 		static const int MIN_EXPOSURE = 1;
-		static const int DEFAULT_EXPOSURE = 500;
-		
-		
-		static const int MAX_AUTO_EXPOSURE_LIMIT = 10000;
-		static const int MIN_AUTO_EXPOSURE_LIMIT = 20;
-		static const int DEFAULT_AUTO_EXPOSURE_LIMIT = 500;
+		static const int DEFAULT_EXPOSURE = 50;
 		
 		static const int DEFAULT_MODE    =  LS_M;
 				
-		static const bool DEFAULT_AUTO_WHITE_BAL = 1;
+		static const bool DEFAULT_AUTO_WHITE_BAL = 0;
 		static const bool DEFAULT_AUTO_EXPOSURE = 0;
 
 		static const Resolution DEFAULT_RESOLUTION;
@@ -312,8 +307,8 @@ namespace PAL
 		static const int MIN_YAW = 0;
 		static const int DEFAULT_YAW = 0;
 		
-		static const int MAX_PITCH = 180;
-		static const int MIN_PITCH = -155;
+		static const int MAX_PITCH = 45;
+		static const int MIN_PITCH = -45;
 		static const int DEFAULT_PITCH = 0;
 		
 		static const int MAX_RANGE = 1000;
@@ -341,7 +336,7 @@ namespace PAL
 		static constexpr float DEFAULT_CAMERA_HEIGHT = 65;
 	
 		static const bool DEFAULT_RAW_DEPTH  = false;
-	
+		static const bool DEFAULT_COLOR_DEPTH  = true;	
 	
 		CameraProperties() :
 			brightness           (DEFAULT_BRIGHTNESS),
@@ -354,7 +349,6 @@ namespace PAL
 			exposure             (DEFAULT_EXPOSURE),
 			auto_white_bal       (DEFAULT_AUTO_WHITE_BAL),
 			auto_exposure        (DEFAULT_AUTO_EXPOSURE),
-			auto_exposure_limit  (DEFAULT_AUTO_EXPOSURE_LIMIT),
 			mode                 (DEFAULT_MODE),
 			resolution           (DEFAULT_RESOLUTION),
 			capture_type		 (DEFAULT_CAPTURE_TYPE),
@@ -382,7 +376,8 @@ namespace PAL
 			point_cloud_density (DEFAULT_POINT_CLOUD_DENSITY),
 			image_stabilization  (DEFAULT_IMAGE_STABILIZATION),
 			depth_stabilization  (DEFAULT_DEPTH_STABILIZATION),
-			stereo_image_stabilization  (DEFAULT_STEREO_IMAGE_STABILIZATION)			 
+			stereo_image_stabilization  (DEFAULT_STEREO_IMAGE_STABILIZATION),
+			color_depth			 (DEFAULT_COLOR_DEPTH)			 
 		{
 		}
 	};
