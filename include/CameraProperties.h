@@ -270,7 +270,7 @@ namespace PAL
 
 		static const int MAX_WHITE_BAL_TEMP = 10000;
 		static const int MIN_WHITE_BAL_TEMP = 1000;
-		static const int DEFAULT_WHITE_BAL_TEMP = 5000;
+		static const int DEFAULT_WHITE_BAL_TEMP = 4250;
 		
 		static const int MAX_SHARPNESS = 127;
 		static const int MIN_SHARPNESS = 0;
