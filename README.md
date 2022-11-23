@@ -66,7 +66,7 @@ Turtlebot-Nav support is also provided for both the version and can be installed
       
 
 ## Documentation 
-- [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vQlEcAMp0yOgwLTvRZiYtiqG0MSRcgofzaiUCI_luNu4fQdQTowv8Cn7qHEgorE51ncfpGL7slKEQxJ/pub)
+- [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vToxErhIFJpfMGGKVBz6_ZQT_TdwKN1xJaw3lHH_P6MOYpo8wa3W7Bp_XuUET-ZbUky7MoEA5KNVq1R/pub)
 - [ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vRrbqXkhQ5cnHNl_Idakk5dnGZ90bDOQk1Be2Jc-jlVJyCgOJZfUgyNGaco9sPDilcSS8gjk1wnR_dq/pub)
 - [Design Integration Guide](https://docs.google.com/document/d/e/2PACX-1vTivOhDfGu0S9OJQ9klA4CMnAqKRzOjTXihousnYK1ukarJE1vM67VRXgHpJzVE00UqPGpq1Gb6_7qQ/pub)
 
