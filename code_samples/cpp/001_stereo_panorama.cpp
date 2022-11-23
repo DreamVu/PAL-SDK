@@ -6,7 +6,7 @@ This code will grab the left & right panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 1
+./compile.sh 001_stereo_panorama.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
@@ -31,6 +31,7 @@ This code will grab the left & right panorama and display in a window using open
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
+#include <X11/Xlib.h>
 
 using namespace cv;
 using namespace std;
@@ -82,10 +83,14 @@ int main( int argc, char** argv )
 	//for(int i=0; i<5;i++)
 		//discard =  PAL::GrabRangeScanData();		
 
-	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
-	resizeWindow("PAL Stereo Panorama", width, height);
-
+	// Getting Screen resolution 
+	Display* disp = XOpenDisplay(NULL);
+	Screen*  scrn = DefaultScreenOfDisplay(disp);
+	int sc_height = scrn->height;
+	int sc_width  = scrn->width;
+	
+	resizeWindow("PAL Stereo Panorama", sc_width-60, sc_height-60);
+	
 	int key = ' ';
 
 	cout<<"Press ESC to close the window."<<endl;

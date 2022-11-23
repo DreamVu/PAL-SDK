@@ -6,7 +6,7 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 2
+./compile.sh 002_depth_panorama.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 
@@ -16,6 +16,7 @@ This code will grab the left & depth panorama and display in a window using open
 >>>>>> KEYBOARD CONTROLS:
 
     ESC key closes the window
+	Press v/V to toggle vertical flip property    
 	Press f/F to toggle filter rgb property       
 
 */
@@ -32,6 +33,16 @@ This code will grab the left & depth panorama and display in a window using open
 
 using namespace cv;
 using namespace std;
+
+
+Mat getColorMap(Mat img, float scale)
+{
+    Mat img_new = img * scale;
+    img_new.convertTo(img_new, CV_8UC1);
+    img_new = 255-img_new;
+    applyColorMap(img_new, img_new, COLORMAP_JET);
+    return img_new;
+}
 
 int main( int argc, char** argv )
 {
@@ -86,10 +97,13 @@ int main( int argc, char** argv )
 	int key = ' ';
 
 	cout<<"Press ESC to close the window."<<endl;
+	printf("Press v/V to toggle vertical flip property\n");	
 	printf("Press f/F to toggle filter rgb property\n");
 	
-	bool filter_spots = true;	
+	bool filter_spots = data.filter_spots;
+	bool flip = data.vertical_flip;	
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
+	bool raw_depth = data.raw_depth;
 
 	//Display the overlayed image
 	imshow( "PAL Depth Panorama", output);
@@ -104,9 +118,14 @@ int main( int argc, char** argv )
 		
 		Mat display;
 		Mat l = data[0].left;
-		Mat d = data[0].distance.clone();
-		d.convertTo(d, CV_8UC1);
-		cvtColor(d, d, cv::COLOR_GRAY2BGR);
+		Mat d;
+		if(raw_depth)
+			d = data[0].fused_depth.clone();
+		else
+			d = data[0].distance.clone();
+		
+		
+		d = getColorMap(d, 1);
 
 		//Vertical concatenation of rgb and depth into the final output
 		vconcat(l, d, display);
@@ -123,6 +142,14 @@ int main( int argc, char** argv )
 			filter_spots = !filter_spots;
 			prop.filter_spots = filter_spots;
 			unsigned long int flags = PAL::FILTER_SPOTS;
+			PAL::SetCameraProperties(&prop, &flags);
+		}
+		if (key == 'v' || key == 'V')
+		{		    
+			PAL::CameraProperties prop;
+			flip = !flip;
+			prop.vertical_flip = flip;
+			unsigned long int flags = PAL::VERTICAL_FLIP;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 

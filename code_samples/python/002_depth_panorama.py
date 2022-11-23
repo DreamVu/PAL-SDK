@@ -49,22 +49,28 @@ def main():
 	key = ' '
 
 	print("Press ESC to close the window.")
+	print("Press v/V to flip vertically.")	
 	print("Press f/F to toggle filter rgb property.")
 
-	flip = False
+	flip = bool(loaded_prop["vertical_flip"])
 	filter_spots = bool(loaded_prop["filter_spots"])
-	pitch = int(loaded_prop["pitch"])
+	raw_depth_f = bool(loaded_prop["raw_depth"])
 	
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
 
 		# BGR->RGB FLOAT->RGB
 		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-		depth_mat = np.uint8(depth)
+		if raw_depth_f:
+			depth_mat = np.uint8(raw_depth)
+		else:
+			depth_mat = np.uint8(depth)	
 		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
 		
+		depth_mat = cv2.applyColorMap(depth_mat, cv2.COLORMAP_JET)
+		depth_mat = cv2.cvtColor(depth_mat,cv2.COLOR_BGR2RGB)
 		# Concatenate vertically
 		concat_op = cv2.vconcat([left_mat,depth_mat])
 
@@ -81,7 +87,12 @@ def main():
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		
+		if key == 118:		    
+			flag = PAL_PYTHON.VERTICAL_FLIPP
+			flip = not(flip)	
+			loaded_prop["vertical_flip"] = flip
+			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+
 
 		
 

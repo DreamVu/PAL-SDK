@@ -55,23 +55,26 @@ def main():
 	key = ' '
 
 	print("Press ESC to close the window.")
+	print("Press v/V to flip vertically.")	
 	print("Press f/F to toggle filter rgb property.")
 
-	flip = False
+	flip = bool(loaded_prop["vertical_flip"])
 	filter_spots = bool(loaded_prop["filter_spots"])
-	pitch = int(loaded_prop["pitch"])
-	
+	raw_depth_f = bool(loaded_prop["raw_depth"])
 	threshold_cm = 100
 	context_threshold = 50
 	
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
 
 		# BGR->RGB FLOAT->RGB
 		left_mat = cv2.cvtColor(left,cv2.COLOR_RGB2BGR)
-		depth_mat = np.uint8(depth)
+		if raw_depth_f:
+			depth_mat = np.uint8(raw_depth)
+		else:
+			depth_mat = np.uint8(depth)	
 		
 		occupancy1D = Getoccupancy1D(left_mat, depth_mat, threshold_cm, context_threshold)
 
@@ -92,9 +95,12 @@ def main():
 			filter_spots = not(filter_spots)
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-
-		
-
+			
+		if key == 118:		    
+			flag = PAL_PYTHON.VERTICAL_FLIPP
+			flip = not(flip)	
+			loaded_prop["vertical_flip"] = flip
+			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 		
 
 	# Destroying connections
