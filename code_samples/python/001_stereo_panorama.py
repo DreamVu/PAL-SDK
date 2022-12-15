@@ -20,8 +20,10 @@ def main():
 	
 	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
 	PAL_PYTHON.SetPathtoDataP(path)
-		
+	PAL_PYTHON.DisableTRTModelsP(True)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
+
+	
 
 	if res_init!= PAL_PYTHON.SUCCESSP:
 		print("Camera Init failed\n")
