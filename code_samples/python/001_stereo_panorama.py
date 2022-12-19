@@ -43,7 +43,7 @@ def main():
 	# Current image resolution
 	#print("The image resolution is : ", width, "x", height, "\n")
 	
-	screen = Display(':0').screen()
+	screen = Display().screen()
 	sc_height = screen.height_in_pixels;
 	sc_width  = screen.width_in_pixels;
 	
