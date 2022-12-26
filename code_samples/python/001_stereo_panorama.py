@@ -5,7 +5,7 @@ import sys
 import PAL_PYTHON
 import cv2
 import numpy as np
-
+from Xlib.display import Display
 
 def main():
 
@@ -20,8 +20,10 @@ def main():
 	
 	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
 	PAL_PYTHON.SetPathtoDataP(path)
-		
+	PAL_PYTHON.DisableTRTModelsP(True)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
+
+	
 
 	if res_init!= PAL_PYTHON.SUCCESSP:
 		print("Camera Init failed\n")
@@ -40,10 +42,15 @@ def main():
 	
 	# Current image resolution
 	#print("The image resolution is : ", width, "x", height, "\n")
+	
+	screen = Display().screen()
+	sc_height = screen.height_in_pixels;
+	sc_width  = screen.width_in_pixels;
+	
 
 	# Changing window size
-	cv2.resizeWindow(source_window, (int(width*2), int(height*2)))
-
+	cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
+	
 	key = ' '
 	filter_spots = bool(loaded_prop["filter_spots"])
 	print("Press ESC to close the window.\n")
