@@ -183,15 +183,15 @@ def main():
 			flags |= PAL_PYTHON.SHARPNESSP
 		
 		elif key == 105:
-			loaded_prop["brightness"] += 1
-			if loaded_prop["brightness"] > PAL_PYTHON.MAX_EXPOSUREP:
-				loaded_prop["brightness"] = PAL_PYTHON.MAX_EXPOSUREP 
+			loaded_prop["exposure"] += 1
+			if loaded_prop["exposure"] > PAL_PYTHON.MAX_EXPOSUREP:
+				loaded_prop["exposure"] = PAL_PYTHON.MAX_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
 		
 		elif key == 107:
 			loaded_prop["brightness"] += 1
-			if loaded_prop["brightness"] > PAL_PYTHON.MAX_EXPOSUREP:
-				loaded_prop["brightness"] = PAL_PYTHON.MAX_EXPOSUREP 
+			if loaded_prop["exposure"] > PAL_PYTHON.MAX_EXPOSUREP:
+				loaded_prop["exposure"] = PAL_PYTHON.MAX_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
 		
 		elif key == 111:
