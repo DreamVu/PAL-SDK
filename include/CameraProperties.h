@@ -42,15 +42,21 @@ namespace PAL
 		MODE  				= 0x400000000, 
 		RAW_DEPTH           = 0x800000000, 
 		STEREO_IMAGE_STABILIZATION = 0x1000000000,
-		ALL                 = 0x1FFFFFFFFF, //0x7FFFFFFFF,
+		AUTO_EXPOSURE_METHOD = 0x2000000000,
+		HID_FRAME_RATE = 0x4000000000,
+		HID_DENOISE = 0x8000000000,
+		HID_QFACTOR = 0x10000000000,
+		HID_IHDR_MODE = 0x20000000000,
+		HID_IHDR_VALUE = 0x40000000000,
+		ALL                 = 0x7FFFFFFFFFF, //0x7FFFFFFFF,
 		
-		ODOA_DEPTHTHRESH = 0x2000000000,
-		ODOA_DEPTHSIGMA = 0x4000000000,
-		ODOA_DEPTHREF = 0x8000000000,
-		ODOA_DEPTHTEMPORAL = 0x10000000000,
-		ODOA_BIAS = 0x20000000000,
-		ODOA_WEIGHTAGE = 0x40000000000, 
-		ODOA_ALL = 0x7E000000000,
+		ODOA_DEPTHTHRESH = 0x80000000000,
+		ODOA_DEPTHSIGMA = 0x100000000000,
+		ODOA_DEPTHREF = 0x200000000000,
+		ODOA_DEPTHTEMPORAL = 0x400000000000,
+		ODOA_BIAS = 0x800000000000,
+		ODOA_WEIGHTAGE = 0x1000000000000, 
+		ODOA_ALL = 0x1F80000000000,
 	};
 
 	struct Resolution
@@ -86,7 +92,7 @@ namespace PAL
     
     static const int DEFAULT_DEPTH_THRESHOLD = 200;
 	static const int DEFAULT_DEPTH_SIGMA = 0;
-	static constexpr float DEFAULT_DEPTH_REF = 2.0;
+	static constexpr float DEFAULT_DEPTH_REF = 1.0;
 	static constexpr float DEFAULT_DEPTH_REF2 = 2.0;
 	static constexpr float DEFAULT_WEIGHTAGE = 1.0;
 	static const int DEFAULT_DEPTH_TEMPORAL = 0;
@@ -167,6 +173,13 @@ namespace PAL
 		LS_M = 7,
 	};
 	
+	enum HDR_Mode 
+	{
+        HDR_OFF = 0x01,
+        HDR_AUTO = 0x02,
+        HDR_MANUAL = 0x03,
+    };
+	
 	struct CameraProperties
 	{
 	    int brightness;
@@ -228,11 +241,41 @@ namespace PAL
 		int image_stabilization;
 		int depth_stabilization;
 		
-		static const int MAX_IMAGE_STABILIZATION = 6;
-		static const int MIN_IMAGE_STABILIZATION = 0;
-		static const int DEFAULT_IMAGE_STABILIZATION = 2;
+		int auto_exposure_method;
 		
-		static const int MAX_STEREO_IMAGE_STABILIZATION = 6;
+		int hid_frame_rate;
+		int hid_denoise;
+		int hid_qfactor;
+		int hid_ihdr_value;
+		HDR_Mode hid_ihdr_mode;
+		
+		static const int MAX_HID_FRAME_RATE = 120;
+		static const int MIN_HID_FRAME_RATE = 1;
+		static const int DEFAULT_HID_FRAME_RATE = 30;
+		
+		static const int MAX_HID_DENOISE = 15;
+		static const int MIN_HID_DENOISE = 0;
+		static const int DEFAULT_HID_DENOISE = 8;
+		
+		static const int MAX_HID_QFACTOR = 96;
+		static const int MIN_HID_QFACTOR = 10;
+		static const int DEFAULT_HID_QFACTOR = 96;
+		
+		static const int MAX_HID_IHDR_VALUE = 4;
+		static const int MIN_HID_IHDR_VALUE = 1;
+		static const int DEFAULT_HID_IHDR_VALUE = 1;
+		
+		static const HDR_Mode DEFAULT_HID_IHDR_MODE = HDR_OFF;
+		
+		static const int MAX_AUTO_EXPOSURE_METHOD = 1;
+		static const int MIN_AUTO_EXPOSURE_METHOD = 0;
+		static const int DEFAULT_AUTO_EXPOSURE_METHOD = 1;
+		
+		static const int MAX_IMAGE_STABILIZATION = 9;
+		static const int MIN_IMAGE_STABILIZATION = 0;
+		static const int DEFAULT_IMAGE_STABILIZATION = 3;
+		
+		static const int MAX_STEREO_IMAGE_STABILIZATION = 9;
 		static const int MIN_STEREO_IMAGE_STABILIZATION = 0;
 		static const int DEFAULT_STEREO_IMAGE_STABILIZATION = 0;
 		
@@ -250,23 +293,23 @@ namespace PAL
 		
         static const int MAX_BRIGHTNESS = 15;
 		static const int MIN_BRIGHTNESS = -15;
-		static const int DEFAULT_BRIGHTNESS = 0;
+		static const int DEFAULT_BRIGHTNESS = -2;
 		
 		static const int MAX_CONTRAST = 30;
 		static const int MIN_CONTRAST = 0;
-		static const int DEFAULT_CONTRAST = 15;
+		static const int DEFAULT_CONTRAST = 5;
 		
 		static const int MAX_SATURATION = 60;
 		static const int MIN_SATURATION = 0;
-		static const int DEFAULT_SATURATION = 32;
+		static const int DEFAULT_SATURATION = 60;
 
 		static const int MAX_GAMMA = 500;
 		static const int MIN_GAMMA = 40;
-		static const int DEFAULT_GAMMA = 150;
+		static const int DEFAULT_GAMMA = 300;
 
 		static const int MAX_GAIN = 100;
 		static const int MIN_GAIN = 0;
-		static const int DEFAULT_GAIN = 4;
+		static const int DEFAULT_GAIN = 2;
 
 		static const int MAX_WHITE_BAL_TEMP = 10000;
 		static const int MIN_WHITE_BAL_TEMP = 1000;
@@ -282,7 +325,7 @@ namespace PAL
 		
 		static const int DEFAULT_MODE    =  LS_M;
 				
-		static const bool DEFAULT_AUTO_WHITE_BAL = 0;
+		static const bool DEFAULT_AUTO_WHITE_BAL = 1;
 		static const bool DEFAULT_AUTO_EXPOSURE = 0;
 
 		static const Resolution DEFAULT_RESOLUTION;
@@ -377,7 +420,14 @@ namespace PAL
 			image_stabilization  (DEFAULT_IMAGE_STABILIZATION),
 			depth_stabilization  (DEFAULT_DEPTH_STABILIZATION),
 			stereo_image_stabilization  (DEFAULT_STEREO_IMAGE_STABILIZATION),
-			color_depth			 (DEFAULT_COLOR_DEPTH)			 
+			color_depth			 (DEFAULT_COLOR_DEPTH),
+			auto_exposure_method (DEFAULT_AUTO_EXPOSURE_METHOD),
+			hid_frame_rate	(DEFAULT_HID_FRAME_RATE),	
+			hid_denoise		(DEFAULT_HID_DENOISE),
+			hid_qfactor		(DEFAULT_HID_QFACTOR),	
+			hid_ihdr_value	(DEFAULT_HID_IHDR_VALUE),	
+			hid_ihdr_mode	(DEFAULT_HID_IHDR_MODE)	
+					 
 		{
 		}
 	};
