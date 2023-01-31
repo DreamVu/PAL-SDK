@@ -5,6 +5,7 @@ import PAL_PYTHON
 import cv2
 import numpy as np
 import sys
+import time
 
 def main():
 
@@ -25,8 +26,10 @@ def main():
 	if res_init!= PAL_PYTHON.SUCCESSP:
 		print("Camera Init failed\n")
 		return
-
+	
+	time.sleep(1)
 	PAL_PYTHON.SetAPIModeP(PAL_PYTHON.RANGE_SCANP)
+	time.sleep(1)
 
 	loaded_prop = {}
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
