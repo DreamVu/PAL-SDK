@@ -59,7 +59,8 @@ int main( int argc, char** argv )
 		cout<<"Init failed"<<endl;
 		return 1;
 	}
-
+	
+	usleep(1000000);
 	PAL::SetAPIMode(PAL::API_Mode::RANGE_SCAN);
 	usleep(1000000);
 
