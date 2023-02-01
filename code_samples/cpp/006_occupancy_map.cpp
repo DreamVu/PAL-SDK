@@ -15,9 +15,10 @@ This code sample allows users to access the region map within a depth range.
 
 
 >>>>>> KEYBOARD CONTROLS:
-	Press ESC to close the window
-	Press v/V to toggle vertical flip property    	
-	Press f/F to toggle filter rgb property
+Press ESC to close the window
+Press v/V to toggle vertical flip property    	
+Press f/F to toggle filter rgb property
+
 */
 
 
@@ -39,7 +40,8 @@ cv::Mat Getoccupancy1D(Mat rgb_image, Mat depth_mat, int depth_thresh, float con
 	mask = mask/255;
 	cv::Mat occupancySum = cv::Mat::zeros(rgb_image.rows, rgb_image.cols, CV_32FC1);
 	cv::reduce(mask, occupancySum, 0, cv::REDUCE_SUM, CV_32FC1);
-	cv::Mat occupancy1D = cv::Mat::zeros(rgb_image.rows, rgb_image.cols, CV_8UC1); //initialize with zeros;
+	//initialize with zeros
+	cv::Mat occupancy1D = cv::Mat::zeros(rgb_image.rows, rgb_image.cols, CV_8UC1); 
 	cv::threshold(occupancySum, occupancy1D, rgb_image.rows*context_threshold/100.0, 255, cv::THRESH_BINARY_INV);
 	occupancy1D = occupancy1D/255;
 	occupancy1D.convertTo(occupancy1D, CV_8UC1);		
@@ -49,7 +51,8 @@ cv::Mat Getoccupancy1D(Mat rgb_image, Mat depth_mat, int depth_thresh, float con
 
 int main(int argc, char *argv[])
 {
-	namedWindow( "PAL Occupancy Map", WINDOW_NORMAL ); // Create a window for display.
+	// Create a window for display.
+	namedWindow( "PAL Occupancy Map", WINDOW_NORMAL ); 
 
 
 	int width, height;
@@ -71,7 +74,8 @@ int main(int argc, char *argv[])
 
 	PAL::SetPathtoData(path, path2);
 
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+	//Connect to the PAL camera
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;
@@ -132,7 +136,7 @@ int main(int argc, char *argv[])
 	int sc_height = scrn->height;
 	int sc_width  = scrn->width;
 	
-	resizeWindow("PAL Occupancy Map", width, height);//sc_width, sc_height);
+	resizeWindow("PAL Occupancy Map", width, height);
 
 	int key = ' ';
 

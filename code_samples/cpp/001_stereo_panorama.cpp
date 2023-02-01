@@ -16,17 +16,15 @@ This code will grab the left & right panorama and display in a window using open
 
 >>>>>> KEYBOARD CONTROLS:
 
-    ESC key closes the window
-	Press f/F to toggle filter rgb property       
+ESC key closes the window
+Press f/F to toggle filter rgb property       
        
 
 */
 
 
 # include <stdio.h>
-
 # include <opencv2/opencv.hpp>
-
 # include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
@@ -38,8 +36,8 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-
-	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); // Create a window for display.
+	// Create a window for display.
+	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); 
 
 	int width, height;
 	PAL::Mode mode = PAL::Mode::LASER_SCAN;
@@ -60,7 +58,8 @@ int main( int argc, char** argv )
 
 	PAL::SetPathtoData(path, path2);
 	PAL::DisableTRTModels(true);
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+	//Connect to the PAL camera
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;
@@ -78,12 +77,8 @@ int main( int argc, char** argv )
 		cout<<"Error Loading settings! Loading default values."<<endl;
 	}
 
-	//discarding initial frames
-	//std::vector<PAL::Data::ODOA_Data> discard;
-	//for(int i=0; i<5;i++)
-		//discard =  PAL::GrabRangeScanData();		
-
-	// Getting Screen resolution 
+	
+	
 	Display* disp = XOpenDisplay(NULL);
 	Screen*  scrn = DefaultScreenOfDisplay(disp);
 	int sc_height = scrn->height;

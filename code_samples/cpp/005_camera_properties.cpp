@@ -15,16 +15,14 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> KEYBOARD CONTROLS:
 
-       ESC key closes the window
+ESC key closes the window
        
 
 */
 
 
 # include <stdio.h>
-
 # include <opencv2/opencv.hpp>
-
 # include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
@@ -35,8 +33,8 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-
-	namedWindow( "PAL Camera Properties", WINDOW_NORMAL ); // Create a window for display.
+	// Create a window for display.
+	namedWindow( "PAL Camera Properties", WINDOW_NORMAL ); 
 
 	int width, height;
 	PAL::Mode mode = PAL::Mode::LASER_SCAN;
@@ -57,7 +55,8 @@ int main( int argc, char** argv )
 
 	PAL::SetPathtoData(path, path2);
 
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+	//Connect to the PAL camera
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;
@@ -96,11 +95,12 @@ int main( int argc, char** argv )
     printf("I & K keys increase and decrease the EXPOSURE respectively.\n");
     printf("O key toggles AUTO WHITE BALANCE property.\n");
     printf("P key toggles AUTO EXPOSURE property.\n\n");
-
-    printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
-
-    printf("N key saves the current camera properties to a file. \n");
+	printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
+	printf("N key saves the current camera properties to a file. \n");
     printf("L key loads the camera properties from the saved file.\n");
+    printf("V key toggles VERTICAL FLIP property. \n");
+    printf("F key toggles FILTER SPOTS property. \n");
+    
     
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
@@ -150,126 +150,161 @@ int main( int argc, char** argv )
                 camera_data.auto_exposure = PAL::CameraProperties::DEFAULT_AUTO_EXPOSURE;
                 flags = PAL::ALL; 
             break;
-            case 'q':  // increase brightness 
+            // increase brightness
+            case 'q':   
             case 'Q':
                 camera_data.brightness += 1;
                 if(camera_data.brightness > PAL::CameraProperties::MAX_BRIGHTNESS) camera_data.brightness = PAL::CameraProperties::MAX_BRIGHTNESS; 
                 flags |= PAL::BRIGHTNESS;
             break;
-            case 'a':  // decrease brightness
+            // decrease brightness
+            case 'a':  
             case 'A':
                 camera_data.brightness -= 1;
                 if(camera_data.brightness < PAL::CameraProperties::MIN_BRIGHTNESS) camera_data.brightness = PAL::CameraProperties::MIN_BRIGHTNESS;
                 flags |= PAL::BRIGHTNESS;
             break;
-            case 'w':  // increase contrast 
+            // increase contrast 
+            case 'w':  
             case 'W':
                 camera_data.contrast += 1;
                 if(camera_data.contrast > PAL::CameraProperties::MAX_CONTRAST) camera_data.contrast = PAL::CameraProperties::MAX_CONTRAST; 
                 flags |= PAL::CONTRAST;
             break;
-            case 's':  // decrease contrast
+            // decrease contrast
+            case 's':  
             case 'S':
                 camera_data.contrast -= 1;
                 if(camera_data.contrast < PAL::CameraProperties::MIN_CONTRAST) camera_data.contrast = PAL::CameraProperties::MIN_CONTRAST;
                 flags |= PAL::CONTRAST;
             break;
-            case 'e':  // increase saturation 
+            // increase saturation
+            case 'e':   
             case 'E':
                 camera_data.saturation += 1;
                 if(camera_data.saturation > PAL::CameraProperties::MAX_SATURATION) camera_data.saturation = PAL::CameraProperties::MAX_SATURATION; 
                 flags |= PAL::SATURATION;
             break;
-            case 'd':  // decrease saturation
+            // decrease saturation
+            case 'd':  
             case 'D':
                 camera_data.saturation -= 1;
                 if(camera_data.saturation < PAL::CameraProperties::MIN_SATURATION) camera_data.saturation = PAL::CameraProperties::MIN_SATURATION;
                 flags |= PAL::SATURATION;
             break;
-            case 'r':  // increase gamma
+             // increase gamma
+            case 'r': 
             case 'R':
                 camera_data.gamma += 10;
                 if(camera_data.gamma > PAL::CameraProperties::MAX_GAMMA) camera_data.gamma = PAL::CameraProperties::MAX_GAMMA; 
                 flags |= PAL::GAMMA;
             break;
-            case 'z':  // decrease gamma 
+            // decrease gamma
+            case 'z':   
             case 'Z':
                 camera_data.gamma -= 10;
                 if(camera_data.gamma < PAL::CameraProperties::MIN_GAMMA) camera_data.gamma = PAL::CameraProperties::MIN_GAMMA;
                 flags |= PAL::GAMMA;
             break;
-            case 't':  // increase gain 
+            // increase gain
+            case 't':   
             case 'T':
                 camera_data.gain += 1;
                 if(camera_data.gain > PAL::CameraProperties::MAX_GAIN) camera_data.gain = PAL::CameraProperties::MAX_GAIN;
                 flags |= PAL::GAIN;
             break;
-            case 'g':  // decrease gain 
+            // decrease gain
+            case 'g':   
             case 'G':
                 camera_data.gain -= 1;
                 if(camera_data.gain < PAL::CameraProperties::MIN_GAIN) camera_data.gain = PAL::CameraProperties::MIN_GAIN;
                 flags |= PAL::GAIN;
             break;
-            case 'y':  // increase white balance temperature
+            // increase white balance temperature
+            case 'y':  
             case 'Y':
                 camera_data.white_bal_temp += 200;
                 if(camera_data.white_bal_temp > PAL::CameraProperties::MAX_WHITE_BAL_TEMP) camera_data.white_bal_temp = PAL::CameraProperties::MAX_WHITE_BAL_TEMP;
                 flags |= PAL::WHITE_BAL_TEMP;
             break;
-            case 'h':  // decrease white balance temperature
+            // decrease white balance temperature
+            case 'h':  
             case 'H':
                 camera_data.white_bal_temp -= 200;
                 if(camera_data.white_bal_temp < PAL::CameraProperties::MIN_WHITE_BAL_TEMP) camera_data.white_bal_temp = PAL::CameraProperties::MIN_WHITE_BAL_TEMP;
                 flags |= PAL::WHITE_BAL_TEMP;
-            break; 
-            case 'u':  // increase sharpness 
+            break;
+            // increase sharpness 
+            case 'u':   
             case 'U':
                 camera_data.sharpness += 1;
                 if(camera_data.sharpness > PAL::CameraProperties::MAX_SHARPNESS) camera_data.sharpness = PAL::CameraProperties::MAX_SHARPNESS;
                 flags |= PAL::SHARPNESS;
             break;
-            case 'j':  // decrease sharpness 
+            // decrease sharpness
+            case 'j':   
             case 'J':
                 camera_data.sharpness -= 1;
                 if(camera_data.sharpness < PAL::CameraProperties::MIN_SHARPNESS) camera_data.sharpness = PAL::CameraProperties::MIN_SHARPNESS;
                 flags |= PAL::SHARPNESS;
             break;
-            case 'i':  // increase exposure 
+            // increase exposure
+            case 'i':   
             case 'I':
                 camera_data.exposure += 50;
                 if(camera_data.exposure > PAL::CameraProperties::MAX_EXPOSURE) camera_data.exposure = PAL::CameraProperties::MAX_EXPOSURE;
                 flags |= PAL::EXPOSURE;
             break;
-            case 'k':  // decrease exposure 
+            // decrease exposure 
+            case 'k':  
             case 'K':
                 camera_data.exposure -= 50;
                 if(camera_data.exposure < PAL::CameraProperties::MIN_EXPOSURE) camera_data.exposure = PAL::CameraProperties::MIN_EXPOSURE;
                 flags |= PAL::EXPOSURE;
             break;
-            case 'o':  // Toggle auto white balance temperature
+            // Toggle auto white balance temperature
+            case 'o':  
             case 'O':
                 camera_data.auto_white_bal = !camera_data.auto_white_bal;
                 flags |= PAL::AUTO_WHITE_BAL;
-                break;                  
-            case 'p':  // Toggle auto exposure 
+            break;  
+            // Toggle auto exposure                   
+            case 'p':   
             case 'P':
                 camera_data.auto_exposure = !camera_data.auto_exposure;
                 flags |= PAL::AUTO_EXPOSURE;
-                break;
-            case 'c': // Saves current left+depth image to disk as a .png file 
+            break;
+            // Saves current left+depth image to disk as a .png file    
+            case 'c':  
             case 'C': 
                 sprintf(fileName,"./pal_image_%03d.png", frame++);
                 cv::imwrite(fileName, display);
-                break;           
-            case 'n': // Saves camera properties to file
+            break;
+            // Saves camera properties to file           
+            case 'n': 
             case 'N':
                 PAL::SaveProperties("properties.txt");
                 printf(">>>>>> SAVED THE PROPERTIES >>>>\n");
-                break;
-            case 'l': // Loads camera properties from file 
+		    break;
+		    // Loads camera properties from file
+            case 'l':  
             case 'L':
                 PAL::LoadProperties("properties.txt", &camera_data);
                 break;
+            //Toogle vertical flip     
+            case 'V':  
+            case 'v':
+                camera_data.vertical_flip = !camera_data.vertical_flip;
+                flags |= PAL::VERTICAL_FLIP;
+            break; 
+            // Toggle Filter spots
+            case 'F':  
+            case 'f':
+                camera_data.filter_spots = !camera_data.filter_spots;
+                flags |= PAL::FILTER_SPOTS;
+            break;   
+                
+                
         }
         
         if(flags != 0)
