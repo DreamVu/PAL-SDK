@@ -6,7 +6,7 @@ namespace PAL
 
 	enum CameraPropertyFlags
 	{
-        BRIGHTNESS = 0x1,
+       		BRIGHTNESS = 0x1,
 		CONTRAST = 0x2,
 		SATURATION = 0x4,
 		GAMMA = 0x8,
@@ -22,7 +22,7 @@ namespace PAL
 		VERTICAL_FLIP = 0x2000,
 		FILTER_DISPARITY = 0x4000,
 		FILTER_SPOTS = 0x8000,
-        FOV = 0x10000,
+        	FOV = 0x10000,
 		PROJECTION = 0x20000,
 		CAMERA_HEIGHT = 0x80000,		
 		DETECTION_MODE = 0x100000,
@@ -49,8 +49,9 @@ namespace PAL
 		HID_IHDR_MODE = 0x20000000000,
 		HID_IHDR_VALUE = 0x40000000000,
 		ODOA_DEPTHTEMPORAL = 0x80000000000,
-		ODOA_DEPTHSENSITIVITY = 0x100000000000,				
-		ALL                 = 0x1FFFFFFFFFFF,
+		ODOA_DEPTHSENSITIVITY = 0x100000000000,
+		CLOTHES_LINING_MAX_HEIGHT = 0x200000000000,				
+		ALL                 = 0x3FFFFFFFFFFF,
 	};
 
 	struct Resolution
@@ -130,8 +131,8 @@ namespace PAL
 	
 	struct CameraProperties
 	{
-	    int brightness;
-	    int contrast;
+	    	int brightness;
+	    	int contrast;
 		int saturation;
 		int gamma;
 		int gain;
@@ -151,8 +152,8 @@ namespace PAL
 		bool  vertical_flip;
 		bool  filter_disparity;
 		bool  filter_spots;
-        bool raw_depth;
-        bool color_depth;
+        	bool raw_depth;
+        	bool color_depth;
         
 		//horizontal FOV in degrees
 		int   fov_start; 
@@ -164,14 +165,14 @@ namespace PAL
 		//Modes of the camera position to be used in person detection
 		DetectionMode detection_mode;
         
-        bool ground_detection;
-        
-        int yaw;
-        
-        int pitch;
-        
-        int range;
-        int min_range;
+		bool ground_detection;
+
+		int yaw;
+
+		int pitch;
+
+		int range;
+		int min_range;
          
 		int start_hfov; 
 		int hfov_range; 
@@ -196,6 +197,12 @@ namespace PAL
 		
 		int depth_context_temporal;
 		int sensitivity_offset;
+		float clothes_lining_max_height;
+		
+		
+		static constexpr float MAX_CLOTHES_LINING_MAX_HEIGHT = 1000;
+		static constexpr float MIN_CLOTHES_LINING_MAX_HEIGHT = 0;
+		static constexpr float DEFAULT_CLOTHES_LINING_MAX_HEIGHT = 130;
 		
 		static const int MAX_DEPTH_TEMPORAL = 10;
 		static const int MIN_DEPTH_TEMPORAL = 0;
@@ -247,7 +254,7 @@ namespace PAL
 		static const int MIN_POINT_CLOUD_DENSITY = 1;
 		static const int DEFAULT_POINT_CLOUD_DENSITY = 9;
 		
-        static const int MAX_BRIGHTNESS = 15;
+        	static const int MAX_BRIGHTNESS = 15;
 		static const int MIN_BRIGHTNESS = -15;
 		static const int DEFAULT_BRIGHTNESS = -2;
 		
@@ -384,7 +391,8 @@ namespace PAL
 			hid_ihdr_value	(DEFAULT_HID_IHDR_VALUE),	
 			hid_ihdr_mode	(DEFAULT_HID_IHDR_MODE),
 			depth_context_temporal	(DEFAULT_DEPTH_TEMPORAL),
-			sensitivity_offset	(DEFAULT_SENSITIVITY_OFFSET)
+			sensitivity_offset	(DEFAULT_SENSITIVITY_OFFSET), 
+			clothes_lining_max_height (DEFAULT_CLOTHES_LINING_MAX_HEIGHT)
 					 
 		{
 		}
