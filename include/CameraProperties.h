@@ -218,7 +218,7 @@ namespace PAL
 		
 		static const int MAX_HID_DENOISE = 15;
 		static const int MIN_HID_DENOISE = 0;
-		static const int DEFAULT_HID_DENOISE = 0;
+		static const int DEFAULT_HID_DENOISE = 8;
 		
 		static const int MAX_HID_QFACTOR = 96;
 		static const int MIN_HID_QFACTOR = 10;
@@ -228,7 +228,7 @@ namespace PAL
 		static const int MIN_HID_IHDR_VALUE = 1;
 		static const int DEFAULT_HID_IHDR_VALUE = 1;
 		
-		static const HDR_Mode DEFAULT_HID_IHDR_MODE = HDR_AUTO;
+		static const HDR_Mode DEFAULT_HID_IHDR_MODE = HDR_OFF;
 		
 		static const int MAX_AUTO_EXPOSURE_METHOD = 1;
 		static const int MIN_AUTO_EXPOSURE_METHOD = 0;
@@ -337,7 +337,7 @@ namespace PAL
 		static const int DEFAULT_RANGE = 1000;
 		static const int DEFAULT_START_HFOV = 0;
 		static const int DEFAULT_HFOV_RANGE = 360;
-		static const int DEFAULT_START_VFOV = 43;
+		static const int DEFAULT_START_VFOV = 58;
 		static const int DEFAULT_END_VFOV = -52;
 		static constexpr float DEFAULT_CAMERA_HEIGHT = 65;
 	
