@@ -23,9 +23,9 @@ Press f/F to toggle filter rgb property
 */
 
 
-# include <stdio.h>
-# include <opencv2/opencv.hpp>
-# include "PAL.h"
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
@@ -58,6 +58,7 @@ int main( int argc, char** argv )
 
 	PAL::SetPathtoData(path, path2);
 	PAL::DisableTRTModels(true);
+	
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
@@ -76,8 +77,6 @@ int main( int argc, char** argv )
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
 	}
-
-	
 	
 	Display* disp = XOpenDisplay(NULL);
 	Screen*  scrn = DefaultScreenOfDisplay(disp);
@@ -92,7 +91,8 @@ int main( int argc, char** argv )
 	printf("Press f/F to toggle filter rgb property\n");
 
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
-	bool filter_spots = true;	
+	bool filter_spots = true;
+	
 	//Display the overlayed image
 	imshow( "PAL Stereo Panorama", output);
 
@@ -123,12 +123,10 @@ int main( int argc, char** argv )
 			unsigned long int flags = PAL::FILTER_SPOTS;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
-
 	}
 
 	printf("exiting the application\n");
 	PAL::Destroy();
-
    
     return 0;
 }
