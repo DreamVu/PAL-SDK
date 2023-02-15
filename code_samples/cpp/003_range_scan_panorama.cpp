@@ -21,9 +21,9 @@ Press v/V to toggle vertical flip property
 */
 
 
-# include <stdio.h>
-# include <opencv2/opencv.hpp>
-# include "PAL.h"
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
