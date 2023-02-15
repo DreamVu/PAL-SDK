@@ -21,9 +21,9 @@ ESC key closes the window
 */
 
 
-# include <stdio.h>
-# include <opencv2/opencv.hpp>
-# include "PAL.h"
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
