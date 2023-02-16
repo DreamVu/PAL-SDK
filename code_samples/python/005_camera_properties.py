@@ -107,8 +107,8 @@ def main():
 			flags |= PAL_PYTHON.BRIGHTNESSP
 		elif key == 97:
 			loaded_prop["brightness"] -= 1
-			if loaded_prop["brightness"] > PAL_PYTHON.MAX_BRIGHTNESSP:
-				loaded_prop["brightness"] = PAL_PYTHON.MAX_BRIGHTNESSP 
+			if loaded_prop["brightness"] < PAL_PYTHON.MIN_BRIGHTNESSP:
+				loaded_prop["brightness"] = PAL_PYTHON.MIN_BRIGHTNESSP 
 			flags |= PAL_PYTHON.BRIGHTNESSP
 		
 		elif key == 119:
@@ -118,8 +118,8 @@ def main():
 			flags |= PAL_PYTHON.CONTRASTP
 		elif key == 115:
 			loaded_prop["contrast"] -= 1
-			if loaded_prop["contrast"] > PAL_PYTHON.MAX_CONTRASTP:
-				loaded_prop["contrast"] = PAL_PYTHON.MAX_CONTRASTP 
+			if loaded_prop["contrast"] < PAL_PYTHON.MIN_CONTRASTP:
+				loaded_prop["contrast"] = PAL_PYTHON.MIN_CONTRASTP 
 			flags |= PAL_PYTHON.CONTRASTP
 		
 		elif key == 101:
@@ -130,8 +130,8 @@ def main():
 		
 		elif key == 100:
 			loaded_prop["saturation"] -= 1
-			if loaded_prop["saturation"] > PAL_PYTHON.MAX_SATURATIONP:
-				loaded_prop["saturation"] = PAL_PYTHON.MAX_SATURATIONP 
+			if loaded_prop["saturation"] < PAL_PYTHON.MIN_SATURATIONP:
+				loaded_prop["saturation"] = PAL_PYTHON.MIN_SATURATIONP 
 			flags |= PAL_PYTHON.SATURATIONP
 		
 		elif key == 114:
@@ -142,8 +142,8 @@ def main():
 		
 		elif key == 122:
 			loaded_prop["gamma"] -= 10
-			if loaded_prop["gamma"] > PAL_PYTHON.MAX_GAMMAP:
-				loaded_prop["gamma"] = PAL_PYTHON.MAX_GAMMAP
+			if loaded_prop["gamma"] < PAL_PYTHON.MIN_GAMMAP:
+				loaded_prop["gamma"] = PAL_PYTHON.MIN_GAMMAP
 			flags |= PAL_PYTHON.GAMMAP
 
 		elif key == 116:
@@ -154,8 +154,8 @@ def main():
 		
 		elif key == 103:
 			loaded_prop["gain"] -= 1
-			if loaded_prop["gain"] > PAL_PYTHON.MAX_GAINP:
-				loaded_prop["gain"] = PAL_PYTHON.MAX_GAINP 
+			if loaded_prop["gain"] < PAL_PYTHON.MIN_GAINP:
+				loaded_prop["gain"] = PAL_PYTHON.MIN_GAINP 
 			flags |= PAL_PYTHON.GAINP
 		
 		elif key == 121:
@@ -166,8 +166,8 @@ def main():
 		
 		elif key == 104:
 			loaded_prop["white_bal_temp"] -= 200
-			if loaded_prop["white_bal_temp"] > PAL_PYTHON.MAX_WHITE_BAL_TEMPP:
-				loaded_prop["white_bal_temp"] = PAL_PYTHON.MAX_WHITE_BAL_TEMPP 
+			if loaded_prop["white_bal_temp"] < PAL_PYTHON.MIN_WHITE_BAL_TEMPP:
+				loaded_prop["white_bal_temp"] = PAL_PYTHON.MIN_WHITE_BAL_TEMPP 
 			flags |= PAL_PYTHON.WHITE_BAL_TEMPP
 		
 		elif key == 117:
@@ -178,8 +178,8 @@ def main():
 		
 		elif key == 106:
 			loaded_prop["sharpness"] -= 1
-			if loaded_prop["sharpness"] > PAL_PYTHON.MAX_SHARPNESSP:
-				loaded_prop["sharpness"] = PAL_PYTHON.MAX_SHARPNESSP
+			if loaded_prop["sharpness"] < PAL_PYTHON.MIN_SHARPNESSP:
+				loaded_prop["sharpness"] = PAL_PYTHON.MIN_SHARPNESSP
 			flags |= PAL_PYTHON.SHARPNESSP
 		
 		elif key == 105:
@@ -189,9 +189,9 @@ def main():
 			flags |= PAL_PYTHON.EXPOSUREP
 		
 		elif key == 107:
-			loaded_prop["brightness"] += 1
-			if loaded_prop["exposure"] > PAL_PYTHON.MAX_EXPOSUREP:
-				loaded_prop["exposure"] = PAL_PYTHON.MAX_EXPOSUREP 
+			loaded_prop["exposure"] -= 1
+			if loaded_prop["exposure"] < PAL_PYTHON.MIN_EXPOSUREP:
+				loaded_prop["exposure"] = PAL_PYTHON.MIN_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
 		
 		elif key == 111:
