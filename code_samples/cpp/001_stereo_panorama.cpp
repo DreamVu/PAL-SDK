@@ -36,6 +36,8 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
+
+	cout<<"Temp update for testing"<<endl;
 	// Create a window for display.
 	namedWindow( "PAL Stereo Panorama", WINDOW_NORMAL ); 
 
@@ -65,7 +67,7 @@ int main( int argc, char** argv )
 		cout<<"Init failed"<<endl;
 		return 1;
 	}
-	
+
 	PAL::SetAPIMode(PAL::API_Mode::STEREO);
 	
 	usleep(1000000);
