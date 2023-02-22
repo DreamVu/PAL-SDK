@@ -100,20 +100,20 @@ int main( int argc, char** argv )
 
 	cout<<"Press ESC to close the window."<<endl;
 	printf("Q & A keys increase and decrease the BRIGHTNESS respectively.\n");
-    printf("W & S keys increase and decrease the CONTRAST respectively. \n");
-    printf("E & D keys increase and decrease the SATURATION respectively.\n");
-    printf("R & Z keys increase and decrease the GAMMA respectively.\n");
-    printf("T & G keys increase and decrease the GAIN respectively.\n");
-    printf("Y & H keys increase and decrease the WHITE BALANCE TEMPERATURE respectively.\n");
-    printf("U & J keys increase and decrease the SHARPNESS respectively.\n");
-    printf("I & K keys increase and decrease the EXPOSURE respectively.\n");
-    printf("O key toggles AUTO WHITE BALANCE property.\n");
-    printf("P key toggles AUTO EXPOSURE property.\n\n");
-    printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
-    printf("N key saves the current camera properties to a file. \n");
-    printf("L key loads the camera properties from the saved file.\n");
-    printf("V key toggles VERTICAL FLIP property. \n");
-    printf("F key toggles FILTER SPOTS property. \n");
+        printf("W & S keys increase and decrease the CONTRAST respectively. \n");
+        printf("E & D keys increase and decrease the SATURATION respectively.\n");
+        printf("R & Z keys increase and decrease the GAMMA respectively.\n");
+        printf("T & G keys increase and decrease the GAIN respectively.\n");
+        printf("Y & H keys increase and decrease the WHITE BALANCE TEMPERATURE respectively.\n");
+        printf("U & J keys increase and decrease the SHARPNESS respectively.\n");
+        printf("I & K keys increase and decrease the EXPOSURE respectively.\n");
+        printf("O key toggles AUTO WHITE BALANCE property.\n");
+        printf("P key toggles AUTO EXPOSURE property.\n\n");
+        printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
+        printf("N key saves the current camera properties to a file. \n");
+        printf("L key loads the camera properties from the saved file.\n");
+        printf("V key toggles VERTICAL FLIP property. \n");
+        printf("F key toggles FILTER SPOTS property. \n");
     
     
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
