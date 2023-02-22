@@ -15,18 +15,16 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> KEYBOARD CONTROLS:
 
-    ESC key closes the window
-	Press v/V to toggle vertical flip property    
-	Press f/F to toggle filter rgb property       
+ESC key closes the window
+Press v/V to toggle vertical flip property    
+Press f/F to toggle filter rgb property       
 
 */
 
 
-# include <stdio.h>
-
-# include <opencv2/opencv.hpp>
-
-# include "PAL.h"
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
@@ -36,8 +34,8 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-
-	namedWindow( "PAL Video Capture", WINDOW_NORMAL ); // Create a window for display.
+	// Create a window for display.
+	namedWindow( "PAL Video Capture", WINDOW_NORMAL ); 
 
 	int width, height;
 	PAL::Mode mode = PAL::Mode::LASER_SCAN;
@@ -58,7 +56,8 @@ int main( int argc, char** argv )
 
 	PAL::SetPathtoData(path, path2);
 
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+	//Connect to the PAL camera
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;
@@ -106,6 +105,11 @@ int main( int argc, char** argv )
 	//Display the overlayed image
 	imshow( "PAL Video Capture", output);
 
+	char image_filename[128];
+	char video_filename[128];
+	int image_count = 0;
+	int video_count = 0;
+
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(!closed)
 	{
@@ -146,7 +150,8 @@ int main( int argc, char** argv )
 		}
 		if(key == 'C' || key == 'c') //capture an image using imwrite
         {
-            imwrite("image.png", output);
+        	sprintf(image_filename, "image_%d.png", ++image_count);
+            imwrite(image_filename, output);
             printf("The current frame is saved as image.png\n");
         }
         else if(key == 'B' || key == 'b')
@@ -154,10 +159,21 @@ int main( int argc, char** argv )
             cv::Size size = cv::Size(output.cols, output.rows);
             int fps = 15;
             printf("Opening the video\n");
-            video = cv::VideoWriter("pal_video.avi",cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
+            sprintf(video_filename, "pal_video_%d.avi", ++video_count);
+            video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
             record = true;
         }
-        else if (key == 'E' || key == 'e' || key == 27)
+        else if (key == 'E' || key == 'e')
+        {
+            //closed = true;
+            if(record)
+            {
+                record = false;            
+                printf("Releasing the video \n");
+                video.release();
+            }
+        }
+        else if ( key == 27)
         {
             closed = true;
             if(record)
@@ -171,6 +187,7 @@ int main( int argc, char** argv )
         { 
             video.write(output);
         }
+        
 
 	}
 

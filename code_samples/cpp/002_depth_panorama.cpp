@@ -15,18 +15,16 @@ This code will grab the left & depth panorama and display in a window using open
 
 >>>>>> KEYBOARD CONTROLS:
 
-    ESC key closes the window
-	Press v/V to toggle vertical flip property    
-	Press f/F to toggle filter rgb property       
+ESC key closes the window
+Press v/V to toggle vertical flip property    
+Press f/F to toggle filter rgb property       
 
 */
 
 
-# include <stdio.h>
-
-# include <opencv2/opencv.hpp>
-
-# include "PAL.h"
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
@@ -46,8 +44,8 @@ Mat getColorMap(Mat img, float scale)
 
 int main( int argc, char** argv )
 {
-
-	namedWindow( "PAL Depth Panorama", WINDOW_NORMAL ); // Create a window for display.
+	// Create a window for display.
+	namedWindow( "PAL Depth Panorama", WINDOW_NORMAL ); 
 
 	int width, height;
 	PAL::Mode mode = PAL::Mode::LASER_SCAN;
@@ -67,8 +65,9 @@ int main( int argc, char** argv )
 	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
 
 	PAL::SetPathtoData(path, path2);
-
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+	
+	//Connect to the PAL camera
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;

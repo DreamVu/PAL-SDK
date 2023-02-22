@@ -29,9 +29,6 @@ namespace PAL
 		PAL::Acknowledgement GetCameraProperties(PAL::CameraProperties* properties);
 		
 		
-		PAL::Acknowledgement GetOdoaData(PAL::CameraProperties* properties);
-
-
 		// SetCameraProperties
 		// changes the camera properties like gamma, saturation etc.
 		//
@@ -75,9 +72,6 @@ namespace PAL
 
 		//Saves the current camera properties into the provided file name
 		PAL::Acknowledgement SaveProperties(const char* fileName);
-		
-		//Save ODOA Properties to a YAML file
-	    PAL::Acknowledgement Save_ODOA_Properties(const char* fileName);
 
 		//Loads the camera properties saved in the provided file
 		//If data argument is provided, the properties in the file would be written into data

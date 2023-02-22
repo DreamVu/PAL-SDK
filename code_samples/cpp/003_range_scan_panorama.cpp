@@ -15,16 +15,15 @@ This code will grab the left panorama with range scan overlayed on it and would 
 
 >>>>>> KEYBOARD CONTROLS:
 
-    ESC key closes the window
-	Press v/V to toggle vertical flip property           
+ESC key closes the window
+Press v/V to toggle vertical flip property   
+        
 */
 
 
-# include <stdio.h>
-
-# include <opencv2/opencv.hpp>
-
-# include "PAL.h"
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 #include "TimeLogger.h"
 #include <time.h>
 #include <unistd.h>
@@ -34,8 +33,8 @@ using namespace std;
 
 int main( int argc, char** argv )
 {
-
-	namedWindow( "PAL Range Scan", WINDOW_NORMAL ); // Create a window for display.
+	// Create a window for display.
+	namedWindow( "PAL Range Scan", WINDOW_NORMAL ); 
 
 	int width, height;
 	std::vector<int> camera_indexes{5};
@@ -54,12 +53,14 @@ int main( int argc, char** argv )
 
 	PAL::SetPathtoData(path, path2);
 
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+	//Connect to the PAL camera
+	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;
 	}
-
+	
+	usleep(1000000);
 	PAL::SetAPIMode(PAL::API_Mode::RANGE_SCAN);
 	usleep(1000000);
 
