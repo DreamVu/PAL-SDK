@@ -22,11 +22,11 @@ Press f/F to toggle filter rgb property
 */
 
 
-# include <stdio.h>
-# include <unistd.h>
-# include <opencv2/opencv.hpp>
-# include "PAL.h"
-# include <X11/Xlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
+#include <X11/Xlib.h>
 
 using namespace cv;
 using namespace std;
