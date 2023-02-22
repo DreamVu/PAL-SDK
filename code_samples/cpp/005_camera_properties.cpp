@@ -16,7 +16,21 @@ This code will grab the left & depth panorama and display in a window using open
 >>>>>> KEYBOARD CONTROLS:
 
 ESC key closes the window
-       
+Press Q & A keys increase and decrease the BRIGHTNESS respectively.
+Press W & S keys increase and decrease the CONTRAST respectively.
+Press E & D keys increase and decrease the SATURATION respectively.
+Press R & Z keys increase and decrease the GAMMA respectively.
+Press T & G keys increase and decrease the GAIN respectively.
+Press Y & H keys increase and decrease the WHITE BALANCE TEMPERATURE respectively.
+Press U & J keys increase and decrease the SHARPNESS respectively.
+Press I & K keys increase and decrease the EXPOSURE respectively.
+Press O key toggles AUTO WHITE BALANCE property.
+Press P key toggles AUTO EXPOSURE property.
+Press C key saves the current left+depth panorama image to a numbered file.
+Press N key saves the current camera properties to a file.
+Press L key loads the camera properties from the saved file.
+Press V key toggles VERTICAL FLIP property.
+Press F key toggles FILTER SPOTS property.  
 
 */
 
@@ -79,7 +93,7 @@ int main( int argc, char** argv )
 		discard =  PAL::GrabRangeScanData();		
 
 	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
+	//Each of the panoramas are displayed at their original resolution.
 	resizeWindow("PAL Camera Properties", width, height);
 
 	int key = ' ';
