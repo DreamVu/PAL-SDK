@@ -109,8 +109,8 @@ int main( int argc, char** argv )
     printf("I & K keys increase and decrease the EXPOSURE respectively.\n");
     printf("O key toggles AUTO WHITE BALANCE property.\n");
     printf("P key toggles AUTO EXPOSURE property.\n\n");
-	printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
-	printf("N key saves the current camera properties to a file. \n");
+    printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
+    printf("N key saves the current camera properties to a file. \n");
     printf("L key loads the camera properties from the saved file.\n");
     printf("V key toggles VERTICAL FLIP property. \n");
     printf("F key toggles FILTER SPOTS property. \n");
