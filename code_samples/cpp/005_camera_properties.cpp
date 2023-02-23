@@ -81,7 +81,12 @@ int main( int argc, char** argv )
 
 	PAL::CameraProperties camera_data;
 	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &camera_data);
-
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
+	
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
@@ -98,7 +103,7 @@ int main( int argc, char** argv )
 
 	int key = ' ';
 
-	cout<<"Press ESC to close the window."<<endl;
+	cout<<"\n\nPress ESC to close the window."<<endl;
 	printf("Q & A keys increase and decrease the BRIGHTNESS respectively.\n");
         printf("W & S keys increase and decrease the CONTRAST respectively. \n");
         printf("E & D keys increase and decrease the SATURATION respectively.\n");
@@ -108,12 +113,12 @@ int main( int argc, char** argv )
         printf("U & J keys increase and decrease the SHARPNESS respectively.\n");
         printf("I & K keys increase and decrease the EXPOSURE respectively.\n");
         printf("O key toggles AUTO WHITE BALANCE property.\n");
-        printf("P key toggles AUTO EXPOSURE property.\n\n");
-        printf("C key saves the current left+depth panorama image to a numbered file.\n\n");
+        printf("P key toggles AUTO EXPOSURE property.\n");
+        printf("C key saves the current left+depth panorama image to a numbered file.\n");
         printf("N key saves the current camera properties to a file. \n");
         printf("L key loads the camera properties from the saved file.\n");
         printf("V key toggles VERTICAL FLIP property. \n");
-        printf("F key toggles FILTER SPOTS property. \n");
+        printf("F key toggles FILTER SPOTS property. \n\n");
     
     
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);

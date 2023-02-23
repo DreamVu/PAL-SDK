@@ -32,10 +32,17 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+	
 
 	if ack_load != PAL_PYTHON.SUCCESSP:
 		print("Error Loading settings! Loading default values.")
 	
+	for i in range(0, 5):
+		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
+		
 	# Creating a window
 	source_window = 'PAL Video Capture'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
@@ -50,12 +57,12 @@ def main():
 	record = False
 	closed = False
 
-	print("Press ESC to close the window.")
+	print("\n\nPress ESC to close the window.")
 	print("Press v/V to flip vertically.")	
 	print("Press f/F to toggle filter rgb property.")
 	print("Press C to capture a single frame into a PNG file.")
 	print("Press B to begin the video capture.")
-	print("Press E to end the video capture.")
+	print("Press E to end the video capture.\n\n")
 	
 	flip = bool(loaded_prop["vertical_flip"])
 	filter_spots = bool(loaded_prop["filter_spots"])

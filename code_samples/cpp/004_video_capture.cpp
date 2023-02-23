@@ -68,7 +68,12 @@ int main( int argc, char** argv )
 
 	PAL::CameraProperties data;
 	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
+	
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
@@ -87,7 +92,7 @@ int main( int argc, char** argv )
     bool record = false;
     bool closed = false;
     
-	cout<<"Press ESC to close the window."<<endl;
+	cout<<"\n\nPress ESC to close the window."<<endl;
 	printf("Press v/V to toggle vertical flip property\n");	
 	printf("Press f/F to toggle filter rgb property\n");
 	
@@ -96,7 +101,7 @@ int main( int argc, char** argv )
 	
 	cout<<"Press C to capture a single frame into a PNG file."<<endl;
     cout<<"Press B to begin the video capture."<<endl;
-    cout<<"Press E to end the video capture."<<endl;
+    cout<<"Press E to end the video capture.\n"<<endl;
     
     cv::VideoWriter video;
     

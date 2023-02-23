@@ -35,6 +35,15 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+		
+	if ack_load != PAL_PYTHON.SUCCESSP:
+		print("Error Loading settings! Loading default values.")	
+	
+	for i in range(0, 5):
+		left, right  = PAL_PYTHON.GrabStereoDataP()
 	
 	# Creating a window
 	source_window = 'PAL Stereo Panorama'
@@ -53,8 +62,8 @@ def main():
 	
 	key = ' '
 	filter_spots = bool(loaded_prop["filter_spots"])
-	print("Press ESC to close the window.\n")
-	print("Press f/F to toggle filter rgb property.")
+	print("\n\nPress ESC to close the window.")
+	print("Press f/F to toggle filter rgb property.\n\n")
 
 	# ESC
 	while key != 27:

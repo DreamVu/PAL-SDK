@@ -32,10 +32,16 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
-
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+	
+	
 	if ack_load != PAL_PYTHON.SUCCESSP:
 		print("Error Loading settings! Loading default values.")
 	
+	for i in range(0, 5):
+		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
 	# Creating a window
 	source_window = 'PAL Camera Properties'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
@@ -48,7 +54,7 @@ def main():
 
 	key = ' '
 
-	print("Press ESC to close the window.")
+	print("\n\nPress ESC to close the window.")
 	print("Q & A keys increase and decrease the BRIGHTNESS respectively.")
 	print("W & S keys increase and decrease the CONTRAST respectively.")
 	print("E & D keys increase and decrease the SATURATION respectively.")
@@ -61,7 +67,7 @@ def main():
 	print("P key toggles AUTO EXPOSURE property.")
 	print("C key saves the current left+depth panorama image to a numbered file.")
 	print("N key saves the current camera properties to a file.")
-	print("L key loads the camera properties from the saved file.")
+	print("L key loads the camera properties from the saved file.\n\n")
  
 	flip = False
 	filter_spots = bool(loaded_prop["filter_spots"])

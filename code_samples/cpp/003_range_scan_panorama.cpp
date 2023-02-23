@@ -66,7 +66,11 @@ int main( int argc, char** argv )
 
 	PAL::CameraProperties data;
 	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
@@ -83,8 +87,8 @@ int main( int argc, char** argv )
 
 	int key = ' ';
 
-	cout<<"Press ESC to close the window."<<endl;
-	printf("Press v/V to toggle vertical flip property\n");	
+	cout<<"\n\nPress ESC to close the window."<<endl;
+	printf("Press v/V to toggle vertical flip property\n\n");	
 	
 	bool flip = data.vertical_flip;	
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
