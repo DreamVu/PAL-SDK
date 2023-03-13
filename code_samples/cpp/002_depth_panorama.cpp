@@ -95,7 +95,7 @@ int main( int argc, char** argv )
 		discard =  PAL::GrabRangeScanData();		
 
 	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
+	//Each of the panoramas are displayed at their original resolution.
 	resizeWindow("PAL Depth Panorama", width, height);
 
 	int key = ' ';

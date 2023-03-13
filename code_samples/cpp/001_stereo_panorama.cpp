@@ -57,7 +57,6 @@ int main( int argc, char** argv )
 	char path2[1024];
 	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
 
-	PAL::SetPathtoData(path, path2);
 	PAL::DisableTRTModels(true);
 	
 	//Connect to the PAL camera
@@ -71,23 +70,24 @@ int main( int argc, char** argv )
 	
 	usleep(1000000);
 
-	PAL::CameraProperties data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
+	PAL::CameraProperties data1;
+	
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data1);
 	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
 	{
 		PAL::Destroy();
 		return 1;
 	}
-	
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
 	}
-	
+
 	Display* disp = XOpenDisplay(NULL);
 	Screen*  scrn = DefaultScreenOfDisplay(disp);
 	int sc_height = scrn->height;
 	int sc_width  = scrn->width;
+		
 	
 	resizeWindow("PAL Stereo Panorama", sc_width-60, sc_height-60);
 	
@@ -102,13 +102,14 @@ int main( int argc, char** argv )
 	//Display the overlayed image
 	imshow( "PAL Stereo Panorama", output);
 
+
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
-
+		
 		std::vector<PAL::Data::Stereo> data;
-
-		data =  PAL::GetStereoData();	
+		data =  PAL::GetStereoData();
+		
 
         cv::Mat display;
         

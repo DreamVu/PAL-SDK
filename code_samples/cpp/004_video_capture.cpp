@@ -18,7 +18,9 @@ This code will grab the left & depth panorama and display in a window using open
 ESC key closes the window
 Press v/V to toggle vertical flip property    
 Press f/F to toggle filter rgb property       
-
+Press C to capture a single frame into a PNG file.
+Press B to begin the video capture.
+Press E to end the video capture.
 */
 
 
@@ -85,7 +87,7 @@ int main( int argc, char** argv )
 		discard =  PAL::GrabRangeScanData();		
 
 	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
+	//Each of the panoramas are displayed at their original resolution.
 	resizeWindow("PAL Video Capture", width, 2*height);
 
 	int key = ' ';
@@ -153,12 +155,14 @@ int main( int argc, char** argv )
 			unsigned long int flags = PAL::VERTICAL_FLIP;
 			PAL::SetCameraProperties(&prop, &flags);
 		}
+		
 		if(key == 'C' || key == 'c') //capture an image using imwrite
         {
         	sprintf(image_filename, "image_%d.png", ++image_count);
             imwrite(image_filename, output);
             printf("The current frame is saved as image.png\n");
         }
+        
         else if(key == 'B' || key == 'b')
         {
             cv::Size size = cv::Size(output.cols, output.rows);

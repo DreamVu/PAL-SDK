@@ -59,8 +59,6 @@ int main( int argc, char** argv )
 		cout<<"Init failed"<<endl;
 		return 1;
 	}
-	
-	usleep(1000000);
 	PAL::SetAPIMode(PAL::API_Mode::RANGE_SCAN);
 	usleep(1000000);
 
@@ -79,10 +77,10 @@ int main( int argc, char** argv )
 	//discarding initial frames
 	std::vector<PAL::Data::ODOA_Data> discard;
 	for(int i=0; i<5;i++)
-		discard =  PAL::GrabRangeScanData();		
+		discard =  PAL::GrabRangeScanData();
 
 	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
+	//Each of the panoramas are displayed at their original resolution.
 	resizeWindow("PAL Range Scan", width, height);
 
 	int key = ' ';
