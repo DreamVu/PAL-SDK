@@ -72,6 +72,8 @@ namespace PAL
 		
 		void UpdateZoomParams(int updated_Width, int updated_Height, int x_c, int y_c);
 		void DisableTRTModels(bool flag);
+		
+		void SetAppMode(int app);
 
 		std::vector<PAL::Data::Stereo> GetStereoData();
 		PAL::Data::Depth  GetDepthData();
@@ -85,9 +87,21 @@ namespace PAL
 		void SetRemapRGBMode(bool rgb);
 
 
-		//Grabs the left, right panorama along with the tracking data. If enableDepth  \
-		//is enbled then it will also grab the depth and floor panoramas.
+		//Grabs the left, right panorama along with the tracking data.  \
+		//If depth is enbled then it will also grab the depth panoramas.
 		std::vector<PAL::Data::TrackingResults> GrabTrackingData();
+
+		//Choose b/w various tracking modes like people following, object tracking etc
+		int SetModeInTracking(int mode);
+
+		//Choose which model to use for tracking
+		int SetInitTrackingModel(int model);
+
+		//Set ID of  the tracked object you want to following
+		void SetTrackID(int id);
+
+		//Get ID of the object being followed
+		int GetTrackID();
 
 		//Returns a vector of available resolutions.
         std::vector<PAL::Resolution> GetAvailableResolutions();
