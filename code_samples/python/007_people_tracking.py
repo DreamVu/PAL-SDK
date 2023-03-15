@@ -1,5 +1,5 @@
 #CODE SAMPLE # 007: People Tracking
-#This code will grab the left panorama with person tracking data #overlayed on it and would be displayed in a window using opencv
+#This code will grab the left panorama with person tracking data overlayed on it and would be displayed in a window using opencv
 
 import sys
 import PAL_PYTHON
@@ -67,9 +67,9 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
         text2_width = 0
 
         if only_detection:
-            label1 = "Class= " + classes[ round(trackingData[PAL_PYTHON.OKP][i]["t_label"]) ]
+            label1 = "Class= " + classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
         else:
-            label1 = "ID=" + str(trackingData[PAL_PYTHON.OKP][i]["t_track_id"]) + ", "+classes[ round(trackingData[PAL_PYTHON.OKP][i]["t_label"]) ]
+            label1 = "ID=" + str(trackingData[PAL_PYTHON.OKP][i]["t_track_id"]) + ", "+classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
 
         if ENABLEDEPTH:
             if ENABLE3D:
@@ -150,10 +150,6 @@ def print_track(results):
 
     print("\n")
 
-
-
-
-
 def main():
 
 	# Initialising camera
@@ -169,7 +165,6 @@ def main():
 	#PAL_PYTHON.SetPathtoDataP(path)
 	PAL_PYTHON.SetInitTrackingModelP(PAL_PYTHON.MODEL_0P)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
-
 
 	if res_init!= PAL_PYTHON.SUCCESSP:
 		print("Camera Init failed\n")
@@ -188,9 +183,6 @@ def main():
 	if ack_load != PAL_PYTHON.SUCCESSP:
 		print("Error Loading settings! Loading default values.")
         
-	k = 0
-	fps = 0
-	
 	enableDepth = False
 	enable3Dlocation = False
 	
@@ -207,7 +199,6 @@ def main():
 	sc_height = screen.height_in_pixels
 	sc_width  = screen.width_in_pixels
 	
-
 	# Changing window size
 	cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
 	
@@ -218,13 +209,11 @@ def main():
 	print("\n\nPress ESC to close the window.")
 	print("Press f/F to toggle filter rgb property.\n\n")
 
-	t1 = time.time()
-
 	# ESC
 	while key != 27:
 
 		left, right, depth, trackingData =  PAL_PYTHON.GrabTrackingDataP()
-		#display = left
+		
 		display = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
         
 		drawOnImage(display, trackingData, tracking_mode, enableDepth, enable3Dlocation)
@@ -233,36 +222,31 @@ def main():
 		
 		#print_track(trackingData)
 
-        # Wait for 1ms
+        	# Wait for 1ms
 		key = cv2.waitKey(1) & 255
-		k = k+1
-
-		if k == 20:
-			t2 = time.time()
-			fps = 20*1000/(t2-t1)
-			print("FPS : ", fps)
-			t1 = t2
-			k = 0 
         
+		#f
 		if key == 102:		    
 			flag = PAL_PYTHON.FILTER_SPOTSP
 			filter_spots = not(filter_spots)
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-			
 		
+		#v	
 		if key == 118:		    
 			flag = PAL_PYTHON.VERTICAL_FLIPP
 			vertical_flip = not(vertical_flip)
 			loaded_prop["vertical_flip"] = vertical_flip
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-			
+		
+		#m	
 		if key == 109:
 			flag = PAL_PYTHON.FDP
 			fd = not(fd)
 			loaded_prop["fd"] = fd
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
+		#d
 		if key == 100:	
 			enableDepth = not(enableDepth)	    
 			if enableDepth:
@@ -272,14 +256,16 @@ def main():
 					PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_ONP)
 			else:
 				PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
-
+		
+		#l
 		if key == 108:	
  			enable3Dlocation = not(enable3Dlocation)
 
+		#s
 		if key == 115:	
 			PAL_PYTHON.SavePropertiesP("../../../Explorer/SavedPalProperties.txt")
 
-    # Destroying connections
+    	# Destroying connections
 	print("exiting the application\n")
 	PAL_PYTHON.DestroyP()
 
