@@ -124,6 +124,13 @@ namespace PAL
 		OBJECT_DETECTION = 0X10,
 	};
 
+	enum Tracking_Model
+	{
+		MODEL_0 = 0,
+		MODEL_1 = 1,
+		MODEL_2 = 2,
+	};
+
 	enum DepthInTracking
 	{
 		DEPTH_OFF = 0x1,
