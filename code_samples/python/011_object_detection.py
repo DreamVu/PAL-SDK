@@ -1,5 +1,5 @@
-#CODE SAMPLE # 007: People Tracking
-#This code will grab the left panorama with person tracking data #overlayed on it and would be displayed in a window using opencv
+#CODE SAMPLE # 011: Object detection panorama
+#This code will grab the left panorama with object detection data overlayed on it and would be displayed in a window using opencv
 
 import sys
 import PAL_PYTHON
@@ -8,6 +8,7 @@ import numpy as np
 import math
 from Xlib.display import Display
 import time
+import subprocess
 
 def get_color(idx):
     idx += 3
@@ -167,7 +168,7 @@ def main():
 	
 	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
 	#PAL_PYTHON.SetPathtoDataP(path)
-	PAL_PYTHON.SetInitTrackingModelP(PAL_PYTHON.MODEL_0P)	
+	PAL_PYTHON.SetInitTrackingModelP(PAL_PYTHON.MODEL_1P)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
 
@@ -194,26 +195,29 @@ def main():
 	enableDepth = False
 	enable3Dlocation = False
 	
+	
 	PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
 
-	tracking_mode = PAL_PYTHON.PEOPLE_TRACKINGP
+	tracking_mode = PAL_PYTHON.OBJECT_DETECTIONP
 	success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
 	
 	# Creating a window
-	source_window = 'PAL People Tracking'
+	source_window = 'PAL Object Detection'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
 	
 	screen = Display().screen()
 	sc_height = screen.height_in_pixels
 	sc_width  = screen.width_in_pixels
 	
+	
+	
 
 	# Changing window size
 	cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
 	
 	key = ' '
-	filter_spots = True
 	vertical_flip = True
+	filter_spots = True
 	fd = True
 	print("\n\nPress ESC to close the window.")
 	print("Press f/F to toggle filter rgb property.\n\n")
@@ -243,20 +247,19 @@ def main():
 			print("FPS : ", fps)
 			t1 = t2
 			k = 0 
-        
+
 		if key == 102:		    
 			flag = PAL_PYTHON.FILTER_SPOTSP
 			filter_spots = not(filter_spots)
 			loaded_prop["filter_spots"] = filter_spots
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-			
 		
 		if key == 118:		    
 			flag = PAL_PYTHON.VERTICAL_FLIPP
 			vertical_flip = not(vertical_flip)
 			loaded_prop["vertical_flip"] = vertical_flip
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-			
+
 		if key == 109:
 			flag = PAL_PYTHON.FDP
 			fd = not(fd)

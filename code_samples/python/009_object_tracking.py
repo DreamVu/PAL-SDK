@@ -1,5 +1,5 @@
-#CODE SAMPLE # 007: People Tracking
-#This code will grab the left panorama with person tracking data #overlayed on it and would be displayed in a window using opencv
+#CODE SAMPLE # 009: Object Tracking panorama
+#This code will grab the left panorama with object tracking data overlayed on it and would be displayed in a window using opencv
 
 import sys
 import PAL_PYTHON
@@ -167,7 +167,7 @@ def main():
 	
 	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
 	#PAL_PYTHON.SetPathtoDataP(path)
-	PAL_PYTHON.SetInitTrackingModelP(PAL_PYTHON.MODEL_0P)	
+	PAL_PYTHON.SetInitTrackingModelP(PAL_PYTHON.MODEL_1P)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
 
@@ -196,11 +196,11 @@ def main():
 	
 	PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
 
-	tracking_mode = PAL_PYTHON.PEOPLE_TRACKINGP
+	tracking_mode = PAL_PYTHON.OBJECT_TRACKINGP
 	success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
 	
 	# Creating a window
-	source_window = 'PAL People Tracking'
+	source_window = 'PAL Object Tracking'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
 	
 	screen = Display().screen()
@@ -262,6 +262,7 @@ def main():
 			fd = not(fd)
 			loaded_prop["fd"] = fd
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+		
 
 		if key == 100:	
 			enableDepth = not(enableDepth)	    
