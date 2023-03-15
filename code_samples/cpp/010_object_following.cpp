@@ -1,17 +1,17 @@
 /*
 
-CODE SAMPLE # 007: People Tracking
-This code will grab the left panorama with person tracking data overlayed on it and would be displayed in a window using opencv
+CODE SAMPLE # 010: Object following panorama
+This code sample will center on the object being tracked and follow it
 
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 007_people_tracking.cpp
+./compile.sh 010_object_following.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
 
-./007_people_tracking.out
+./010_object_following.out
 
 
 >>>>>> KEYBOARD CONTROLS:
@@ -21,7 +21,9 @@ This code will grab the left panorama with person tracking data overlayed on it 
     Press v/V to toggle Vertical Flip property.
     Press d/D to enable/Disable Depth calculation.
     Press l/L to enable/Disable 3D Location calculation.
-    Press m/M to toggle Fast Depth property        
+    Press m/M to toggle Fast Depth property.
+    Press i/I to set ID of the person you want to follow.
+    Press p/P to print the ID of the person being followed.
 */
 
 
@@ -40,6 +42,30 @@ This code will grab the left panorama with person tracking data overlayed on it 
 
 using namespace cv;
 using namespace std;
+
+string getCmdOutput(string cmd)
+{
+   string outputString;
+   FILE *outpStream;
+   const int MaxLineLen = 128;
+   char  outpLine[MaxLineLen];
+   outpStream = popen(cmd.c_str(), "r");
+   if (outpStream) {
+      while (!feof(outpStream)) {
+          if (fgets(outpLine, MaxLineLen, outpStream) != NULL) {
+             outputString += outpLine;
+          }
+      }
+      pclose(outpStream);
+   }
+   return outputString;
+}
+
+bool is_number(const std::string& s)
+{
+    return !s.empty() && std::find_if(s.begin(), 
+        s.end(), [](unsigned char c) { return !std::isdigit(c); }) == s.end();
+}
 
 Scalar get_color(int idx)
 {
@@ -211,10 +237,10 @@ void print_track(std::vector<std::vector<PAL::Data::TrackND>> results)
 
 int main( int argc, char** argv )
 {
-    namedWindow( "PAL PEOPLE_TRACKING", WINDOW_NORMAL ); // Create a window for display.
+    namedWindow( "PAL OBJECT_FOLLOWING", WINDOW_NORMAL ); // Create a window for display.
 
     //Select the Model to use in Tracking. To be set before Init call.
-    PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_0);
+    PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_1);
 
     int width, height;
     std::vector<int> camera_indexes{5};
@@ -247,12 +273,12 @@ int main( int argc, char** argv )
     bool enable3Dlocation = false;
     PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
 
-    int tracking_mode = PAL::Tracking_Mode::PEOPLE_TRACKING;
+    int tracking_mode = PAL::Tracking_Mode::OBJECT_FOLLOWING;
     int success = PAL::SetModeInTracking(tracking_mode);
 
     //width and height are the dimensions of each panorama.
     //Each of the panoramas are displayed at otheir original resolution.
-    resizeWindow("PAL PEOPLE_TRACKING", width, height);
+    resizeWindow("PAL OBJECT_FOLLOWING", width, height);
 
     int key = ' ';
 
@@ -262,6 +288,8 @@ int main( int argc, char** argv )
     cout << "Press d/D to enable/Disable Depth calculation." << endl;
     cout << "Press l/L to enable/Disable 3D Location calculation." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
+    cout << "Press i/I to set ID of the person you want to follow." << endl;
+    cout << "Press p/P to print the ID of the person being followed." << endl;
 
     //27 = esc key. Run the loop until the ESC key is pressed
     while(key != 27)
@@ -274,10 +302,47 @@ int main( int argc, char** argv )
         drawOnImage(display, data[0], tracking_mode, enableDepth, enable3Dlocation);
         
         //Display the stereo images
-        imshow( "PAL PEOPLE_TRACKING", display);  
+        imshow( "PAL OBJECT_FOLLOWING", display);  
 
         //Wait for the keypress - with a timeout of 1 ms
         key = waitKey(1) & 255;
+
+        if (key == 'i' || key == 'I')
+        {
+            string zenityCmd = "zenity --entry --text \"Enter ID to Track\" --title \"PAL Object Following\" --entry-text=\"\"";
+            string output = getCmdOutput(zenityCmd);
+
+            output.erase(std::remove(output.begin(), output.end(), ' '), output.end());
+            output.erase(std::remove(output.begin(), output.end(), '\n'), output.end());
+            output.erase(std::remove(output.begin(), output.end(), '\t'), output.end());
+
+            if(is_number(output))
+            {
+                PAL::SetTrackID(stoi(output));
+            }    
+            else
+            {
+                string errorCmd = "zenity --warning  --text \"Not a valid input\" --title \"PAL Object Following\"";
+                FILE *outpStream = popen(errorCmd.c_str(), "r");
+                pclose(outpStream);      
+            }
+        }
+        if (key == 'p' || key == 'P')
+        {
+            int new_id = PAL::GetTrackID();
+            if(new_id == -2)
+            {
+                std::cout << "Currently not in Following Mode" << std::endl;
+            }
+            else if(new_id == -1)
+            {
+                std::cout << "No ID has been entered. Press 'i' to enter an ID" << std::endl; 
+            }
+            else
+            {
+                std::cout << "The ID currently being followed is: " << new_id << std::endl;
+            }
+        }
         
         if (key == 'f' || key == 'F')
         {   
