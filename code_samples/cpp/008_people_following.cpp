@@ -290,10 +290,16 @@ int main( int argc, char** argv )
     cout << "Press m/M to toggle Fast Depth property" << endl;
     cout << "Press i/I to set ID of the person you want to follow." << endl;
     cout << "Press p/P to print the ID of the person being followed." << endl;
-
-    //27 = esc key. Run the loop until the ESC key is pressed
-    while(key != 27)
-    {
+	extern bool camera_changed;
+	
+	//27 = esc key. Run the loop until the ESC key is pressed
+	while(key != 27)
+	{
+		
+		if(camera_changed)
+		{
+			break;
+		}
 
         std::vector<PAL::Data::TrackingResults> data;
         data =  PAL::GrabTrackingData();    

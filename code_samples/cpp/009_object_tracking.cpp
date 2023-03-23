@@ -263,10 +263,16 @@ int main( int argc, char** argv )
     cout << "Press d/D to enable/Disable Depth calculation." << endl;
     cout << "Press l/L to enable/Disable 3D Location calculation." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
-
-    //27 = esc key. Run the loop until the ESC key is pressed
-    while(key != 27)
-    {
+	extern bool camera_changed;
+	
+	//27 = esc key. Run the loop until the ESC key is pressed
+	while(key != 27)
+	{
+		
+		if(camera_changed)
+		{
+			break;
+		}
 
         std::vector<PAL::Data::TrackingResults> data;
         data =  PAL::GrabTrackingData();    

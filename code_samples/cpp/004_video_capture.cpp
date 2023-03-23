@@ -116,10 +116,16 @@ int main( int argc, char** argv )
 	char video_filename[128];
 	int image_count = 0;
 	int video_count = 0;
-
+	extern bool camera_changed;
+	
 	//27 = esc key. Run the loop until the ESC key is pressed
-	while(!closed)
+	while(key != 27)
 	{
+		
+		if(camera_changed)
+		{
+			break;
+		}
 
 		std::vector<PAL::Data::ODOA_Data> data;
 

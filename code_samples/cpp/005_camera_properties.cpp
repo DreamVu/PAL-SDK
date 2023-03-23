@@ -131,10 +131,16 @@ int main( int argc, char** argv )
 	char fileName[1024];
 
 	PAL::CameraPropertyValues cpv;
-
+	extern bool camera_changed;
+	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
+		
+		if(camera_changed)
+		{
+			break;
+		}
 
 		std::vector<PAL::Data::ODOA_Data> data;
 

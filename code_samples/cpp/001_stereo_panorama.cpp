@@ -101,12 +101,16 @@ int main( int argc, char** argv )
 	
 	//Display the overlayed image
 	imshow( "PAL Stereo Panorama", output);
-
-
+	extern bool camera_changed;
+	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
 		
+		if(camera_changed)
+		{
+			break;
+		}	
 		std::vector<PAL::Data::Stereo> data;
 		data =  PAL::GetStereoData();
 		
