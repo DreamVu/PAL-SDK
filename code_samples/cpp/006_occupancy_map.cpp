@@ -150,19 +150,19 @@ int main(int argc, char *argv[])
 	
 	bool filter_spots = prop.filter_spots;
 	bool flip = prop.vertical_flip;	
-	extern bool camera_changed;
+
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
-		
-		if(camera_changed)
-		{
-			break;
-		}
+
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		cv::Mat depth;
 		if(prop.raw_depth)
 			depth = data[0].fused_depth.clone();

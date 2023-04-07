@@ -93,21 +93,18 @@ int main( int argc, char** argv )
 
 	//Display the overlayed image
 	imshow( "PAL Range Scan", output);
-	extern bool camera_changed;
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
-		
-		if(camera_changed)
-		{
-			break;
-		}
 
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();	
-
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		//Display the overlayed image
 		imshow( "PAL Range Scan", data[0].marked_left);  
 

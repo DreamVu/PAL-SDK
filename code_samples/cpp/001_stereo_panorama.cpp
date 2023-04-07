@@ -57,7 +57,7 @@ int main( int argc, char** argv )
 	char path2[1024];
 	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
 
-	PAL::DisableTRTModels(true);
+	PAL::DisableModels(true);
 	
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
@@ -101,18 +101,19 @@ int main( int argc, char** argv )
 	
 	//Display the overlayed image
 	imshow( "PAL Stereo Panorama", output);
-	extern bool camera_changed;
+
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
 		
-		if(camera_changed)
-		{
-			break;
-		}	
+
 		std::vector<PAL::Data::Stereo> data;
 		data =  PAL::GetStereoData();
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		
 
         cv::Mat display;

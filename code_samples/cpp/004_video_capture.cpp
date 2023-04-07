@@ -116,21 +116,19 @@ int main( int argc, char** argv )
 	char video_filename[128];
 	int image_count = 0;
 	int video_count = 0;
-	extern bool camera_changed;
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
-		
-		if(camera_changed)
-		{
-			break;
-		}
+
 
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();	
-		
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		Mat l = data[0].left;
 		Mat d = data[0].distance.clone();
 		d.convertTo(d, CV_8UC1);

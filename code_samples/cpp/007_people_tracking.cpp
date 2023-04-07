@@ -71,7 +71,7 @@ void drawOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
     "refrigerator","book","clock","vase","scissors","teddy bear",
     "hair drier","toothbrush"};
 
-    bool only_detection = (mode == PAL::Tracking_Mode::OBJECT_DETECTION) ? true : false;
+    bool only_detection = (mode == PAL::Tracking_Mode::PEOPLE_DETECTION || mode == PAL::Tracking_Mode::OBJECT_DETECTION) ? true : false;
     if(!ENABLEDEPTH)
         ENABLE3D = false;
 
@@ -231,17 +231,17 @@ int main( int argc, char** argv )
     PAL::SetAPIMode(PAL::API_Mode::TRACKING);
     usleep(1000000);
 
-    PAL::CameraProperties data;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("/home/dreamvu/DreamVu/PAL/Explorer/SavedPalProperties.txt", &data);
+    PAL::CameraProperties cam_data;
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &cam_data);
 
     if(ack_load != PAL::SUCCESS)
     {
         cout<<"Error Loading settings! Loading default values."<<endl;
     }
 
-    bool filter_spots = true;
-    bool flip = true;
-    bool fd = true;
+    bool filter_spots = cam_data.filter_spots;
+    bool flip = cam_data.vertical_flip;
+    bool fd = cam_data.fd;
 
     bool enableDepth = false;
     bool enable3Dlocation = false;
@@ -249,6 +249,12 @@ int main( int argc, char** argv )
 
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_TRACKING;
     int success = PAL::SetModeInTracking(tracking_mode);
+	std::vector<PAL::Data::TrackingResults> dataDiscard;
+	dataDiscard =  PAL::GrabTrackingData();    
+
+	width = dataDiscard[0].left.cols;
+	height = dataDiscard[0].left.rows;
+
 
     //width and height are the dimensions of each panorama.
     //Each of the panoramas are displayed at otheir original resolution.
@@ -262,20 +268,19 @@ int main( int argc, char** argv )
     cout << "Press d/D to enable/Disable Depth calculation." << endl;
     cout << "Press l/L to enable/Disable 3D Location calculation." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
-	extern bool camera_changed;
+
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
-		
-		if(camera_changed)
-		{
-			break;
-		}
+
 
         std::vector<PAL::Data::TrackingResults> data;
         data =  PAL::GrabTrackingData();    
-
+		if(data[0].camera_changed)
+		{
+			break;
+		}
         cv::Mat display = data[0].left;
         drawOnImage(display, data[0], tracking_mode, enableDepth, enable3Dlocation);
         
