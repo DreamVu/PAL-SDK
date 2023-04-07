@@ -94,6 +94,7 @@ namespace PAL
 	{
 		EQUI_RECTANGULAR = 0,
 		PERSPECTIVE = 1,
+		SPHERICAL = 2,
 	};
 	
 	enum DetectionMode
@@ -122,6 +123,7 @@ namespace PAL
 		OBJECT_TRACKING = 0X4,
 		OBJECT_FOLLOWING = 0X8,
 		OBJECT_DETECTION = 0X10,
+		PEOPLE_DETECTION = 0X20,
 	};
 
 	enum Tracking_Model

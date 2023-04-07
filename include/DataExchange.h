@@ -111,9 +111,11 @@ namespace PAL
             cv::Mat mask;   
             cv::Mat mask_de;
             cv::Mat flow;
+            cv::Mat spherical_mask;
             
             cv::Mat stereo_left;
             cv::Mat stereo_right;
+            bool camera_changed = false;
         };
         
         
@@ -196,6 +198,7 @@ namespace PAL
             cv::Mat mask;
             cv::Mat mask_de;
             cv::Mat flow;
+            cv::Mat spherical_mask;
             cv::Mat point_cloud;
             
             cv::Mat stereo_left;
@@ -207,6 +210,8 @@ namespace PAL
             cv::Mat removed;
 
             std::vector<std::vector<PAL::Data::TrackND>> trackData;
+            
+            cv::Mat segmenter_mask;
         };
 
         struct ODOA_Data : Common
@@ -219,6 +224,8 @@ namespace PAL
             cv::Mat marked_left;
             cv::Mat point_cloud;
             cv::Mat fused_depth;
+            cv::Mat segmenter_mask;
+            bool camera_changed = false;
         };
 
         struct TrackingResults : Common
@@ -227,6 +234,14 @@ namespace PAL
             cv::Mat right;
             cv::Mat depth;
             std::vector<std::vector<PAL::Data::TrackND>> trackingData;
+            bool camera_changed = false;
+        };
+        
+        struct SegmenterData : Common
+        {
+        	cv::Mat left;
+        	cv::Mat segmenter_mask;
+        	cv::Mat display_rgb;
         };
     }
 

@@ -71,7 +71,10 @@ namespace PAL
 		void Destroy();
 		
 		void UpdateZoomParams(int updated_Width, int updated_Height, int x_c, int y_c);
-		void DisableTRTModels(bool flag);
+		void DisableModels(bool flag);
+
+		//Use it with GPIO application on devices with low resources to improve performance
+		void SyncronizeInputs(bool flag);
 		
 		void SetAppMode(int app);
 
@@ -106,7 +109,17 @@ namespace PAL
 		//Returns a vector of available resolutions.
         std::vector<PAL::Resolution> GetAvailableResolutions();
 
+        //Depth calculation could be turned on or off in tracking mode
         void SetDepthModeInTracking(int mode);
+
+        //Set different threshold for each class. Same value applies for each class when the class_id = -1.
+        //Valid when SetModeInTracking() is used to set PEOPLE_DETECTION or OBJECT_DETECTION mode.
+        void SetDetectionModeThreshold(float threshold, int class_id=-1);
+
+        //A Utility function to visualise the tracking information. It draws bounding boxes around 
+        //the tracked object and displays their ID. It will also display depth or 3d location based on set modes.
+        void drawTracksOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
+        bool ENABLEDEPTH=false, bool ENABLE3D=false);
 
         //This is a blocking call, waits till all the pending depth / disparity computations are finished and returns.
 		//This should be used only when asynchronous is true in GrabFrames function arguments
