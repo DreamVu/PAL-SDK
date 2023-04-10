@@ -1,19 +1,16 @@
 /*
 
-CODE SAMPLE # 009: Object Tracking panorama
-This code will grab the left panorama with object tracking data overlayed on it and would be displayed in a window using opencv
-
+CODE SAMPLE # 014: Object Tracking With GPIO compatibilty
+This code will grab the 360 rgb data, do object tracking and toggle GPIO pins of the Nvidia board.
 
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 009_object_tracking.cpp
-
+./compile.sh 014_object_tracking_GPIO.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 
-./009_object_tracking.out
-
+./014_object_tracking_GPIO.out
 
 >>>>>> KEYBOARD CONTROLS:
 
@@ -69,18 +66,15 @@ int main( int argc, char** argv )
 	GPIO::setup(camera_pin_2, GPIO::OUT, GPIO::LOW);
 	GPIO::setup(camera_pin_3, GPIO::OUT, GPIO::LOW);
 	
-	
 	//setting detection pin inactive by default
 	GPIO::setup(detection_pin, GPIO::OUT, GPIO::HIGH);
-
-
+	
     //Select the Model to use in Tracking. To be set before Init call.
     PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_0);
 
     int width, height;
     std::vector<int> camera_indexes{5};
     PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
-    
 
 	GPIO::output(camera_pin, 1);
 	GPIO::output(camera_pin_1, 1);
@@ -109,7 +103,7 @@ int main( int argc, char** argv )
     usleep(1000000);
 
     PAL::CameraProperties data;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("/home/dreamvu/DreamVu/PAL/Explorer/SavedPalProperties.txt", &data);
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
 
     if(ack_load != PAL::SUCCESS)
     {
@@ -119,11 +113,11 @@ int main( int argc, char** argv )
 	PAL::CameraProperties prop;
 	prop.exposure = 1000;
 	prop.auto_exposure = 1;
-	prop.auto_exposure_method = 0;
-	prop.hid_frame_rate = 5;
-	unsigned long int flags = PAL::FD;
-	flags = flags | PAL::EXPOSURE | PAL::AUTO_EXPOSURE | PAL::AUTO_EXPOSURE_METHOD | PAL::HID_FRAME_RATE;
-	PAL::SetCameraProperties(&prop, &flags);	
+	prop.auto_exposure_method = 1;
+
+	unsigned long int flags = PAL::EXPOSURE ;
+	flags = flags | PAL::AUTO_EXPOSURE | PAL::AUTO_EXPOSURE_METHOD ;
+	PAL::SetCameraProperties(&prop, &flags);
 
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_TRACKING;
     int success = PAL::SetModeInTracking(tracking_mode);
@@ -133,7 +127,8 @@ int main( int argc, char** argv )
 	bool bDetectionPinActive = false;
 	extern bool camera_disconnected;
 	
-	//27 = esc key. Run the loop until the ESC key is pressed
+	std::cout << "Press CTRL+C to close the application." << std::endl;
+
 	while(!g_bExit)
 	{
 

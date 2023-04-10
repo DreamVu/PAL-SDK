@@ -6,12 +6,12 @@ This code sample allows users to run Safe Zone Detection.
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 011_object_detection.cpp
+./compile.sh 013_safe_zone_detection.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
 
-./011_object_detection.out
+./013_safe_zone_detection.out
 
 
 >>>>>> KEYBOARD CONTROLS:

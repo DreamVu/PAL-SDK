@@ -1,27 +1,23 @@
 /*
 
-CODE SAMPLE # 007: People Tracking
-This code will grab the left panorama with person tracking data overlayed on it and would be displayed in a window using opencv
+CODE SAMPLE # 015: People Tracking
+This code will grab the detection and depth data and transmit the same over uart.
 
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 007_people_tracking.cpp
+./compile.sh 015_people_tracking_UART.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
 
-./007_people_tracking.out
+./015_people_tracking_UART.out
 
 
 >>>>>> KEYBOARD CONTROLS:
 
-    Press ESC to close the window.
-    Press f/F to toggle filter rgb property
-    Press v/V to toggle Vertical Flip property.
-    Press d/D to enable/Disable Depth calculation.
-    Press l/L to enable/Disable 3D Location calculation.
-    Press m/M to toggle Fast Depth property        
+    Press CTRL+C to close the application.
+      
 */
 
 
@@ -211,7 +207,7 @@ int main( int argc, char** argv )
     		PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
     	}
     } 
-    namedWindow( "PAL PEOPLE_TRACKING_UART", WINDOW_NORMAL ); // Create a window for display.
+    namedWindow( "PAL OBJECT_TRACKING_UART", WINDOW_NORMAL ); // Create a window for display.
 
     //Select the Model to use in Tracking. To be set before Init call.
     PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_0);
@@ -281,7 +277,7 @@ int main( int argc, char** argv )
     usleep(1000000);
 
     PAL::CameraProperties data;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("/home/dreamvu/DreamVu/PAL/Explorer/SavedPalProperties.txt", &data);
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
 
     if(ack_load != PAL::SUCCESS)
     {
@@ -300,7 +296,7 @@ int main( int argc, char** argv )
 
     //width and height are the dimensions of each panorama.
     //Each of the panoramas are displayed at otheir original resolution.
-    resizeWindow("PAL PEOPLE_TRACKING_UART", width, height);
+    resizeWindow("PAL OBJECT_TRACKING_UART", width, height);
 
     int key = ' ';
 
@@ -313,6 +309,8 @@ int main( int argc, char** argv )
     
 	extern bool camera_changed;
 	
+	std::cout << "Press CTRL+C to close the application." << std::endl;
+
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(!g_bExit)
 	{
@@ -360,12 +358,6 @@ int main( int argc, char** argv )
 		    write(serial_port, End, 1);			                
 		    printf("[INFO] END OF THE FRAME\n\n");
 		}
-		
-		//Display the stereo images
-        imshow( "PAL OBJECT_TRACKING_UART", display);  
-
-        //Wait for the keypress - with a timeout of 1 ms
-        key = waitKey(1) & 255;
 		
 		
     }

@@ -6,12 +6,12 @@ This code sample allows users to check if the distance between two people is wit
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 011_object_detection.cpp
+./compile.sh 012_social_distancing.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
 
-./011_object_detection.out
+./012_social_distancing.out
 
 
 >>>>>> KEYBOARD CONTROLS:
