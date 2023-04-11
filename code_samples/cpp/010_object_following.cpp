@@ -22,8 +22,8 @@ This code sample will center on the object being tracked and follow it
     Press d/D to enable/Disable Depth calculation.
     Press l/L to enable/Disable 3D Location calculation.
     Press m/M to toggle Fast Depth property.
-    Press i/I to set ID of the person you want to follow.
-    Press p/P to print the ID of the person being followed.
+    Press i/I to set ID of the object you want to follow.
+    Press p/P to print the ID of the object being followed.
 */
 
 
@@ -293,8 +293,8 @@ int main( int argc, char** argv )
     cout << "Press d/D to enable/Disable Depth calculation." << endl;
     cout << "Press l/L to enable/Disable 3D Location calculation." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
-    cout << "Press i/I to set ID of the person you want to follow." << endl;
-    cout << "Press p/P to print the ID of the person being followed." << endl;
+    cout << "Press i/I to set ID of the object you want to follow." << endl;
+    cout << "Press p/P to print the ID of the object being followed." << endl;
 
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
