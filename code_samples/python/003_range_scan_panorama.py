@@ -17,9 +17,6 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
-		
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
 	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -44,7 +41,7 @@ def main():
 		print("Error Loading settings! Loading default values.")
 	
 	for i in range(0, 5):
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
 	
 	# Creating a window
 	source_window = 'PAL Range Scan'
@@ -67,13 +64,11 @@ def main():
 	while key != 27:
 
 		# GrabFrames function
-		rangescan  = PAL_PYTHON.GrabRangeScanDataP()
-
-		# BGR->RGB
-		rangescan_mat = cv2.cvtColor(rangescan,cv2.COLOR_BGR2RGB)
-
+		rangescan, camera_changed = PAL_PYTHON.GrabRangeScanDataP()
+		if camera_changed == True:
+			break
 		# Show results
-		cv2.imshow(source_window, rangescan_mat)
+		cv2.imshow(source_window, rangescan)
 
 		# Wait for 1ms
 		key = cv2.waitKey(1) & 255

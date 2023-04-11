@@ -17,9 +17,6 @@ def main():
 	if arg == 2:
 		camera_index = int(sys.argv[1])
 		
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
-		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
 	if ack_init != PAL_PYTHON.SUCCESSP:
@@ -40,7 +37,7 @@ def main():
 		print("Error Loading settings! Loading default values.")
 	
 	for i in range(0, 5):
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
 	
 	
 	# Creating a window
@@ -66,10 +63,10 @@ def main():
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
-
-		# BGR->RGB FLOAT->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		if camera_changed == True:
+			break
+		# FLOAT->RGB
 		if raw_depth_f:
 			depth_mat = np.uint8(raw_depth)
 		else:
@@ -77,9 +74,8 @@ def main():
 		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
 		
 		depth_mat = cv2.applyColorMap(depth_mat, cv2.COLORMAP_JET)
-		depth_mat = cv2.cvtColor(depth_mat,cv2.COLOR_BGR2RGB)
 		# Concatenate vertically
-		concat_op = cv2.vconcat([left_mat,depth_mat])
+		concat_op = cv2.vconcat([left,depth_mat])
 
 		# Show results
 		cv2.imshow(source_window, concat_op)
