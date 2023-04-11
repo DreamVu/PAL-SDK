@@ -16,9 +16,6 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
-	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
 		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -41,7 +38,7 @@ def main():
 		print("Error Loading settings! Loading default values.")
 	
 	for i in range(0, 5):
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
 	# Creating a window
 	source_window = 'PAL Camera Properties'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
@@ -76,15 +73,15 @@ def main():
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth, _  = PAL_PYTHON.GrabDepthDataP()
-
+		left, right, depth, _, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		if camera_changed == True:
+			break
 		# BGR->RGB FLOAT->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
 		depth_mat = np.uint8(depth)
 		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
 		
 		# Concatenate vertically
-		display = cv2.vconcat([left_mat,depth_mat])
+		display = cv2.vconcat([left,depth_mat])
 
 		# Show results
 		cv2.imshow(source_window, display)
@@ -103,7 +100,7 @@ def main():
 			loaded_prop["sharpness"] = PAL_PYTHON.DEFAULT_SHARPNESSP
 			loaded_prop["exposure"] = PAL_PYTHON.DEFAULT_EXPOSUREP
 			loaded_prop["auto_white_bal"] = PAL_PYTHON.DEFAULT_AUTO_WHITE_BALP
-			loaded_prop["auto_exposure"] = PAL_PYTHON.DEFAULT_AUTO_EXPOSUREP
+			loaded_prop["auto_gain"] = PAL_PYTHON.DEFAULT_AUTO_GAINP
 			flags = PAL_PYTHON.ALLP
 			
 		elif key == 113:
@@ -205,8 +202,8 @@ def main():
 			flags |= PAL_PYTHON.AUTO_WHITE_BALP
 		
 		elif key == 112:
-			loaded_prop["auto_exposure"] = not(loaded_prop["auto_exposure"])
-			flags |= PAL_PYTHON.AUTO_EXPOSUREP
+			loaded_prop["auto_gain"] = not(loaded_prop["auto_gain"])
+			flags |= PAL_PYTHON.AUTO_GAINP
 		
 		elif key == 99:
 			fileName="./pal_image_"+str(frame)+".png"
@@ -232,7 +229,7 @@ def main():
 			print("sharpness          = ", loaded_prop["sharpness"])
 			print("exposure           = ", loaded_prop["exposure"])
 			print("auto_white_bal     = ", loaded_prop["auto_white_bal"])
-			print("auto_exposure      = ", loaded_prop["auto_exposure"])
+			print("auto_gain          = ", loaded_prop["auto_gain"])
 
 	# Destroying connections
 	print("exiting the application\n")
