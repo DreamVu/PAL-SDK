@@ -99,6 +99,7 @@ namespace PAL
 
 		//Choose which model to use for tracking
 		int SetInitTrackingModel(int model);
+		int SetTrackingModel(int model);
 
 		//Set ID of  the tracked object you want to following
 		void SetTrackID(int id);

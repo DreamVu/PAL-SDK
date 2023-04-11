@@ -15,7 +15,7 @@ namespace PAL
 		SHARPNESS = 0x40,
 		EXPOSURE = 0x80,
 		AUTO_WHITE_BAL = 0x100,
-		AUTO_EXPOSURE = 0x200,
+		AUTO_GAIN = 0x200,
 		RESOLUTION = 0x400,
 		COLOR_SPACE = 0x800,
 		POWER_LINE_FREQUENCY = 0x1000,
@@ -248,7 +248,7 @@ namespace PAL
 		int DEFAULT_MODE    =  LS_M;
 				
 		bool DEFAULT_AUTO_WHITE_BAL = 1;
-		bool DEFAULT_AUTO_EXPOSURE = 0;
+		bool DEFAULT_AUTO_GAIN = 0;
 
 		CaptureType DEFAULT_CAPTURE_TYPE = CaptureType::CAMERA;
 		ColorSpace DEFAULT_COLOR_SPACE = RGB;
@@ -324,7 +324,7 @@ namespace PAL
 		int sharpness;
 		int exposure;
 		bool  auto_white_bal;
-		bool  auto_exposure;
+		bool  auto_gain;
 		
 		int mode ;
 		

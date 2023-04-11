@@ -172,7 +172,7 @@ int main( int argc, char** argv )
                 camera_data.sharpness = cpv.DEFAULT_SHARPNESS; 
                 camera_data.exposure = cpv.DEFAULT_EXPOSURE;  
                 camera_data.auto_white_bal = cpv.DEFAULT_AUTO_WHITE_BAL;
-                camera_data.auto_exposure = cpv.DEFAULT_AUTO_EXPOSURE;
+                camera_data.auto_gain = cpv.DEFAULT_AUTO_GAIN;
                 flags = PAL::ALL; 
             break;
             // increase brightness
@@ -296,8 +296,8 @@ int main( int argc, char** argv )
             // Toggle auto exposure                   
             case 'p':   
             case 'P':
-                camera_data.auto_exposure = !camera_data.auto_exposure;
-                flags |= PAL::AUTO_EXPOSURE;
+                camera_data.auto_gain = !camera_data.auto_gain;
+                flags |= PAL::AUTO_GAIN;
             break;
             // Saves current left+depth image to disk as a .png file    
             case 'c':  
@@ -345,7 +345,7 @@ int main( int argc, char** argv )
             printf("sharpness          = %d\n", camera_data.sharpness);
             printf("exposure           = %d\n", camera_data.exposure);
             printf("auto_white_bal     = %d\n", camera_data.auto_white_bal);
-            printf("auto_exposure      = %d\n\n", camera_data.auto_exposure);
+            printf("auto_gain      = %d\n\n", camera_data.auto_gain);
         }
 
 	}
