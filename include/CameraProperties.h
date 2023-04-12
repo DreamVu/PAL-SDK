@@ -51,8 +51,9 @@ namespace PAL
 		ODOA_DEPTHTEMPORAL = 0x80000000000,
 		ODOA_DEPTHSENSITIVITY = 0x100000000000,
 		CLOTHES_LINING_MAX_HEIGHT = 0x200000000000,
-		FD = 0x400000000000,	
-		ALL = 0x7FFFFFFFFFFF,
+		FD = 0x400000000000,
+		TRACKING_QUALITY = 0x800000000000,	
+		ALL = 0xFFFFFFFFFFFF,
 	};
 
 	struct Resolution
@@ -126,11 +127,11 @@ namespace PAL
 		PEOPLE_DETECTION = 0X20,
 	};
 
-	enum Tracking_Model
+	enum Tracking_Quality
 	{
-		MODEL_0 = 0,
-		MODEL_1 = 1,
-		MODEL_2 = 2,
+		STANDARD = 0,
+		MEDIUM = 1,
+		HIGHEST = 2,
 	};
 
 	enum DepthInTracking
@@ -310,6 +311,8 @@ namespace PAL
 		
 		bool DEFAULT_FD = true;
 
+		Tracking_Quality DEFAULT_TRACKING_QUALITY = Tracking_Quality::STANDARD;
+
 		CameraPropertyValues();
 	};
 	
@@ -384,6 +387,8 @@ namespace PAL
 
 		float clothes_lining_max_height;
 		bool fd;
+
+		Tracking_Quality tracking_quality;
 
 		//PAL::CameraPropertyValues cpv;
 		

@@ -97,10 +97,6 @@ namespace PAL
 		//Choose b/w various tracking modes like people following, object tracking etc
 		int SetModeInTracking(int mode);
 
-		//Choose which model to use for tracking
-		int SetInitTrackingModel(int model);
-		int SetTrackingModel(int model);
-
 		//Set ID of  the tracked object you want to following
 		void SetTrackID(int id);
 
