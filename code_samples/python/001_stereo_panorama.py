@@ -18,9 +18,7 @@ def main():
 	if arg == 2:
 		camera_index = int(sys.argv[1])
 	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
-	PAL_PYTHON.DisableTRTModelsP(True)	
+	PAL_PYTHON.DisableModelsP(True)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
 	
@@ -43,7 +41,7 @@ def main():
 		print("Error Loading settings! Loading default values.")	
 	
 	for i in range(0, 5):
-		left, right  = PAL_PYTHON.GrabStereoDataP()
+		left, right, camera_changed  = PAL_PYTHON.GrabStereoDataP()
 	
 	# Creating a window
 	source_window = 'PAL Stereo Panorama'
@@ -69,14 +67,12 @@ def main():
 	while key != 27:
 
 		# GrabFrames function
-		left, right  = PAL_PYTHON.GrabStereoDataP()
-
-		# BGR->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-		right_mat = cv2.cvtColor(right,cv2.COLOR_BGR2RGB)
+		left, right, camera_changed  = PAL_PYTHON.GrabStereoDataP()
+		if camera_changed == True:
+			break
 
 		# Concatenate vertically
-		concat_op = cv2.vconcat([left_mat,right_mat])
+		concat_op = cv2.vconcat([left,right])
 
 		# Show results
 		cv2.imshow(source_window, concat_op)

@@ -108,12 +108,12 @@ int main( int argc, char** argv )
     if(threshold_distance > 200)
     {
         threshold_distance = 200;
-        printf("threshold distance set above maximum range. Setting to 2m");
+        printf("threshold distance set above maximum range. Setting to 2m\n");
     }
     else if(threshold_distance < 100)
     {
         threshold_distance = 100;
-        printf("threshold distance set below minumum range. Setting to 1m");
+        printf("threshold distance set below minumum range. Setting to 1m\n");
     }
 
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_DETECTION;

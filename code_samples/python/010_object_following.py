@@ -37,7 +37,7 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
     "refrigerator","book","clock","vase","scissors","teddy bear",
     "hair drier","toothbrush"]
 
-    if mode == PAL_PYTHON.OBJECT_DETECTIONP:
+    if (mode == PAL_PYTHON.OBJECT_DETECTIONP) or (mode == PAL_PYTHON.PEOPLE_DETECTIONP):
         only_detection = True
     else:
         only_detection = False
@@ -49,7 +49,7 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
     no_of_persons = len(trackingData[PAL_PYTHON.OKP])
 	
     for i in range (0, no_of_persons):
-        colors = get_color(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])
+        colors = get_color(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"]))
         
         x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
         y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
@@ -73,7 +73,7 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
         if only_detection:
             label1 = "Class= " + classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
         else:
-            label1 = "ID=" + str(trackingData[PAL_PYTHON.OKP][i]["t_track_id"]) + ", "+classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
+            label1 = "ID=" + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + ", "+classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
 
         if ENABLEDEPTH:
             if ENABLE3D:
@@ -208,21 +208,29 @@ def main():
 	cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
 	
 	key = ' '
-	vertical_flip = True
-	filter_spots = True
-	fd = True
+	filter_spots = loaded_prop["filter_spots"]
+	vertical_flip = loaded_prop["vertical_flip"]
+	fd = loaded_prop["fd"]
+	
 	print("\n\nPress ESC to close the window.")
-	print("Press f/F to toggle filter rgb property.\n\n")
+	print("Press f/F to toggle filter rgb property.")
+	print("Press v/V to toggle Vertical Flip property.")
+	print("Press d/D to enable/Disable Depth calculation.")
+	print("Press l/L to enable/Disable 3D Location calculation.")
+	print("Press m/M to toggle Fast Depth property")
+	print("Press i/I to set ID of the person you want to follow.")
+	print("Press p/P to print the ID of the person being followed.\n\n")
 
 	# ESC
 	while key != 27:
 
-		left, right, depth, trackingData =  PAL_PYTHON.GrabTrackingDataP()
+		left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+		if camera_changed == True:
+			break
+		display = left
 
-		display = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-        
 		drawOnImage(display, trackingData, tracking_mode, enableDepth, enable3Dlocation)
-		
+
 		cv2.imshow(source_window, display)
 		
 		#print_track(trackingData)
@@ -289,10 +297,6 @@ def main():
 		#l		
 		if key == 108:	
  			enable3Dlocation = not(enable3Dlocation)
-
-		#s		
-		if key == 115:	
-			PAL_PYTHON.SavePropertiesP("../../../Explorer/SavedPalProperties.txt")
 
     	# Destroying connections
 	print("exiting the application\n")

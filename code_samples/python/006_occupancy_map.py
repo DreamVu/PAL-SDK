@@ -22,9 +22,6 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
-	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
 		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -46,7 +43,7 @@ def main():
 		print("Error Loading settings! Loading default values.")
 	
 	for i in range(0, 5):
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
 		
 	# Creating a window
 	source_window = 'PAL Occupancy Map'
@@ -73,10 +70,11 @@ def main():
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
-
-		# BGR->RGB FLOAT->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_RGB2BGR)
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		if camera_changed == True:
+			break
+		# FLOAT->RGB
+		left_mat = left
 		if raw_depth_f:
 			depth_mat = np.uint8(raw_depth)
 		else:
