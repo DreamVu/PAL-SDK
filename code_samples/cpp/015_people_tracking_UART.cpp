@@ -209,9 +209,6 @@ int main( int argc, char** argv )
     } 
     namedWindow( "PAL OBJECT_TRACKING_UART", WINDOW_NORMAL ); // Create a window for display.
 
-    //Select the Model to use in Tracking. To be set before Init call.
-    PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_0);
-
 	// Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
     int serial_port = open("/dev/ttyTHS0", O_RDWR);
 

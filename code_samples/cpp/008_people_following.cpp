@@ -239,9 +239,6 @@ int main( int argc, char** argv )
 {
     namedWindow( "PAL PEOPLE_FOLLOWING", WINDOW_NORMAL ); // Create a window for display.
 
-    //Select the Model to use in Tracking. To be set before Init call.
-    PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_0);
-
     int width, height;
     std::vector<int> camera_indexes{5};
     PAL::Mode def_mode = PAL::Mode::LASER_SCAN;

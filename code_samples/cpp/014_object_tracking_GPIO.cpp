@@ -69,9 +69,6 @@ int main( int argc, char** argv )
 	//setting detection pin inactive by default
 	GPIO::setup(detection_pin, GPIO::OUT, GPIO::HIGH);
 	
-    //Select the Model to use in Tracking. To be set before Init call.
-    PAL::SetInitTrackingModel(PAL::Tracking_Model::MODEL_0);
-
     int width, height;
     std::vector<int> camera_indexes{5};
     PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
