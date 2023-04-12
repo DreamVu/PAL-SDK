@@ -66,7 +66,7 @@ def main():
     # Changing window size
     cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
 
-    safe_distance = float(sys.argv[2]) if len(sys.argv) > 2 else 100.0
+    safe_distance = float(sys.argv[1]) if len(sys.argv) > 1 else 100.0
     
     key = ' '
     filter_spots = loaded_prop["filter_spots"]
