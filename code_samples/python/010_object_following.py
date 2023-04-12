@@ -160,16 +160,8 @@ def main():
 	image_width = 0
 	image_height = 0
 	camera_index = 5	
-	arg = len(sys.argv)
 
-	if arg == 2:
-		camera_index = int(sys.argv[1])
-	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	#PAL_PYTHON.SetPathtoDataP(path)
-	PAL_PYTHON.SetInitTrackingModelP(PAL_PYTHON.MODEL_1P)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
-
 
 	if res_init!= PAL_PYTHON.SUCCESSP:
 		print("Camera Init failed\n")
