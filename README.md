@@ -34,7 +34,7 @@ The Package can be installed by adding the PPA Repository. Steps are as follows:
 
 Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. 
 
-To preview the PAL camera for x86_64 architecture run the below command 
+To preview the PAL camera, run the below command 
  
     Explorer
     
