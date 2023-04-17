@@ -1,7 +1,7 @@
 # PAL SDK
 DreamVu PAL family of cameras are the only single sensor 360° 3D Vision Systems. This SDK is combatible with the following DreamVu cameras:
-#### [PAL USB](https://dreamvu.com/pal-usb/)
-#### [PAL Mini](https://dreamvu.com/pal-mini/)
+-  [PAL USB](https://dreamvu.com/pal-usb/)
+- [PAL Mini](https://dreamvu.com/pal-mini/)
 
 ## Pre-requisites Installation
  This section is only applicable for Ubuntu 18.04 intel system with Nvidia GPU.
