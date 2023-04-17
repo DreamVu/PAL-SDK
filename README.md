@@ -36,11 +36,7 @@ Once complete please reboot the system. The packages will be installed in \~/Dre
 
 To preview the PAL camera for x86_64 architecture run the below command 
  
-    ~/DreamVu/PAL/Explorer/x86_64/Explorer
-    
- To preview the PAL camera for ARM64 architecture run the below command
- 	
-    ~/DreamVu/PAL/Explorer/arm64/Explorer	 
+    Explorer
     
 ## ROS Installations
 
