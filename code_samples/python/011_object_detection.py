@@ -211,7 +211,7 @@ def main():
 	print("Press d/D to enable/Disable Depth calculation.")
 	print("Press l/L to enable/Disable 3D Location calculation.")
 	print("Press m/M to toggle Fast Depth property")
-	print("Press up/down arrow key to increase/decrease detection threshold respectively\n\n")
+	print("Press q/Q & a/A arrow key to increase and decrease detection threshold respectively\n\n")
 
 	# ESC
 	while key != 27:
@@ -231,7 +231,7 @@ def main():
 		key = cv2.waitKey(1) & 255 
 
 		#up-arrow key
-		if key == 82:
+		if key == 113:
 			detection_threshold += 0.1
 			if(detection_threshold >1):
 				detection_threshold = 1
@@ -240,7 +240,7 @@ def main():
 			PAL_PYTHON.SetDetectionModeThresholdP(detection_threshold, class_id)
 
 		#down-arrow key
-		if key == 84:
+		if key == 97:
 			detection_threshold -= 0.1
 			if(detection_threshold < 0.01):
 				detection_threshold = 0.01

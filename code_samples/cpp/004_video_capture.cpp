@@ -91,8 +91,8 @@ int main( int argc, char** argv )
 	resizeWindow("PAL Video Capture", width, 2*height);
 
 	int key = ' ';
-    bool record = false;
-    bool closed = false;
+    	bool record = false;
+    	bool closed = false;
     
 	cout<<"\n\nPress ESC to close the window."<<endl;
 	printf("Press v/V to toggle vertical flip property\n");	
@@ -102,10 +102,10 @@ int main( int argc, char** argv )
 	bool flip = data.vertical_flip;	
 	
 	cout<<"Press C to capture a single frame into a PNG file."<<endl;
-    cout<<"Press B to begin the video capture."<<endl;
-    cout<<"Press E to end the video capture.\n"<<endl;
+    	cout<<"Press B to begin the video capture."<<endl;
+    	cout<<"Press E to end the video capture.\n"<<endl;
     
-    cv::VideoWriter video;
+    	cv::VideoWriter video;
     
 	Mat output = cv::Mat::zeros(2*height, width, CV_8UC3);
 
@@ -160,47 +160,48 @@ int main( int argc, char** argv )
 			PAL::SetCameraProperties(&prop, &flags);
 		}
 		
-		if(key == 'C' || key == 'c') //capture an image using imwrite
-        {
-        	sprintf(image_filename, "image_%d.png", ++image_count);
-            imwrite(image_filename, output);
-            printf("The current frame is saved as image.png\n");
-        }
+		//capture an image using imwrite
+		if(key == 'C' || key == 'c') 
+        	{
+        		sprintf(image_filename, "image_%d.png", ++image_count);
+            		imwrite(image_filename, output);
+            		printf("The current frame is saved as image.png\n");
+        	}
         
-        else if(key == 'B' || key == 'b')
-        {
-            cv::Size size = cv::Size(output.cols, output.rows);
-            int fps = 15;
-            printf("Opening the video\n");
-            sprintf(video_filename, "pal_video_%d.avi", ++video_count);
-            video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
-            record = true;
-        }
-        else if (key == 'E' || key == 'e')
-        {
-            //closed = true;
-            if(record)
-            {
-                record = false;            
-                printf("Releasing the video \n");
-                video.release();
-            }
-        }
-        else if ( key == 27)
-        {
-            closed = true;
-            if(record)
-            {
-                record = false;            
-                printf("Releasing the video \n");
-                video.release();
-            }
-        }
-        if(record)
-        { 
-            video.write(output);
-        }
-        
+		else if(key == 'B' || key == 'b')
+		{
+		    	cv::Size size = cv::Size(output.cols, output.rows);
+		    	int fps = 15;
+		    	printf("Opening the video\n");
+		    	sprintf(video_filename, "pal_video_%d.avi", ++video_count);
+		    	video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
+		    	record = true;
+		}
+		else if (key == 'E' || key == 'e')
+		{
+		    	//closed = true;
+		    	if(record)
+		    	{
+		        	record = false;            
+		        	printf("Releasing the video \n");
+		        	video.release();
+		    	}
+		}
+		else if ( key == 27)
+		{
+		    	closed = true;
+		    	if(record)
+		    	{
+				record = false;            
+				printf("Releasing the video \n");
+				video.release();
+		    	}
+		}
+		if(record)
+		{ 
+		    	video.write(output);
+		}
+		
 
 	}
 

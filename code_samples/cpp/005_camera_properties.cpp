@@ -276,14 +276,14 @@ int main( int argc, char** argv )
             // increase exposure
             case 'i':   
             case 'I':
-                camera_data.exposure += 50;
+                camera_data.exposure += 5;
                 if(camera_data.exposure > cpv.MAX_EXPOSURE) camera_data.exposure = cpv.MAX_EXPOSURE;
                 flags |= PAL::EXPOSURE;
             break;
             // decrease exposure 
             case 'k':  
             case 'K':
-                camera_data.exposure -= 50;
+                camera_data.exposure -= 5;
                 if(camera_data.exposure < cpv.MIN_EXPOSURE) camera_data.exposure = cpv.MIN_EXPOSURE;
                 flags |= PAL::EXPOSURE;
             break;
