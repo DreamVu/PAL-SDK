@@ -14,91 +14,20 @@ echo "6 - people_following_rviz : This will display the left panorama in an Rviz
 echo ""
 read -p "Enter the value: " arg1
 cp -r dreamvu_pal_navigation ~/catkin_ws/src/
+non_foxy_launch_files=("scan_rviz.launch" "object_tracking_rviz.launch" "people_tracking_rviz.launch" "object_detection_rviz.launch" "object_following_rviz.launch" "people_following_rviz.launch")
+foxy_launch_files=("scan_rviz_launch.py" "object_tracking_rviz_launch.py" "people_tracking_rviz_launch.py" "object_detection_rviz_launch.py" "object_following_rviz_launch.py" "people_following_rviz_launch.py") 
 if [ -e /opt/ros/foxy/ ] 
 then		
-	if [ $arg1 == "1" ]; then
-		cd ~/catkin_ws/
-		colcon build
-		. ./install/setup.bash
-		colcon build
-		ros2 launch src/dreamvu_pal_navigation/launch/scan_rviz_launch.py
-	fi
-	if [ $arg1 == "2" ]; then
-		cd ~/catkin_ws/
-		colcon build
-		. ./install/setup.bash
-		colcon build
-		ros2 launch src/dreamvu_pal_navigation/launch/object_tracking_rviz_launch.py
-	fi
-	if [ $arg1 == "3" ]; then
-		cd ~/catkin_ws/
-		colcon build
-		. ./install/setup.bash
-		colcon build
-		ros2 launch src/dreamvu_pal_navigation/launch/people_tracking_rviz_launch.py
-	fi
-	if [ $arg1 == "4" ]; then
-		cd ~/catkin_ws/
-		colcon build
-		. ./install/setup.bash
-		colcon build
-		ros2 launch src/dreamvu_pal_navigation/launch/object_detection_rviz_launch.py
-	fi
-	if [ $arg1 == "5" ]; then
-		cd ~/catkin_ws/
-		colcon build
-		. ./install/setup.bash
-		colcon build
-		ros2 launch src/dreamvu_pal_navigation/launch/object_following_rviz_launch.py
-	fi
-	if [ $arg1 == "6" ]; then
-		cd ~/catkin_ws/
-		colcon build
-		. ./install/setup.bash
-		colcon build
-		ros2 launch src/dreamvu_pal_navigation/launch/people_following_rviz_launch.py
-	fi
+	cd ~/catkin_ws/
+	colcon build
+	. ./install/setup.bash
+	colcon build
+	ros2 launch src/dreamvu_pal_navigation/launch/${foxy_launch_files[arg1-1]}
+	
 else
-	if [ $arg1 == "1" ]; then	
-		cd ~/catkin_ws/
-		source ~/catkin_ws/devel/setup.bash
-		catkin_make
-		source ~/catkin_ws/devel/setup.bash
-		roslaunch dreamvu_pal_navigation scan_rviz.launch
-	fi
-	if [ $arg1 == "2" ]; then	
-		cd ~/catkin_ws/
-		source ~/catkin_ws/devel/setup.bash
-		catkin_make
-		source ~/catkin_ws/devel/setup.bash
-		roslaunch dreamvu_pal_navigation object_tracking_rviz.launch
-	fi
-	if [ $arg1 == "3" ]; then	
-		cd ~/catkin_ws/
-		source ~/catkin_ws/devel/setup.bash
-		catkin_make
-		source ~/catkin_ws/devel/setup.bash
-		roslaunch dreamvu_pal_navigation people_tracking_rviz.launch
-	fi
-	if [ $arg1 == "4" ]; then	
-		cd ~/catkin_ws/
-		source ~/catkin_ws/devel/setup.bash
-		catkin_make
-		source ~/catkin_ws/devel/setup.bash
-		roslaunch dreamvu_pal_navigation object_detection_rviz.launch
-	fi
-	if [ $arg1 == "5" ]; then	
-		cd ~/catkin_ws/
-		source ~/catkin_ws/devel/setup.bash
-		catkin_make
-		source ~/catkin_ws/devel/setup.bash
-		roslaunch dreamvu_pal_navigation object_following_rviz.launch
-	fi
-	if [ $arg1 == "6" ]; then	
-		cd ~/catkin_ws/
-		source ~/catkin_ws/devel/setup.bash
-		catkin_make
-		source ~/catkin_ws/devel/setup.bash
-		roslaunch dreamvu_pal_navigation people_following_rviz.launch
-	fi
+	cd ~/catkin_ws/
+	source ~/catkin_ws/devel/setup.bash
+	catkin_make
+	source ~/catkin_ws/devel/setup.bash
+	roslaunch dreamvu_pal_navigation ${non_foxy_launch_files[arg1-1]}
 fi
