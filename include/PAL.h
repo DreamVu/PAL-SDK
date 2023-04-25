@@ -121,6 +121,8 @@ namespace PAL
         //This is a blocking call, waits till all the pending depth / disparity computations are finished and returns.
 		//This should be used only when asynchronous is true in GrabFrames function arguments
 		//void Synchronize();
+	
+	PAL::Acknowledgement ColorDepthPostProcessing(cv::Mat &depth);
 }
 
 # endif //PAL_H

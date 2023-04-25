@@ -20,7 +20,7 @@ This code sample allows users to check if the distance between two people is wit
     Press f/F to toggle filter rgb property
     Press v/V to toggle Vertical Flip property.
     Press m/M to toggle Fast Depth property.
-    Press up/down arrow key to increase/decrease detection threshold respectively
+    Press q/Q & a/A arrow key to increase and decrease detection threshold respectively.
 */
 
 
@@ -139,7 +139,7 @@ int main( int argc, char** argv )
     cout << "Press f/F to toggle filter rgb property" << endl;
     cout << "Press v/V to toggle Vertical Flip property." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
-    cout << "Press up/down arrow key to increase/decrease detection threshold respectively" << endl;
+    cout << "Press q/Q & a/A arrow key to increase and decrease detection threshold respectively\n\n" << endl;
 	extern bool camera_changed;
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
@@ -193,7 +193,7 @@ int main( int argc, char** argv )
         //Wait for the keypress - with a timeout of 1 ms
         key = waitKey(1) & 255;
 
-        if(key == 82) //up arrow key
+        if(key == 113) //up arrow key
         {
             detection_threshold += 0.1;
             if(detection_threshold>1)
@@ -204,7 +204,7 @@ int main( int argc, char** argv )
             PAL::SetDetectionModeThreshold(detection_threshold, class_id);
         }
 
-        if(key == 84) //down arrow key
+        if(key == 97) //down arrow key
         {
             detection_threshold -= 0.1;
             if(detection_threshold<0.01)

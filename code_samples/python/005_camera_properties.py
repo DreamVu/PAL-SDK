@@ -64,7 +64,9 @@ def main():
 	print("P key toggles AUTO EXPOSURE property.")
 	print("C key saves the current left+depth panorama image to a numbered file.")
 	print("N key saves the current camera properties to a file.")
-	print("L key loads the camera properties from the saved file.\n\n")
+	print("L key loads the camera properties from the saved file.")
+	print("V & v keys toggles flip property.")	
+	print("F & f keys toggles filter rgb property.\n\n")
  
 	flip = False
 	filter_spots = bool(loaded_prop["filter_spots"])
@@ -186,13 +188,13 @@ def main():
 			flags |= PAL_PYTHON.SHARPNESSP
 		
 		elif key == 105:
-			loaded_prop["exposure"] += 1
+			loaded_prop["exposure"] += 5
 			if loaded_prop["exposure"] > PAL_PYTHON.MAX_EXPOSUREP:
 				loaded_prop["exposure"] = PAL_PYTHON.MAX_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
 		
 		elif key == 107:
-			loaded_prop["exposure"] -= 1
+			loaded_prop["exposure"] -= 5
 			if loaded_prop["exposure"] < PAL_PYTHON.MIN_EXPOSUREP:
 				loaded_prop["exposure"] = PAL_PYTHON.MIN_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
@@ -217,6 +219,14 @@ def main():
 		elif key == 108:
 			loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("properties.txt", prop)
 		
+		elif key == 102:
+			loaded_prop["filter_spots"] = not(loaded_prop["filter_spots"])
+			flags |= PAL_PYTHON.FILTER_SPOTSP
+
+		elif key == 118:		    
+			loaded_prop["vertical_flip"] = not(loaded_prop["vertical_flip"])
+			flags |= PAL_PYTHON.VERTICAL_FLIPP
+		
 		if flags != 0:
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flags)
 			print("Camera Properties....\n")
@@ -230,6 +240,8 @@ def main():
 			print("exposure           = ", loaded_prop["exposure"])
 			print("auto_white_bal     = ", loaded_prop["auto_white_bal"])
 			print("auto_gain          = ", loaded_prop["auto_gain"])
+			print("filter_spots       = ", loaded_prop["filter_spots"])
+			print("vertical_flip      = ", loaded_prop["vertical_flip"])
 
 	# Destroying connections
 	print("exiting the application\n")

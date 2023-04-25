@@ -22,7 +22,7 @@ This code will grab the left panorama with object detection data overlayed on it
     Press d/D to enable/Disable Depth calculation.
     Press l/L to enable/Disable 3D Location calculation.
     Press m/M to toggle Fast Depth property.
-    Press up/down arrow key to increase/decrease detection threshold respectively
+    Press q/Q & a/A arrow key to increase and decrease detection threshold respectively.
 */
 
 
@@ -271,7 +271,7 @@ int main( int argc, char** argv )
     cout << "Press d/D to enable/Disable Depth calculation." << endl;
     cout << "Press l/L to enable/Disable 3D Location calculation." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
-	cout << "Press up/down arrow key to increase/decrease detection threshold respectively" << endl;
+	cout << "Press q/Q & a/A arrow key to increase and decrease detection threshold respectively\n\n" << endl;
 
 
 	//27 = esc key. Run the loop until the ESC key is pressed
@@ -293,7 +293,7 @@ int main( int argc, char** argv )
         //Wait for the keypress - with a timeout of 1 ms
         key = waitKey(1) & 255;
 
-        if(key == 82) //up arrow key
+        if(key == 113) //up arrow key
         {
             detection_threshold += 0.1;
             if(detection_threshold>1)
@@ -304,7 +304,7 @@ int main( int argc, char** argv )
             PAL::SetDetectionModeThreshold(detection_threshold, class_id);
         }
 
-        if(key == 84) //down arrow key
+        if(key == 97) //down arrow key
         {
             detection_threshold -= 0.1;
             if(detection_threshold<0.01)
