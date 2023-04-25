@@ -102,7 +102,7 @@ int main( int argc, char** argv )
     height = dataDiscard[0].left.rows;
 
     //width and height are the dimensions of each panorama.
-    //Each of the panoramas are displayed at otheir original resolution.
+    //Each of the panoramas are displayed at their original resolution.
     resizeWindow("PAL Safe Zone Detection", width, height);
 
     int key = ' ';
