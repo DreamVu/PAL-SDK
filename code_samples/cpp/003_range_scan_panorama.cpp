@@ -45,14 +45,6 @@ int main( int argc, char** argv )
 
 	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
 
-	char path[1024];
-	sprintf(path,"/usr/local/bin/data/pal/data%d/",camera_indexes[0]);
-
-	char path2[1024];
-	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
-
-	PAL::SetPathtoData(path, path2);
-
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{

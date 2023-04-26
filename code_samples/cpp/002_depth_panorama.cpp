@@ -32,16 +32,6 @@ Press f/F to toggle filter rgb property
 using namespace cv;
 using namespace std;
 
-
-Mat getColorMap(Mat img, float scale)
-{
-    Mat img_new = img * scale;
-    img_new.convertTo(img_new, CV_8UC1);
-    img_new = 255-img_new;
-    applyColorMap(img_new, img_new, COLORMAP_JET);
-    return img_new;
-}
-
 int main( int argc, char** argv )
 {
 	// Create a window for display.
@@ -58,14 +48,6 @@ int main( int argc, char** argv )
 
 	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
 
-	char path[1024];
-	sprintf(path,"/usr/local/bin/data/pal/data%d/",camera_indexes[0]);
-
-	char path2[1024];
-	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
-
-	PAL::SetPathtoData(path, path2);
-	
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
@@ -136,7 +118,8 @@ int main( int argc, char** argv )
 			d = data[0].distance.clone();
 		
 		
-		d = getColorMap(d, 1);
+		PAL::Acknowledgement ack = PAL::ColorDepthPostProcessing(d);
+		cv::cvtColor(d, d, cv::COLOR_BGR2RGB);
 
 		//Vertical concatenation of rgb and depth into the final output
 		vconcat(l, d, display);
