@@ -70,9 +70,9 @@ def main():
 		left, right, depth, _, camera_changed  = PAL_PYTHON.GrabDepthDataP()
 		if camera_changed == True:
 			break
-		# BGR->RGB FLOAT->RGB
-		depth_mat = np.uint8(depth)
-		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
+		
+		# BGR->RGB
+		depth_mat = cv2.cvtColor(depth, cv2.COLOR_BGR2RGB)
 		
 		# Concatenate vertically
 		output = cv2.vconcat([left,depth_mat])
