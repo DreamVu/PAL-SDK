@@ -155,9 +155,6 @@ namespace PAL
         
         struct FloorMask : Common
         {
-            cv::Mat left;
-            cv::Mat right;
-            cv::Mat depth;
             cv::Mat floor_mask;
             cv::Mat display_rgb;
         };          
@@ -239,9 +236,7 @@ namespace PAL
         
         struct SegmenterData : Common
         {
-        	cv::Mat left;
         	cv::Mat segmenter_mask;
-        	cv::Mat display_rgb;
         };
     }
 
