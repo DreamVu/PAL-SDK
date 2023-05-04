@@ -189,7 +189,7 @@ def main():
 	success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
 	
 	# Creating a window
-	source_window = 'PAL People Tracking'
+	source_window = 'PAL People Following'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
 	
 	screen = Display().screen()
