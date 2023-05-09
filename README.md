@@ -6,7 +6,7 @@ DreamVu PAL family of cameras are the only single sensor 360° 3D Vision Systems
 ## Pre-requisites Installation
  This section is only applicable for Ubuntu 18.04 intel system with Nvidia GPU.
  
- Please follow the steps on the official links of [CUDA](https://developer.nvidia.com/cuda-10.2-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=deblocal) 10.2 & [TensorRT](https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing-debian) to install the required GPU libraries.
+ Please follow the steps on the official links of [CUDA](https://developer.nvidia.com/cuda-10.2-download-archive?target_os=Linux&target_arch=x86_64&target_distro=Ubuntu&target_version=1804&target_type=deblocal) 10.2 & [TensorRT 8](https://developer.nvidia.com/nvidia-tensorrt-8x-download) to install the required GPU libraries. Please note that SDK has been tested for CUDA v10.2 & Tensorrt v8.0.0.3 combination. 
 
 ## Installation
 
