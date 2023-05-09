@@ -67,7 +67,7 @@ Turtlebot-Nav support is also provided for both the version and can be installed
 - [Setup Guide](https://docs.google.com/document/d/e/2PACX-1vSM_AQwWX1f3KgIoGIwkT_xsTBEleebKtY8i6gTaxIulw3gR0u_-wLhkp5Qxe2Janj6MUMx-rZxQf9-/pub)
 - [Code Samples](https://docs.google.com/document/d/e/2PACX-1vTXnJwI1fN3Wh3HFpQNjwB-D29oUors_tbn9dFaQ-kKOT7m0S45OQTIK4eIkPt5gQFghnBCtNXx9hFw/pub)
 - [PAL ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vRrbqXkhQ5cnHNl_Idakk5dnGZ90bDOQk1Be2Jc-jlVJyCgOJZfUgyNGaco9sPDilcSS8gjk1wnR_dq/pub)
-- [PAL Mini Application Note](https://docs.google.com/document/d/e/2PACX-1vS8XpaUZAu6q5TRsJzVaWwDdjwRKgArtJ4zVdHj6nsrHrvVfGSlu3hm9ecHhCMaBqLlIYdlguVTJJH-/pub)
+- [PAL Mini ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vS8XpaUZAu6q5TRsJzVaWwDdjwRKgArtJ4zVdHj6nsrHrvVfGSlu3hm9ecHhCMaBqLlIYdlguVTJJH-/pub)
 - [GPIO & UART Application Note](https://docs.google.com/document/d/e/2PACX-1vTN9U7ZocPkSLjN90oEgiOtFgr4e81qbgLsfpibcUGtQnvx3zpwMETmWvJ4BujKfcuOYSs_Yh95_4fm/pub)
 - [Design Integration Guide](https://docs.google.com/document/d/e/2PACX-1vTzozqh7LtwgcBRXhxrZCy6jdk5TG6VzUCgNuZqZzNg5orSkilWFPm9WlGZ7PaZNOsGiVRC8i_-cXle/pub)
 
