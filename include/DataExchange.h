@@ -230,6 +230,7 @@ namespace PAL
             cv::Mat left;
             cv::Mat right;
             cv::Mat depth;
+            cv::Mat stereo_depth;
             std::vector<std::vector<PAL::Data::TrackND>> trackingData;
             bool camera_changed = false;
         };
