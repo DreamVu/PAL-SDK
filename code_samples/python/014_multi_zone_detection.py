@@ -1,5 +1,5 @@
-#CODE SAMPLE # 007: People Tracking
-#This code will grab the left panorama with person tracking data overlayed on it and would be displayed in a window using opencv
+#CODE SAMPLE # 014: Multi Zone Detection
+#This code will grab the left panorama with person tracking data and check if they are in the user provided distinctive detection zones
 
 import sys
 import PAL_PYTHON
@@ -13,7 +13,7 @@ def precision_string(num, precision=1):
     num_string = str(num)
     return num_string[0:num_string.find(".")+1+precision]
 
-def zoneDetection(img, trackingData, thresh1, thresh2, thresh3):
+def zoneDetection(img, trackingData, thresh):
     classes = ["person","bicycle","car","motorcycle","airplane",
     "bus","train","truck","boat","traffic light","fire hydrant",
     "stop sign","parking meter","bench","bird","cat","dog","horse",
@@ -84,27 +84,26 @@ def zoneDetection(img, trackingData, thresh1, thresh2, thresh3):
 
         cv2.rectangle(img, (x1, y1-box_height-1, box_width, box_height), (255,255,255), cv2.FILLED)        
 
-        cv2.putText(img, label1, (x1, (y1-text2_height-baseline-2)), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
-        if ENABLEDEPTH:
-            cv2.putText(img, label2, (x1, int(y1-baseline/2 -1)), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
+        number_of_zones = len(thresh)
+        beyond_all_zones = True
 
-        
-        if(depth_value < thresh1):
-            print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs to zone 1")
-            colors = (0, 0, 255)
+        for j in range(0,number_of_zones):
+            if(depth_value < thresh[j]):
+                print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs to zone " + str(j+1))
+                normalised_color = float(j)/float(number_of_zones);
+                green = int(255.0*normalised_color);
+                red = int(255.0*(1.0-normalised_color));
+                colors = (0, green, red)
+                beyond_all_zones = False
+                break
 
-        elif(depth_value < thresh2):
-            print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs to zone 2")   
-            colors = (0, 165, 255)
-
-        elif(depth_value < thresh3):
-            print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs to zone 3")   
-            colors = (0, 255, 255)
-
-        else:
-            print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs beyond zone 3")      
+        if beyond_all_zones == True:
+            print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs beyond zone " + str(number_of_zones))
             colors = (0, 255, 0)
 
+        cv2.putText(img, label1, (x1, (y1-text2_height-baseline-2)), fontface, scale, colors, thickness, cv2.LINE_AA)
+        if ENABLEDEPTH:
+            cv2.putText(img, label2, (x1, int(y1-baseline/2 -1)), fontface, scale, colors, thickness, cv2.LINE_AA)
 
         cv2.rectangle(img, (x1, y1, x2, y2), colors, 2)
     
@@ -170,7 +169,23 @@ def main():
     # Initialising camera
     image_width = 0
     image_height = 0
-    camera_index = 5    
+    camera_index = 5
+    arg = len(sys.argv)
+
+    if (arg < 2) or (int(sys.argv[1]) != (arg - 2)):
+        print("Wrong format for arguments")
+        print("Expected format:")
+        print("python 014_multi_zone_detection.py <number of zones> <distance 1> <distance 2> .. <distance for last zone>")
+        return
+
+    number_of_zones = int(sys.argv[1])
+
+    distances = []
+
+    for i in range(0,number_of_zones):
+        distances.append((float(sys.argv[i+2])/100.0))
+
+    #distances.sort()
 
     width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -197,29 +212,12 @@ def main():
     success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
     
     # Creating a window
-    source_window = 'PAL People Tracking'
+    source_window = 'PAL Multi Zone Detection'
     cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
     
     screen = Display().screen()
     sc_height = screen.height_in_pixels
     sc_width  = screen.width_in_pixels
-
-    print("Please enter the first distance threshold(in m) marking the first zone:")
-    distance_1 = float(input())
-
-    print("Please enter the second distance threshold(in m) marking the second zone:")
-    distance_2 = float(input())
-
-    while(distance_1 > distance_2):
-        print("Second distance threshold should be higher than the first value. Please re-enter the value.")
-        distance_2 = float(input())
-
-    print("Please enter the third distance threshold(in m) marking the third zone:")
-    distance_3 = float(input())
-
-    while(distance_2 > distance_3):
-        print("Third distance threshold should be higher than the second value. Please re-enter the value.")
-        distance_3 = float(input())
     
     # Changing window size
     cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
@@ -242,7 +240,7 @@ def main():
             break
         display = left
         
-        zoneDetection(display, trackingData, distance_1, distance_2, distance_3)
+        zoneDetection(display, trackingData, distances)
         
         cv2.imshow(source_window, display)
 

@@ -1,17 +1,17 @@
 /*
 
-CODE SAMPLE # 016: Zone Detection
-This code will grab the left panorama with person tracking data and check if they are in the user provided 3 distinctive detection zones
+CODE SAMPLE # 016: Multi Zone Detection
+This code will grab the left panorama with person tracking data and check if they are in the user provided distinctive detection zones
 
 
 >>>>>> Compile this code using the following command....
 
-./compile.sh 016_zone_detection.cpp
+./compile.sh 016_multi_zone_detection.cpp
 
 
 >>>>>> Execute the binary file by typing the following command...
 
-./016_zone_detection.out
+./016_multi_zone_detection.out
 
 
 >>>>>> KEYBOARD CONTROLS:
@@ -46,7 +46,7 @@ std::string precision_string(float num, int precision=1)
     return num_string.substr(0, num_string.find(".")+1+precision);
 }
 
-void zoneDetection(cv::Mat &img, std::vector<std::vector<PAL::Data::TrackND>> detections, float thresh1, float thresh2, float thresh3)
+void zoneDetection(cv::Mat &img, std::vector<std::vector<PAL::Data::TrackND>> detections, vector<float> &thresh)
 {
     vector<std::string> classes = {"person","bicycle","car","motorcycle","airplane",
     "bus","train","truck","boat","traffic light","fire hydrant",
@@ -129,34 +129,36 @@ void zoneDetection(cv::Mat &img, std::vector<std::vector<PAL::Data::TrackND>> de
 
         cv::rectangle(img, Rect(x1, y1-box_height-1, box_width, box_height), Scalar(255,255,255), cv::FILLED);        
 
-        cv::putText(img, label1, Point(x1, (int)(y1-text2.height-baseline-2)), fontface, scale, Scalar(0, 0, 255), thickness, cv::LINE_AA);
+        cv::Scalar colors;
+		int number_of_zones = thresh.size();
+		bool beyond_all_zones = true;
+		for(int j=0 ; j<number_of_zones ; j++)
+		{
+		    if(depth_value < thresh[j])
+		    {
+		        std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs to zone " << (j+1) << std::endl;
+				float normalised_color = (float)(j/(float)(number_of_zones)) ;			
+				int green = (int)(255.0f*normalised_color);
+				int red = (int)(255.0f*(1.0f-normalised_color));
+		        colors = cv::Scalar(0, green, red);
+				beyond_all_zones = false;
+				break;
+		    }
+		}
+
+		if(beyond_all_zones)
+		{
+			std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs beyond zone " << number_of_zones << std::endl;
+		    colors = cv::Scalar(0, 255, 0);
+		}
+
+		cv::putText(img, label1, Point(x1, (int)(y1-text2.height-baseline-2)), fontface, scale, colors, thickness, cv::LINE_AA);
         if(ENABLEDEPTH)
         {
-            cv::putText(img, label2, Point(x1, (int)(y1-baseline/2 -1)), fontface, scale, Scalar(0, 0, 255), thickness, cv::LINE_AA); 
+            cv::putText(img, label2, Point(x1, (int)(y1-baseline/2 -1)), fontface, scale, colors, thickness, cv::LINE_AA); 
         }
 
-        cv::Scalar colors;
-        if(depth_value < thresh1)
-        {
-            std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs to zone 1" << std::endl;
-            colors = cv::Scalar(0, 0, 255);
-        }
-        else if(depth_value < thresh2)
-        {
-            std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs to zone 2" << std::endl;   
-            colors = cv::Scalar(0, 165, 255);
-        }
-        else if(depth_value < thresh3)
-        {
-            std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs to zone 3" << std::endl;   
-            colors = cv::Scalar(0, 255, 255);
-        }
-        else
-        {
-            std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs beyond zone 3" << std::endl;      
-            colors = cv::Scalar(0, 255, 0);
-        }
-
+			
         cv::rectangle(img, Rect(x1, y1, x2, y2), colors, 2);
     }
     
@@ -227,11 +229,30 @@ void print_track(std::vector<std::vector<PAL::Data::TrackND>> results)
 
 int main( int argc, char** argv )
 {
-    namedWindow( "PAL Zone Detection", WINDOW_NORMAL ); // Create a window for display.
+    namedWindow( "PAL Multi Zone Detection", WINDOW_NORMAL ); // Create a window for display.
 
     int width, height;
     std::vector<int> camera_indexes{5};
     PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
+
+	if ((argc < 2) || (stoi(argv[1]) != (argc - 2)))
+	{
+		std::cout << "Wrong format for arguments" << std::endl;
+		std::cout << "Expected format:" << std::endl;
+		std::cout << "./016_multi_zone_detection.out <number of zones> <distance 1> <distance 2> .. <distance for last zone>" << std::endl;
+		return 1;
+	}	
+	
+	int number_of_zones = stoi(argv[1]);
+
+	vector <float> distances(number_of_zones);
+
+	for(int i=0 ; i<number_of_zones ; i++)
+	{
+		distances[i] = stof(argv[i+2])/100.0f;
+	}
+
+	sort(distances.begin(), distances.end());
 
     //Start the PAL application
     if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
@@ -268,32 +289,9 @@ int main( int argc, char** argv )
     width = dataDiscard[0].left.cols;
     height = dataDiscard[0].left.rows;
 
-    float distance_1, distance_2, distance_3;
-    std::cout << std::endl;
-    std::cout << "Please enter the first distance threshold(in m) marking the first zone:" << std::endl;
-    cin >> distance_1;
-
-    std::cout << "Please enter the second distance threshold(in m) marking the second zone:" << std::endl;
-    cin >> distance_2;
-
-    while(distance_1 > distance_2)
-    {
-        std::cout << "Second distance threshold should be higher than the first value. Please re-enter the value." << std::endl;
-        cin >> distance_2;
-    }
-
-    std::cout << "Please enter the third distance threshold(in m) marking the third zone:" << std::endl;
-    cin >> distance_3;
-
-    while(distance_2 > distance_3)
-    {
-        std::cout << "Third distance threshold should be higher than the second value. Please re-enter the value." << std::endl;
-        cin >> distance_3;
-    }
-
     //width and height are the dimensions of each panorama.
     //Each of the panoramas are displayed at otheir original resolution.
-    resizeWindow("PAL Zone Detection", width, height);
+    resizeWindow("PAL Multi Zone Detection", width, height);
 
     int key = ' ';
 
@@ -314,10 +312,10 @@ int main( int argc, char** argv )
         }
         cv::Mat display = data[0].left;
         
-        zoneDetection(display, data[0].trackingData, distance_1, distance_2, distance_3);
+        zoneDetection(display, data[0].trackingData, distances);
         
         //Display the stereo images
-        imshow( "PAL Zone Detection", display);  
+        imshow( "PAL Multi Zone Detection", display);  
 
         //Wait for the keypress - with a timeout of 1 ms
         key = waitKey(1) & 255;
