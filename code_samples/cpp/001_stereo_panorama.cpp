@@ -57,8 +57,7 @@ int main( int argc, char** argv )
 	char path2[1024];
 	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
 
-	PAL::SetPathtoData(path, path2);
-	PAL::DisableTRTModels(true);
+	PAL::DisableModels(true);
 	
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
@@ -71,25 +70,31 @@ int main( int argc, char** argv )
 	
 	usleep(1000000);
 
-	PAL::CameraProperties data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-
+	PAL::CameraProperties data1;
+	
+	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data1);
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
 	}
-	
+
 	Display* disp = XOpenDisplay(NULL);
 	Screen*  scrn = DefaultScreenOfDisplay(disp);
 	int sc_height = scrn->height;
 	int sc_width  = scrn->width;
+		
 	
 	resizeWindow("PAL Stereo Panorama", sc_width-60, sc_height-60);
 	
 	int key = ' ';
 
-	cout<<"Press ESC to close the window."<<endl;
-	printf("Press f/F to toggle filter rgb property\n");
+	cout<<"\n\nPress ESC to close the window."<<endl;
+	printf("Press f/F to toggle filter rgb property\n\n");
 
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 	bool filter_spots = true;
@@ -97,13 +102,19 @@ int main( int argc, char** argv )
 	//Display the overlayed image
 	imshow( "PAL Stereo Panorama", output);
 
+	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
+		
 
 		std::vector<PAL::Data::Stereo> data;
-
-		data =  PAL::GetStereoData();	
+		data =  PAL::GetStereoData();
+		if(data[0].camera_changed)
+		{
+			break;
+		}
+		
 
         cv::Mat display;
         

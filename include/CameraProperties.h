@@ -6,7 +6,7 @@ namespace PAL
 
 	enum CameraPropertyFlags
 	{
-       		BRIGHTNESS = 0x1,
+       	BRIGHTNESS = 0x1,
 		CONTRAST = 0x2,
 		SATURATION = 0x4,
 		GAMMA = 0x8,
@@ -15,43 +15,45 @@ namespace PAL
 		SHARPNESS = 0x40,
 		EXPOSURE = 0x80,
 		AUTO_WHITE_BAL = 0x100,
-		AUTO_EXPOSURE = 0x200,
+		AUTO_GAIN = 0x200,
 		RESOLUTION = 0x400,
 		COLOR_SPACE = 0x800,
 		POWER_LINE_FREQUENCY = 0x1000,
 		VERTICAL_FLIP = 0x2000,
 		FILTER_DISPARITY = 0x4000,
 		FILTER_SPOTS = 0x8000,
-        	FOV = 0x10000,
+        FOV = 0x10000,
 		PROJECTION = 0x20000,
-		CAMERA_HEIGHT = 0x80000,		
-		DETECTION_MODE = 0x100000,
-		GROUND_DETECTION = 0x200000,
-		YAW = 0x400000,
-		PITCH = 0x800000,
-		RANGE = 0x1000000,
-		STARTHFOV = 0x2000000,
-		HFOV_RANGE = 0x4000000,
-		STARTVFOV = 0x8000000,
-		ENDVFOV   = 0x10000000,
-		DEPTH_SCALE = 0x20000000,
-		POINTCLOUD_DENSITY = 0x40000000,
-		IMAGE_STABILIZATION = 0x80000000,
-		DEPTH_STABILIZATION = 0x100000000,
-		COLOR_DEPTH = 0x200000000,
-		MODE  				= 0x400000000, 
-		RAW_DEPTH           = 0x800000000, 
-		STEREO_IMAGE_STABILIZATION = 0x1000000000,
-		AUTO_EXPOSURE_METHOD = 0x2000000000,
-		HID_FRAME_RATE = 0x4000000000,
-		HID_DENOISE = 0x8000000000,
-		HID_QFACTOR = 0x10000000000,
-		HID_IHDR_MODE = 0x20000000000,
-		HID_IHDR_VALUE = 0x40000000000,
-		ODOA_DEPTHTEMPORAL = 0x80000000000,
-		ODOA_DEPTHSENSITIVITY = 0x100000000000,
-		CLOTHES_LINING_MAX_HEIGHT = 0x200000000000,				
-		ALL                 = 0x3FFFFFFFFFFF,
+		CAMERA_HEIGHT = 0x40000,		
+		DETECTION_MODE = 0x80000,		
+		GROUND_DETECTION = 0x100000,
+		YAW = 0x200000,
+		PITCH = 0x400000,
+		RANGE = 0x800000,
+		STARTHFOV = 0x1000000,
+		HFOV_RANGE = 0x2000000,
+		STARTVFOV = 0x4000000,
+		ENDVFOV = 0x8000000,
+		DEPTH_SCALE   = 0x10000000,
+		POINTCLOUD_DENSITY = 0x20000000,
+		IMAGE_STABILIZATION = 0x40000000,
+		DEPTH_STABILIZATION = 0x80000000,
+		COLOR_DEPTH = 0x100000000,
+		MODE = 0x200000000,
+		RAW_DEPTH = 0x400000000, 
+		STEREO_IMAGE_STABILIZATION = 0x800000000, 
+		AUTO_EXPOSURE_METHOD = 0x1000000000,
+		HID_FRAME_RATE = 0x2000000000,
+		HID_DENOISE = 0x4000000000,
+		HID_QFACTOR = 0x8000000000,
+		HID_IHDR_MODE = 0x10000000000,
+		HID_IHDR_VALUE = 0x20000000000,
+		ODOA_DEPTHTEMPORAL = 0x40000000000,
+		ODOA_DEPTHSENSITIVITY = 0x80000000000,
+		CLOTHES_LINING_MAX_HEIGHT = 0x100000000000,
+		FD = 0x200000000000,
+		TRACKING_QUALITY = 0x400000000000,
+		ALL = 0x7FFFFFFFFFFF,
 	};
 
 	struct Resolution
@@ -93,6 +95,7 @@ namespace PAL
 	{
 		EQUI_RECTANGULAR = 0,
 		PERSPECTIVE = 1,
+		SPHERICAL = 2,
 	};
 	
 	enum DetectionMode
@@ -110,7 +113,32 @@ namespace PAL
 		DEPTH = 0x2,
 		RANGE_SCAN = 0x4,
 		POINT_CLOUD = 0x8,
-		ALL_MODE = 0xF,
+		TRACKING = 0X10,
+		ALL_MODE = 0x1F,
+	};
+
+	enum Tracking_Mode
+	{
+		PEOPLE_TRACKING = 0X1,
+		PEOPLE_FOLLOWING = 0X2,
+		OBJECT_TRACKING = 0X4,
+		OBJECT_FOLLOWING = 0X8,
+		OBJECT_DETECTION = 0X10,
+		PEOPLE_DETECTION = 0X20,
+	};
+
+	enum Tracking_Quality
+	{
+		STANDARD = 0,
+		MEDIUM = 1,
+		HIGHEST = 2,
+	};
+
+	enum DepthInTracking
+	{
+		DEPTH_OFF = 0x1,
+		DEPTH_ON = 0x2,
+		DEPTH_3DLOCATION_ON = 0x4,
 	};
 	
 	enum R_M
@@ -128,11 +156,170 @@ namespace PAL
         HDR_AUTO = 0x02,
         HDR_MANUAL = 0x03,
     };
+
+	struct CameraPropertyValues
+	{
+
+		float MAX_CLOTHES_LINING_MAX_HEIGHT = 1000;
+		float MIN_CLOTHES_LINING_MAX_HEIGHT = 0;
+		float DEFAULT_CLOTHES_LINING_MAX_HEIGHT = 130;
+		
+		int MAX_DEPTH_TEMPORAL = 10;
+		int MIN_DEPTH_TEMPORAL = 0;
+		int DEFAULT_DEPTH_TEMPORAL = 0;
+
+		int MAX_SENSITIVITY_OFFSET = 100;
+		int MIN_SENSITIVITY_OFFSET = -100;
+		int DEFAULT_SENSITIVITY_OFFSET = 0;
+
+		int MAX_HID_FRAME_RATE = 120;
+		int MIN_HID_FRAME_RATE = 1;
+		int DEFAULT_HID_FRAME_RATE = 30;
+		
+		int MAX_HID_DENOISE = 15;
+		int MIN_HID_DENOISE = 0;
+		int DEFAULT_HID_DENOISE = 8;
+		
+		int MAX_HID_QFACTOR = 96;
+		int MIN_HID_QFACTOR = 10;
+		int DEFAULT_HID_QFACTOR = 96;
+		
+		int MAX_HID_IHDR_VALUE = 4;
+		int MIN_HID_IHDR_VALUE = 1;
+		int DEFAULT_HID_IHDR_VALUE = 1;
+		
+		HDR_Mode DEFAULT_HID_IHDR_MODE = HDR_OFF;
+		
+		int MAX_AUTO_EXPOSURE_METHOD = 1;
+		int MIN_AUTO_EXPOSURE_METHOD = 0;
+		int DEFAULT_AUTO_EXPOSURE_METHOD = 1;
+		
+		int MAX_IMAGE_STABILIZATION = 9;
+		int MIN_IMAGE_STABILIZATION = 0;
+		int DEFAULT_IMAGE_STABILIZATION = 3;
+		
+		int MAX_STEREO_IMAGE_STABILIZATION = 9;
+		int MIN_STEREO_IMAGE_STABILIZATION = 0;
+		int DEFAULT_STEREO_IMAGE_STABILIZATION = 0;
+		
+		int MAX_DEPTH_STABILIZATION = 6;
+		int MIN_DEPTH_STABILIZATION = 0;
+		int DEFAULT_DEPTH_STABILIZATION = 5;
+		
+		int MAX_DEPTH_SCALE = 30;
+		int MIN_DEPTH_SCALE = 1;
+		int DEFAULT_DEPTH_SCALE = 5;
+		
+		int MAX_POINT_CLOUD_DENSITY = 25;
+		int MIN_POINT_CLOUD_DENSITY = 1;
+		int DEFAULT_POINT_CLOUD_DENSITY = 9;
+		
+        int MAX_BRIGHTNESS = 15;
+		int MIN_BRIGHTNESS = -15;
+		int DEFAULT_BRIGHTNESS = -2;
+		
+		int MAX_CONTRAST = 30;
+		int MIN_CONTRAST = 0;
+		int DEFAULT_CONTRAST = 5;
+		
+		int MAX_SATURATION = 60;
+		int MIN_SATURATION = 0;
+		int DEFAULT_SATURATION = 60;
+
+		int MAX_GAMMA = 500;
+		int MIN_GAMMA = 40;
+		int DEFAULT_GAMMA = 300;
+
+		int MAX_GAIN = 100;
+		int MIN_GAIN = 0;
+		int DEFAULT_GAIN = 2;
+
+		int MAX_WHITE_BAL_TEMP = 10000;
+		int MIN_WHITE_BAL_TEMP = 1000;
+		int DEFAULT_WHITE_BAL_TEMP = 4250;
+		
+		int MAX_SHARPNESS = 127;
+		int MIN_SHARPNESS = 0;
+		int DEFAULT_SHARPNESS = 0;
+		
+		int MAX_EXPOSURE = 1000;
+		int MIN_EXPOSURE = 1;
+		int DEFAULT_EXPOSURE = 50;
+		
+		int DEFAULT_MODE    =  LS_M;
+				
+		bool DEFAULT_AUTO_WHITE_BAL = 1;
+		bool DEFAULT_AUTO_GAIN = 0;
+
+		CaptureType DEFAULT_CAPTURE_TYPE = CaptureType::CAMERA;
+		ColorSpace DEFAULT_COLOR_SPACE = RGB;
+		PowerLineFrequency DEFAULT_POWER_LINE_FREQUENCY = _AUTO;
+
+		bool DEFAULT_VERTICAL_FLIP = false;
+		bool DEFAULT_FILTER_DISPARITY = true;
+		bool DEFAULT_FILTER_SPOTS = true;
+        
+		int DEFAULT_FOV_START = 0;
+		int DEFAULT_FOV_END = 360;
+
+		Projection DEFAULT_PROJECTION = EQUI_RECTANGULAR;
+
+		DetectionMode DEFAULT_DETECTION_MODE = TABLE_TOP;
+		
+		bool DEFAULT_GROUND_DETECTION = true;		
+		
+		int MAX_YAW = 359;
+		int MIN_YAW = 0;
+		int DEFAULT_YAW = 0;
+		
+		int MAX_PITCH = 45;
+		int MIN_PITCH = -45;
+		int DEFAULT_PITCH = 0;
+		
+		int MAX_RANGE = 1000;
+		int MAX_MIN_RANGE = 50;		
+		int MAX_START_HFOV = 359;
+		int MAX_HFOV_RANGE = 360;
+		int MAX_START_VFOV = 58;
+		int MAX_END_VFOV = 58;
+		float MAX_CAMERA_HEIGHT = 300;
+
+		int MIN_RANGE = 51;	
+		int MIN_MIN_RANGE = 0;
+		int MIN_START_HFOV = 0;
+		int MIN_HFOV_RANGE = 1;
+		int MIN_START_VFOV = -58;
+		int MIN_END_VFOV = -58;
+		float MIN_CAMERA_HEIGHT = 0;
+
+		int DEFAULT_MIN_RANGE = 50;	
+		int DEFAULT_RANGE = 1000;
+		int DEFAULT_START_HFOV = 0;
+		int DEFAULT_HFOV_RANGE = 360;
+		int DEFAULT_START_VFOV = 58;
+		int DEFAULT_END_VFOV = -52;
+		float DEFAULT_CAMERA_HEIGHT = 65;
+	
+		bool DEFAULT_RAW_DEPTH  = false;
+		bool DEFAULT_COLOR_DEPTH  = true;
+
+		Resolution DEFAULT_RESOLUTION = 
+		{
+			.width = 672,
+        		.height = 224
+		};
+		
+		bool DEFAULT_FD = true;
+
+		Tracking_Quality DEFAULT_TRACKING_QUALITY = Tracking_Quality::STANDARD;
+
+		CameraPropertyValues();
+	};
 	
 	struct CameraProperties
 	{
-	    	int brightness;
-	    	int contrast;
+	    int brightness;
+	    int contrast;
 		int saturation;
 		int gamma;
 		int gain;
@@ -140,7 +327,7 @@ namespace PAL
 		int sharpness;
 		int exposure;
 		bool  auto_white_bal;
-		bool  auto_exposure;
+		bool  auto_gain;
 		
 		int mode ;
 		
@@ -194,209 +381,20 @@ namespace PAL
 		int hid_qfactor;
 		int hid_ihdr_value;
 		HDR_Mode hid_ihdr_mode;
-		
+
 		int depth_context_temporal;
 		int sensitivity_offset;
+
 		float clothes_lining_max_height;
-		
-		
-		static constexpr float MAX_CLOTHES_LINING_MAX_HEIGHT = 1000;
-		static constexpr float MIN_CLOTHES_LINING_MAX_HEIGHT = 0;
-		static constexpr float DEFAULT_CLOTHES_LINING_MAX_HEIGHT = 130;
-		
-		static const int MAX_DEPTH_TEMPORAL = 10;
-		static const int MIN_DEPTH_TEMPORAL = 0;
-		static const int DEFAULT_DEPTH_TEMPORAL = 0;
+		bool fd;
 
-		static const int MAX_SENSITIVITY_OFFSET = 100;
-		static const int MIN_SENSITIVITY_OFFSET = -100;
-		static const int DEFAULT_SENSITIVITY_OFFSET = 0;
+		Tracking_Quality tracking_quality;
 
-		static const int MAX_HID_FRAME_RATE = 120;
-		static const int MIN_HID_FRAME_RATE = 1;
-		static const int DEFAULT_HID_FRAME_RATE = 30;
+		//PAL::CameraPropertyValues cpv;
 		
-		static const int MAX_HID_DENOISE = 15;
-		static const int MIN_HID_DENOISE = 0;
-		static const int DEFAULT_HID_DENOISE = 8;
-		
-		static const int MAX_HID_QFACTOR = 96;
-		static const int MIN_HID_QFACTOR = 10;
-		static const int DEFAULT_HID_QFACTOR = 96;
-		
-		static const int MAX_HID_IHDR_VALUE = 4;
-		static const int MIN_HID_IHDR_VALUE = 1;
-		static const int DEFAULT_HID_IHDR_VALUE = 1;
-		
-		static const HDR_Mode DEFAULT_HID_IHDR_MODE = HDR_OFF;
-		
-		static const int MAX_AUTO_EXPOSURE_METHOD = 1;
-		static const int MIN_AUTO_EXPOSURE_METHOD = 0;
-		static const int DEFAULT_AUTO_EXPOSURE_METHOD = 1;
-		
-		static const int MAX_IMAGE_STABILIZATION = 9;
-		static const int MIN_IMAGE_STABILIZATION = 0;
-		static const int DEFAULT_IMAGE_STABILIZATION = 3;
-		
-		static const int MAX_STEREO_IMAGE_STABILIZATION = 9;
-		static const int MIN_STEREO_IMAGE_STABILIZATION = 0;
-		static const int DEFAULT_STEREO_IMAGE_STABILIZATION = 0;
-		
-		static const int MAX_DEPTH_STABILIZATION = 6;
-		static const int MIN_DEPTH_STABILIZATION = 0;
-		static const int DEFAULT_DEPTH_STABILIZATION = 5;
-		
-		static const int MAX_DEPTH_SCALE = 30;
-		static const int MIN_DEPTH_SCALE = 1;
-		static const int DEFAULT_DEPTH_SCALE = 5;
-		
-		static const int MAX_POINT_CLOUD_DENSITY = 25;
-		static const int MIN_POINT_CLOUD_DENSITY = 1;
-		static const int DEFAULT_POINT_CLOUD_DENSITY = 9;
-		
-        	static const int MAX_BRIGHTNESS = 15;
-		static const int MIN_BRIGHTNESS = -15;
-		static const int DEFAULT_BRIGHTNESS = -2;
-		
-		static const int MAX_CONTRAST = 30;
-		static const int MIN_CONTRAST = 0;
-		static const int DEFAULT_CONTRAST = 5;
-		
-		static const int MAX_SATURATION = 60;
-		static const int MIN_SATURATION = 0;
-		static const int DEFAULT_SATURATION = 60;
-
-		static const int MAX_GAMMA = 500;
-		static const int MIN_GAMMA = 40;
-		static const int DEFAULT_GAMMA = 300;
-
-		static const int MAX_GAIN = 100;
-		static const int MIN_GAIN = 0;
-		static const int DEFAULT_GAIN = 2;
-
-		static const int MAX_WHITE_BAL_TEMP = 10000;
-		static const int MIN_WHITE_BAL_TEMP = 1000;
-		static const int DEFAULT_WHITE_BAL_TEMP = 4250;
-		
-		static const int MAX_SHARPNESS = 127;
-		static const int MIN_SHARPNESS = 0;
-		static const int DEFAULT_SHARPNESS = 0;
-		
-		static const int MAX_EXPOSURE = 1000;
-		static const int MIN_EXPOSURE = 1;
-		static const int DEFAULT_EXPOSURE = 50;
-		
-		static const int DEFAULT_MODE    =  LS_M;
-				
-		static const bool DEFAULT_AUTO_WHITE_BAL = 1;
-		static const bool DEFAULT_AUTO_EXPOSURE = 0;
-
-		static const Resolution DEFAULT_RESOLUTION;
-		static const CaptureType DEFAULT_CAPTURE_TYPE = CaptureType::CAMERA;
-		static const ColorSpace DEFAULT_COLOR_SPACE = RGB;
-		static const PowerLineFrequency DEFAULT_POWER_LINE_FREQUENCY = _AUTO;
-
-		static const bool DEFAULT_VERTICAL_FLIP = false;
-		static const bool DEFAULT_FILTER_DISPARITY = true;
-		static const bool DEFAULT_FILTER_SPOTS = true;
-        
-		static const int DEFAULT_FOV_START = 0;
-		static const int DEFAULT_FOV_END = 360;
-
-		static const Projection DEFAULT_PROJECTION = EQUI_RECTANGULAR;
-
-		static const DetectionMode DEFAULT_DETECTION_MODE = TABLE_TOP;
-		
-		static const bool DEFAULT_GROUND_DETECTION = true;		
-		
-		static const int MAX_YAW = 359;
-		static const int MIN_YAW = 0;
-		static const int DEFAULT_YAW = 0;
-		
-		static const int MAX_PITCH = 45;
-		static const int MIN_PITCH = -45;
-		static const int DEFAULT_PITCH = 0;
-		
-		static const int MAX_RANGE = 1000;
-		static const int MAX_MIN_RANGE = 50;		
-		static const int MAX_START_HFOV = 359;
-		static const int MAX_HFOV_RANGE = 360;
-		static const int MAX_START_VFOV = 58;
-		static const int MAX_END_VFOV = 58;
-		static constexpr float MAX_CAMERA_HEIGHT = 300;
-
-		static const int MIN_RANGE = 51;	
-		static const int MIN_MIN_RANGE = 0;
-		static const int MIN_START_HFOV = 0;
-		static const int MIN_HFOV_RANGE = 1;
-		static const int MIN_START_VFOV = -58;
-		static const int MIN_END_VFOV = -58;
-		static constexpr float MIN_CAMERA_HEIGHT = 0;
-
-		static const int DEFAULT_MIN_RANGE = 50;	
-		static const int DEFAULT_RANGE = 1000;
-		static const int DEFAULT_START_HFOV = 0;
-		static const int DEFAULT_HFOV_RANGE = 360;
-		static const int DEFAULT_START_VFOV = 58;
-		static const int DEFAULT_END_VFOV = -52;
-		static constexpr float DEFAULT_CAMERA_HEIGHT = 65;
-	
-		static const bool DEFAULT_RAW_DEPTH  = false;
-		static const bool DEFAULT_COLOR_DEPTH  = true;	
-	
-		CameraProperties() :
-			brightness           (DEFAULT_BRIGHTNESS),
-			contrast             (DEFAULT_CONTRAST), 
-			saturation           (DEFAULT_SATURATION),
-			gamma                (DEFAULT_GAMMA),
-			gain                 (DEFAULT_GAIN),
-			white_bal_temp       (DEFAULT_WHITE_BAL_TEMP),
-			sharpness            (DEFAULT_SHARPNESS),
-			exposure             (DEFAULT_EXPOSURE),
-			auto_white_bal       (DEFAULT_AUTO_WHITE_BAL),
-			auto_exposure        (DEFAULT_AUTO_EXPOSURE),
-			mode                 (DEFAULT_MODE),
-			resolution           (DEFAULT_RESOLUTION),
-			capture_type		 (DEFAULT_CAPTURE_TYPE),
-			color_space          (DEFAULT_COLOR_SPACE),
-			power_line_frequency (DEFAULT_POWER_LINE_FREQUENCY),
-			vertical_flip        (DEFAULT_VERTICAL_FLIP),
-			filter_disparity     (DEFAULT_FILTER_DISPARITY),
-			filter_spots 	     (DEFAULT_FILTER_SPOTS),
-			raw_depth    	     (DEFAULT_RAW_DEPTH),
-			fov_start            (DEFAULT_FOV_START),
-			fov_end              (DEFAULT_FOV_END),
-			projection           (DEFAULT_PROJECTION),
-			camera_height	     (DEFAULT_CAMERA_HEIGHT),			
-			detection_mode 	     (DEFAULT_DETECTION_MODE),
-			ground_detection     (DEFAULT_GROUND_DETECTION),
-			yaw      			 	(DEFAULT_YAW),
-			pitch      				(DEFAULT_PITCH),
-			range        			(DEFAULT_RANGE),
-			min_range			(DEFAULT_MIN_RANGE),
-			start_hfov         (DEFAULT_START_HFOV),
-			hfov_range         (DEFAULT_HFOV_RANGE),
-			start_vfov         (DEFAULT_START_VFOV),
-			end_vfov           (DEFAULT_END_VFOV),
-			depth_scale_factor (DEFAULT_DEPTH_SCALE),
-			point_cloud_density (DEFAULT_POINT_CLOUD_DENSITY),
-			image_stabilization  (DEFAULT_IMAGE_STABILIZATION),
-			depth_stabilization  (DEFAULT_DEPTH_STABILIZATION),
-			stereo_image_stabilization  (DEFAULT_STEREO_IMAGE_STABILIZATION),
-			color_depth			 (DEFAULT_COLOR_DEPTH),
-			auto_exposure_method (DEFAULT_AUTO_EXPOSURE_METHOD),
-			hid_frame_rate	(DEFAULT_HID_FRAME_RATE),	
-			hid_denoise		(DEFAULT_HID_DENOISE),
-			hid_qfactor		(DEFAULT_HID_QFACTOR),	
-			hid_ihdr_value	(DEFAULT_HID_IHDR_VALUE),	
-			hid_ihdr_mode	(DEFAULT_HID_IHDR_MODE),
-			depth_context_temporal	(DEFAULT_DEPTH_TEMPORAL),
-			sensitivity_offset	(DEFAULT_SENSITIVITY_OFFSET), 
-			clothes_lining_max_height (DEFAULT_CLOTHES_LINING_MAX_HEIGHT)
-					 
-		{
-		}
+		CameraProperties();	
 	};
+
 
 }//namespace
 

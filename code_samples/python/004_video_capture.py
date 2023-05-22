@@ -16,9 +16,6 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
-	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
 		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -32,10 +29,17 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+	
 
 	if ack_load != PAL_PYTHON.SUCCESSP:
 		print("Error Loading settings! Loading default values.")
 	
+	for i in range(0, 5):
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		
 	# Creating a window
 	source_window = 'PAL Video Capture'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
@@ -50,12 +54,12 @@ def main():
 	record = False
 	closed = False
 
-	print("Press ESC to close the window.")
+	print("\n\nPress ESC to close the window.")
 	print("Press v/V to flip vertically.")	
 	print("Press f/F to toggle filter rgb property.")
 	print("Press C to capture a single frame into a PNG file.")
 	print("Press B to begin the video capture.")
-	print("Press E to end the video capture.")
+	print("Press E to end the video capture.\n\n")
 	
 	flip = bool(loaded_prop["vertical_flip"])
 	filter_spots = bool(loaded_prop["filter_spots"])
@@ -63,15 +67,15 @@ def main():
 	# ESC
 	while closed != True:
 		# GrabFrames function
-		left, right, depth, _  = PAL_PYTHON.GrabDepthDataP()
-
-		# BGR->RGB FLOAT->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-		depth_mat = np.uint8(depth)
-		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
+		left, right, depth, _, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		if camera_changed == True:
+			break
+		
+		# BGR->RGB
+		depth_mat = cv2.cvtColor(depth, cv2.COLOR_BGR2RGB)
 		
 		# Concatenate vertically
-		output = cv2.vconcat([left_mat,depth_mat])
+		output = cv2.vconcat([left,depth_mat])
 
 		# Show results
 		cv2.imshow(source_window, output)

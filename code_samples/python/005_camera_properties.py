@@ -16,9 +16,6 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
-	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
 		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -32,10 +29,16 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
-
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+	
+	
 	if ack_load != PAL_PYTHON.SUCCESSP:
 		print("Error Loading settings! Loading default values.")
 	
+	for i in range(0, 5):
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
 	# Creating a window
 	source_window = 'PAL Camera Properties'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
@@ -48,7 +51,7 @@ def main():
 
 	key = ' '
 
-	print("Press ESC to close the window.")
+	print("\n\nPress ESC to close the window.")
 	print("Q & A keys increase and decrease the BRIGHTNESS respectively.")
 	print("W & S keys increase and decrease the CONTRAST respectively.")
 	print("E & D keys increase and decrease the SATURATION respectively.")
@@ -62,6 +65,8 @@ def main():
 	print("C key saves the current left+depth panorama image to a numbered file.")
 	print("N key saves the current camera properties to a file.")
 	print("L key loads the camera properties from the saved file.")
+	print("V & v keys toggles flip property.")	
+	print("F & f keys toggles filter rgb property.\n\n")
  
 	flip = False
 	filter_spots = bool(loaded_prop["filter_spots"])
@@ -70,15 +75,15 @@ def main():
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth, _  = PAL_PYTHON.GrabDepthDataP()
-
-		# BGR->RGB FLOAT->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-		depth_mat = np.uint8(depth)
-		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_GRAY2RGB)
+		left, right, depth, _, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		if camera_changed == True:
+			break
+		
+		# BGR->RGB
+		depth_mat = cv2.cvtColor(depth, cv2.COLOR_BGR2RGB)
 		
 		# Concatenate vertically
-		display = cv2.vconcat([left_mat,depth_mat])
+		display = cv2.vconcat([left,depth_mat])
 
 		# Show results
 		cv2.imshow(source_window, display)
@@ -97,7 +102,7 @@ def main():
 			loaded_prop["sharpness"] = PAL_PYTHON.DEFAULT_SHARPNESSP
 			loaded_prop["exposure"] = PAL_PYTHON.DEFAULT_EXPOSUREP
 			loaded_prop["auto_white_bal"] = PAL_PYTHON.DEFAULT_AUTO_WHITE_BALP
-			loaded_prop["auto_exposure"] = PAL_PYTHON.DEFAULT_AUTO_EXPOSUREP
+			loaded_prop["auto_gain"] = PAL_PYTHON.DEFAULT_AUTO_GAINP
 			flags = PAL_PYTHON.ALLP
 			
 		elif key == 113:
@@ -183,13 +188,13 @@ def main():
 			flags |= PAL_PYTHON.SHARPNESSP
 		
 		elif key == 105:
-			loaded_prop["exposure"] += 1
+			loaded_prop["exposure"] += 5
 			if loaded_prop["exposure"] > PAL_PYTHON.MAX_EXPOSUREP:
 				loaded_prop["exposure"] = PAL_PYTHON.MAX_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
 		
 		elif key == 107:
-			loaded_prop["exposure"] -= 1
+			loaded_prop["exposure"] -= 5
 			if loaded_prop["exposure"] < PAL_PYTHON.MIN_EXPOSUREP:
 				loaded_prop["exposure"] = PAL_PYTHON.MIN_EXPOSUREP 
 			flags |= PAL_PYTHON.EXPOSUREP
@@ -199,8 +204,8 @@ def main():
 			flags |= PAL_PYTHON.AUTO_WHITE_BALP
 		
 		elif key == 112:
-			loaded_prop["auto_exposure"] = not(loaded_prop["auto_exposure"])
-			flags |= PAL_PYTHON.AUTO_EXPOSUREP
+			loaded_prop["auto_gain"] = not(loaded_prop["auto_gain"])
+			flags |= PAL_PYTHON.AUTO_GAINP
 		
 		elif key == 99:
 			fileName="./pal_image_"+str(frame)+".png"
@@ -214,6 +219,14 @@ def main():
 		elif key == 108:
 			loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("properties.txt", prop)
 		
+		elif key == 102:
+			loaded_prop["filter_spots"] = not(loaded_prop["filter_spots"])
+			flags |= PAL_PYTHON.FILTER_SPOTSP
+
+		elif key == 118:		    
+			loaded_prop["vertical_flip"] = not(loaded_prop["vertical_flip"])
+			flags |= PAL_PYTHON.VERTICAL_FLIPP
+		
 		if flags != 0:
 			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flags)
 			print("Camera Properties....\n")
@@ -226,7 +239,9 @@ def main():
 			print("sharpness          = ", loaded_prop["sharpness"])
 			print("exposure           = ", loaded_prop["exposure"])
 			print("auto_white_bal     = ", loaded_prop["auto_white_bal"])
-			print("auto_exposure      = ", loaded_prop["auto_exposure"])
+			print("auto_gain          = ", loaded_prop["auto_gain"])
+			print("filter_spots       = ", loaded_prop["filter_spots"])
+			print("vertical_flip      = ", loaded_prop["vertical_flip"])
 
 	# Destroying connections
 	print("exiting the application\n")

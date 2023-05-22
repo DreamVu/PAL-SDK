@@ -45,28 +45,22 @@ int main( int argc, char** argv )
 
 	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
 
-	char path[1024];
-	sprintf(path,"/usr/local/bin/data/pal/data%d/",camera_indexes[0]);
-
-	char path2[1024];
-	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
-
-	PAL::SetPathtoData(path, path2);
-
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
 		cout<<"Init failed"<<endl;
 		return 1;
 	}
-	
-	usleep(1000000);
 	PAL::SetAPIMode(PAL::API_Mode::RANGE_SCAN);
 	usleep(1000000);
 
 	PAL::CameraProperties data;
 	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
@@ -75,23 +69,23 @@ int main( int argc, char** argv )
 	//discarding initial frames
 	std::vector<PAL::Data::ODOA_Data> discard;
 	for(int i=0; i<5;i++)
-		discard =  PAL::GrabRangeScanData();		
+		discard =  PAL::GrabRangeScanData();
 
 	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
+	//Each of the panoramas are displayed at their original resolution.
 	resizeWindow("PAL Range Scan", width, height);
 
 	int key = ' ';
 
-	cout<<"Press ESC to close the window."<<endl;
-	printf("Press v/V to toggle vertical flip property\n");	
+	cout<<"\n\nPress ESC to close the window."<<endl;
+	printf("Press v/V to toggle vertical flip property\n\n");	
 	
 	bool flip = data.vertical_flip;	
 	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
 
 	//Display the overlayed image
 	imshow( "PAL Range Scan", output);
-
+	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
@@ -99,7 +93,10 @@ int main( int argc, char** argv )
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();	
-
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		//Display the overlayed image
 		imshow( "PAL Range Scan", data[0].marked_left);  
 

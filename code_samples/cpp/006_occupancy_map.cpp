@@ -66,14 +66,6 @@ int main(int argc, char *argv[])
 
 	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
 
-	char path[1024];
-	sprintf(path,"/usr/local/bin/data/pal/data%d/",camera_indexes[0]);
-
-	char path2[1024];
-	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
-
-	PAL::SetPathtoData(path, path2);
-
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
@@ -91,7 +83,11 @@ int main(int argc, char *argv[])
 
 	PAL::CameraProperties prop;
 	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &prop);
-
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
@@ -140,19 +136,25 @@ int main(int argc, char *argv[])
 
 	int key = ' ';
 
-	printf("Press ESC to close the window\n");    
+	printf("\n\nPress ESC to close the window\n");    
 	printf("Press v/V to toggle vertical flip property\n");	
-	printf("Press f/F to toggle filter rgb property\n");
+	printf("Press f/F to toggle filter rgb property\n\n");
 	
 	bool filter_spots = prop.filter_spots;
 	bool flip = prop.vertical_flip;	
+
 	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
-   	{
+	{
+
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		cv::Mat depth;
 		if(prop.raw_depth)
 			depth = data[0].fused_depth.clone();

@@ -22,9 +22,6 @@ def main():
 
 	if arg == 2:
 		camera_index = int(sys.argv[1])
-	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
 		
 	width, height, ack_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
@@ -38,10 +35,16 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
-
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+	
 	if ack_load != PAL_PYTHON.SUCCESSP:
 		print("Error Loading settings! Loading default values.")
 	
+	for i in range(0, 5):
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		
 	# Creating a window
 	source_window = 'PAL Occupancy Map'
 	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
@@ -54,9 +57,9 @@ def main():
 
 	key = ' '
 
-	print("Press ESC to close the window.")
+	print("\n\nPress ESC to close the window.")
 	print("Press v/V to flip vertically.")	
-	print("Press f/F to toggle filter rgb property.")
+	print("Press f/F to toggle filter rgb property.\n\n")
 
 	flip = bool(loaded_prop["vertical_flip"])
 	filter_spots = bool(loaded_prop["filter_spots"])
@@ -67,14 +70,18 @@ def main():
 	# ESC
 	while key != 27:
 		# GrabFrames function
-		left, right, depth, raw_depth  = PAL_PYTHON.GrabDepthDataP()
+		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
+		if camera_changed == True:
+			break
 
-		# BGR->RGB FLOAT->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_RGB2BGR)
+		# FLOAT->RGB
+		left_mat = left
 		if raw_depth_f:
-			depth_mat = np.uint8(raw_depth)
+			depth_mat = raw_depth
 		else:
-			depth_mat = np.uint8(depth)	
+			depth_mat = depth
+		
+		depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_BGR2RGB)
 		
 		occupancy1D = Getoccupancy1D(left_mat, depth_mat, threshold_cm, context_threshold)
 

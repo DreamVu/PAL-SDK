@@ -32,16 +32,6 @@ Press f/F to toggle filter rgb property
 using namespace cv;
 using namespace std;
 
-
-Mat getColorMap(Mat img, float scale)
-{
-    Mat img_new = img * scale;
-    img_new.convertTo(img_new, CV_8UC1);
-    img_new = 255-img_new;
-    applyColorMap(img_new, img_new, COLORMAP_JET);
-    return img_new;
-}
-
 int main( int argc, char** argv )
 {
 	// Create a window for display.
@@ -58,14 +48,6 @@ int main( int argc, char** argv )
 
 	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
 
-	char path[1024];
-	sprintf(path,"/usr/local/bin/data/pal/data%d/",camera_indexes[0]);
-
-	char path2[1024];
-	sprintf(path2,"/usr/local/bin/data/pal/data%d/",6);
-
-	PAL::SetPathtoData(path, path2);
-	
 	//Connect to the PAL camera
 	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
 	{
@@ -78,7 +60,12 @@ int main( int argc, char** argv )
 
 	PAL::CameraProperties data;
 	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-
+	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+	{
+		PAL::Destroy();
+		return 1;
+	}
+	
 	if(ack_load != PAL::SUCCESS)
 	{
 		cout<<"Error Loading settings! Loading default values."<<endl;
@@ -90,14 +77,14 @@ int main( int argc, char** argv )
 		discard =  PAL::GrabRangeScanData();		
 
 	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at otheir original resolution.
+	//Each of the panoramas are displayed at their original resolution.
 	resizeWindow("PAL Depth Panorama", width, height);
 
 	int key = ' ';
 
-	cout<<"Press ESC to close the window."<<endl;
+	cout<<"\n\nPress ESC to close the window."<<endl;
 	printf("Press v/V to toggle vertical flip property\n");	
-	printf("Press f/F to toggle filter rgb property\n");
+	printf("Press f/F to toggle filter rgb property\n\n");
 	
 	bool filter_spots = data.filter_spots;
 	bool flip = data.vertical_flip;	
@@ -107,13 +94,20 @@ int main( int argc, char** argv )
 	//Display the overlayed image
 	imshow( "PAL Depth Panorama", output);
 
+	
 	//27 = esc key. Run the loop until the ESC key is pressed
 	while(key != 27)
 	{
 
+
 		std::vector<PAL::Data::ODOA_Data> data;
 
 		data =  PAL::GrabRangeScanData();	
+		
+		if(data[0].camera_changed)
+		{
+			break;
+		}
 		
 		Mat display;
 		Mat l = data[0].left;
@@ -124,7 +118,8 @@ int main( int argc, char** argv )
 			d = data[0].distance.clone();
 		
 		
-		d = getColorMap(d, 1);
+		PAL::Acknowledgement ack = PAL::ColorDepthPostProcessing(d);
+		cv::cvtColor(d, d, cv::COLOR_BGR2RGB);
 
 		//Vertical concatenation of rgb and depth into the final output
 		vconcat(l, d, display);

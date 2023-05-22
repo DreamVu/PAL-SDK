@@ -18,9 +18,7 @@ def main():
 	if arg == 2:
 		camera_index = int(sys.argv[1])
 	
-	path = "/usr/local/bin/data/pal/data"+str(camera_index)+"/"	
-	PAL_PYTHON.SetPathtoDataP(path)
-	PAL_PYTHON.DisableTRTModelsP(True)	
+	PAL_PYTHON.DisableModelsP(True)	
 	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
 
 	
@@ -35,6 +33,15 @@ def main():
 	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
 	
 	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
+	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+		PAL_PYTHON.DestroyP()
+		return
+		
+	if ack_load != PAL_PYTHON.SUCCESSP:
+		print("Error Loading settings! Loading default values.")	
+	
+	for i in range(0, 5):
+		left, right, camera_changed  = PAL_PYTHON.GrabStereoDataP()
 	
 	# Creating a window
 	source_window = 'PAL Stereo Panorama'
@@ -53,21 +60,19 @@ def main():
 	
 	key = ' '
 	filter_spots = bool(loaded_prop["filter_spots"])
-	print("Press ESC to close the window.\n")
-	print("Press f/F to toggle filter rgb property.")
+	print("\n\nPress ESC to close the window.")
+	print("Press f/F to toggle filter rgb property.\n\n")
 
 	# ESC
 	while key != 27:
 
 		# GrabFrames function
-		left, right  = PAL_PYTHON.GrabStereoDataP()
-
-		# BGR->RGB
-		left_mat = cv2.cvtColor(left,cv2.COLOR_BGR2RGB)
-		right_mat = cv2.cvtColor(right,cv2.COLOR_BGR2RGB)
+		left, right, camera_changed  = PAL_PYTHON.GrabStereoDataP()
+		if camera_changed == True:
+			break
 
 		# Concatenate vertically
-		concat_op = cv2.vconcat([left_mat,right_mat])
+		concat_op = cv2.vconcat([left,right])
 
 		# Show results
 		cv2.imshow(source_window, concat_op)
