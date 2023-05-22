@@ -14,9 +14,9 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal/pal-temp?raw=true) and installed by running the below command from the location where it is downloaded,
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal/pal?raw=true) and installed by running the below command from the location where it is downloaded,
 
-    chmod +x pal-temp && ./pal-temp
+    chmod +x pal && ./pal
 
 ### Method 2. Using PPA Repository
 
@@ -29,7 +29,7 @@ The Package can be installed by adding the PPA Repository. Steps are as follows:
 #### Step 2. Installing PAL 
     sudo apt update
     sudo apt install ppa-pal
-    sudo apt install pal-temp
+    sudo apt install pal
 
 
 Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. 
@@ -44,17 +44,17 @@ To preview the PAL camera, run the below command
 
 #### To install ROS Melodic Navigation package use the below command:
 
-    sudo apt install pal-melodic-navigation-temp
+    sudo apt install pal-melodic-navigation
     
 ### Ubuntu 20.04 supports ROS Noetic and ROS2 Foxy.
 
 #### To install ROS Noetic Navigation package use the below command:
 
-    sudo apt install pal-noetic-navigation-temp
+    sudo apt install pal-noetic-navigation
 
 #### To install ROS2 Foxy Navigation package use the below command:
 
-    sudo apt install pal-foxy-navigation-temp
+    sudo apt install pal-foxy-navigation
     
 ## Turtlebot-Nav
   
