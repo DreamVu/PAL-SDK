@@ -14,9 +14,9 @@ The Package can be installed in two ways:
 
 ### Method 1. Using Debian packages
 
-The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal/pal-temp?raw=true) and installed by running the below command from the location where it is downloaded,
+The Package can be downloaded directly from [here](https://github.com/DreamVu/ppa/blob/main/pal/pal-dev?raw=true) and installed by running the below command from the location where it is downloaded,
 
-    chmod +x pal-temp && ./pal-temp
+    chmod +x pal-dev && ./pal-dev
 
 ### Method 2. Using PPA Repository
 
@@ -29,7 +29,7 @@ The Package can be installed by adding the PPA Repository. Steps are as follows:
 #### Step 2. Installing PAL 
     sudo apt update
     sudo apt install ppa-pal
-    sudo apt install pal-temp
+    sudo apt install pal-dev
 
 
 Once complete please reboot the system. The packages will be installed in \~/DreamVu folder. 
