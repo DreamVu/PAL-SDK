@@ -20,7 +20,6 @@ def setLabel(img, label, org, clr):
     cv2.rectangle(img, (int(org[0]+0), int(org[1]+baseline)), (int(org[0]+text_width), int(org[1]-text_height)), (0,0,0), cv2.FILLED)
     cv2.putText(img, label, org, fontface, scale, clr, thickness, 4)
 
-
 def draw3DLocation(img, trackingData):
     no_of_persons = len(trackingData[PAL_PYTHON.OKP])
     
@@ -46,30 +45,33 @@ def draw3DLocation(img, trackingData):
         cv2.circle(img, (int(x1+x2/2), int(y1+y2/4)), 5, color, -1)
         setLabel(img, text, (int(x1+x2/2), int(y1+y2/4-10)), color)
 
-
 def main():
+    #Camera index is the video index assigned by the system to the camera. 
+    #By default we set it to 5. Specify the index if the value has been changed.
+    camera_index = 5    
+    
+    arg = len(sys.argv)
+    if arg == 2:
+        camera_index = int(sys.argv[1])
 
-    # Initialising camera
-    image_width = 0
-    image_height = 0
-    camera_index = 5
+    #Connect to the PAL camera    
+    res_init = PAL_PYTHON.InitP(camera_index)
 
-    width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
-
-    if res_init!= PAL_PYTHON.SUCCESSP:
+    if res_init != PAL_PYTHON.SUCCESSP:
         print("Camera Init failed\n")
         return
 
+    #Setting API Mode
     PAL_PYTHON.SetAPIModeP(PAL_PYTHON.TRACKINGP)
-    
+
     loaded_prop = {}
-    prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
+    loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
     
-    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
+    #Loading camera properties from a text file
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
     if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
         PAL_PYTHON.DestroyP()
         return
-        
     if ack_load != PAL_PYTHON.SUCCESSP:
         print("Error Loading settings! Loading default values.")
 
@@ -84,19 +86,7 @@ def main():
     
     # Creating a window
     source_window = 'PAL 3D Location'
-    cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
-    
-    screen = Display().screen()
-    sc_height = screen.height_in_pixels
-    sc_width  = screen.width_in_pixels
-    
-    # Changing window size
-    cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
-    
-    key = ' '
-    filter_spots = loaded_prop["filter_spots"]
-    vertical_flip = loaded_prop["vertical_flip"]
-    fd = loaded_prop["fd"]
+    cv2.namedWindow(source_window, cv2.WINDOW_AUTOSIZE)
 
     print("\n\nPress ESC to close the window.")
     print("Press f/F to toggle filter rgb property.")
@@ -104,25 +94,23 @@ def main():
     print("Press m/M to toggle Fast Depth property")
     print("Press q/Q & a/A to increase and decrease detection threshold respectively\n\n")
 
+    key = ' '
+
     # ESC
     while key != 27:
-
         left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
-        	break
+            break
         
         display = left
-
         draw3DLocation(display, trackingData)
 
         cv2.imshow(source_window, display)
-        
-        #print_track(trackingData)
 
-            # Wait for 1ms
+        # Wait for 1ms
         key = cv2.waitKey(1) & 255
 
-        #up-arrow key
+        #q key
         if key == 113:
             detection_threshold += 0.1
             if(detection_threshold >1):
@@ -131,7 +119,7 @@ def main():
 
             PAL_PYTHON.SetDetectionModeThresholdP(detection_threshold, class_id)
 
-        #down-arrow key
+        #a key
         if key == 97:
             detection_threshold -= 0.1
             if(detection_threshold < 0.01):
@@ -143,24 +131,20 @@ def main():
         #f
         if key == 102:            
             flag = PAL_PYTHON.FILTER_SPOTSP
-            filter_spots = not(filter_spots)
-            loaded_prop["filter_spots"] = filter_spots
-            prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-        
-        #v    
+            loaded_prop["filter_spots"] = not(bool(loaded_prop["filter_spots"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+
+        #v
         if key == 118:            
             flag = PAL_PYTHON.VERTICAL_FLIPP
-            vertical_flip = not(vertical_flip)
-            loaded_prop["vertical_flip"] = vertical_flip
-            prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+            loaded_prop["vertical_flip"] = not(bool(loaded_prop["vertical_flip"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
         
         #m    
         if key == 109:
             flag = PAL_PYTHON.FDP
-            fd = not(fd)
-            loaded_prop["fd"] = fd
-            prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-
+            loaded_prop["fd"] = not(bool(loaded_prop["fd"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
         # Destroying connections
     print("exiting the application\n")
@@ -170,8 +154,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-

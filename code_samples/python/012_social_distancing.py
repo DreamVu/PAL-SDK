@@ -7,7 +7,14 @@ import cv2
 import numpy as np
 import math
 from Xlib.display import Display
-import time
+
+def GetUserInput(prompt):
+    while True:
+        try:
+            value = float(input(prompt))
+            return value
+        except ValueError:
+            print("Invalid input. Please enter a valid float value.")
 
 def is_socially_distant(p1, p2, threshold):
     distance = math.sqrt((p1["x"] - p2["x"]) ** 2 + (p1["y"] - p2["y"]) ** 2 + (p1["z"] - p2["z"]) ** 2)
@@ -29,32 +36,46 @@ def compute_distance_matrix(track_info, threshold_distance):
     return distant_data
 
 def main():
+    #Distance threshold in cm
+    #The Distance threshold should be kept within 1m to 2m range.
+    threshold_distance = GetUserInput("Enter the distance threshold in cm, eg 100\n")
 
-    # Initialising camera
-    image_width = 0
-    image_height = 0
-    camera_index = 5
+    if threshold_distance > 200:
+        threshold_distance = 200.0
+        print("threshold distance set above maximum range. Setting to 2m")
+    elif threshold_distance < 100:
+        threshold_distance = 100.0
+        print("threshold distance set below minumum range. Setting to 1m")
 
-    width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
+    #Camera index is the video index assigned by the system to the camera. 
+    #By default we set it to 5. Specify the index if the value has been changed.
+    camera_index = 5    
+    
+    arg = len(sys.argv)
+    if arg == 2:
+        camera_index = int(sys.argv[1])
 
-    if res_init!= PAL_PYTHON.SUCCESSP:
+    #Connect to the PAL camera    
+    res_init = PAL_PYTHON.InitP(camera_index)
+
+    if res_init != PAL_PYTHON.SUCCESSP:
         print("Camera Init failed\n")
         return
 
+    #Setting API Mode
     PAL_PYTHON.SetAPIModeP(PAL_PYTHON.TRACKINGP)
-    
+
     loaded_prop = {}
-    prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
+    loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
     
-    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
+    #Loading camera properties from a text file
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
     if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
         PAL_PYTHON.DestroyP()
         return
-        
     if ack_load != PAL_PYTHON.SUCCESSP:
         print("Error Loading settings! Loading default values.")
-        
-    enableDepth = True
+
     PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_3DLOCATION_ONP)
 
     tracking_mode = PAL_PYTHON.PEOPLE_DETECTIONP
@@ -66,77 +87,47 @@ def main():
     
     # Creating a window
     source_window = 'PAL Social Distancing'
-    cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
-    
-    screen = Display().screen()
-    sc_height = screen.height_in_pixels
-    sc_width  = screen.width_in_pixels
-    
-    # Changing window size
-    cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
-
-    threshold_distance = float(sys.argv[1]) if len(sys.argv) > 1 else 100.0
-
-    if threshold_distance > 200:
-        threshold_distance = 200.0
-        print("threshold distance set above maximum range. Setting to 2m")
-    elif threshold_distance < 100:
-        threshold_distance = 100.0
-        print("threshold distance set below minumum range. Setting to 1m")
-    
-    key = ' '
-    filter_spots = loaded_prop["filter_spots"]
-    vertical_flip = loaded_prop["vertical_flip"]
-    fd = loaded_prop["fd"]
+    cv2.namedWindow(source_window, cv2.WINDOW_AUTOSIZE)
 
     print("\n\nPress ESC to close the window.")
     print("Press f/F to toggle filter rgb property.")
     print("Press v/V to toggle Vertical Flip property.")
     print("Press m/M to toggle Fast Depth property")
-    print("Press q/Q & a/A arrow key to increase and decrease detection threshold respectively\n\n")
+    print("Press q/Q & a/A to increase and decrease detection threshold respectively\n\n")
+
+    key = ' '
 
     # ESC
     while key != 27:
-
         left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
-        	break
+            break
+        
         display = left
         
         num_of_persons = len(trackingData[PAL_PYTHON.OKP])
 
-        if(num_of_persons>=2):
+        DistantData = compute_distance_matrix(trackingData[PAL_PYTHON.OKP], threshold_distance)
 
-            DistantData = compute_distance_matrix(trackingData[PAL_PYTHON.OKP], threshold_distance)
+        for i in range (0, num_of_persons):
+            x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
+            y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
+            x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
+            y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
 
-            for i in range (0, num_of_persons):
-                x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
-                y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
-                x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
-                y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
-
-                if(DistantData[i]):
-                    #Drawing GREEN box indicating the person is socially distant
-                    cv2.rectangle(display, (x1, y1, x2, y2), (0,255,0),2)
-                else:
-                    #Drawing RED box indicating the person is not socially distant 
-                    cv2.rectangle(display, (x1, y1, x2, y2), (0,0,255),2)
-
-        elif(num_of_persons==1):
-            x1 = trackingData[PAL_PYTHON.OKP][0]["boxes"]["x1"]
-            y1 = trackingData[PAL_PYTHON.OKP][0]["boxes"]["y1"]
-            x2 = trackingData[PAL_PYTHON.OKP][0]["boxes"]["x2"]
-            y2 = trackingData[PAL_PYTHON.OKP][0]["boxes"]["y2"]
-            cv2.rectangle(display, (x1, y1, x2, y2), (0,255,0), 2)
+            if(DistantData[i]):
+                #Drawing GREEN box indicating the person is socially distant
+                cv2.rectangle(display, (x1, y1, x2, y2), (0,255,0),2)
+            else:
+                #Drawing RED box indicating the person is not socially distant 
+                cv2.rectangle(display, (x1, y1, x2, y2), (0,0,255),2)
 
         cv2.imshow(source_window, display)
-        
-        #print_track(trackingData)
 
-            # Wait for 1ms
+        # Wait for 1ms
         key = cv2.waitKey(1) & 255
 
-        #up-arrow key
+        #q
         if key == 113:
             detection_threshold += 0.1
             if(detection_threshold >1):
@@ -145,7 +136,7 @@ def main():
 
             PAL_PYTHON.SetDetectionModeThresholdP(detection_threshold, class_id)
 
-        #down-arrow key
+        #a
         if key == 97:
             detection_threshold -= 0.1
             if(detection_threshold < 0.01):
@@ -157,24 +148,20 @@ def main():
         #f
         if key == 102:            
             flag = PAL_PYTHON.FILTER_SPOTSP
-            filter_spots = not(filter_spots)
-            loaded_prop["filter_spots"] = filter_spots
-            prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-        
-        #v    
+            loaded_prop["filter_spots"] = not(bool(loaded_prop["filter_spots"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+
+        #v
         if key == 118:            
             flag = PAL_PYTHON.VERTICAL_FLIPP
-            vertical_flip = not(vertical_flip)
-            loaded_prop["vertical_flip"] = vertical_flip
-            prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+            loaded_prop["vertical_flip"] = not(bool(loaded_prop["vertical_flip"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
         
         #m    
         if key == 109:
             flag = PAL_PYTHON.FDP
-            fd = not(fd)
-            loaded_prop["fd"] = fd
-            prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-
+            loaded_prop["fd"] = not(bool(loaded_prop["fd"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
         # Destroying connections
     print("exiting the application\n")
@@ -184,8 +171,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-

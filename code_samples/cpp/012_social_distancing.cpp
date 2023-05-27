@@ -3,47 +3,46 @@
 CODE SAMPLE # 012: Social Distancing
 This code sample allows users to check if the distance between two people is within a limit or not.
 
-
 >>>>>> Compile this code using the following command....
 
 ./compile.sh 012_social_distancing.cpp
-
 
 >>>>>> Execute the binary file by typing the following command...
 
 ./012_social_distancing.out
 
-
->>>>>> KEYBOARD CONTROLS:
-
-    Press ESC to close the window.
-    Press f/F to toggle filter rgb property
-    Press v/V to toggle Vertical Flip property.
-    Press m/M to toggle Fast Depth property.
-    Press q/Q & a/A arrow key to increase and decrease detection threshold respectively.
 */
 
-
-# include <stdio.h>
-
-# include <opencv2/opencv.hpp>
-
-# include "PAL.h"
-#include "TimeLogger.h"
-#include <time.h>
-#include <unistd.h>
-
-#include<sys/time.h>
-
-#include <iomanip>
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 
 using namespace cv;
 using namespace std;
 
+template <typename T> void GetUserInput(std::string text, T &value)
+{
+    while (true) 
+    {
+        std::cout << text << std::endl;
+        if (std::cin >> value) 
+        {
+            if (std::cin.peek() == '\n')
+            {
+                break;
+            }
+        }
+
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cout << "Invalid input. Please enter a valid value." << std::endl << std::endl;
+    }
+    return;
+}
+
 //Function to compute distance between two persons
 bool IsSociallyDistant(PAL::Loc3D p1, PAL::Loc3D p2, float threshold)
 {
-
     if((sqrt(pow(p1.x-p2.x,2.0)+pow(p1.y-p2.y,2.0)+pow(p1.z-p2.z,2.0))) <= threshold)
         return false;
     return true;     
@@ -51,7 +50,7 @@ bool IsSociallyDistant(PAL::Loc3D p1, PAL::Loc3D p2, float threshold)
 
 //Function to compute whether the detected persons are socially distant or not
 void ComputeDistanceMatrix(std::vector<PAL::Data::TrackND> track_info, std::vector<bool>& DistantData, float threshold_distance)
-{     
+{
     int num_persons = track_info.size();
     bool b = true;
 
@@ -71,129 +70,111 @@ void ComputeDistanceMatrix(std::vector<PAL::Data::TrackND> track_info, std::vect
 
 int main( int argc, char** argv )
 {
-    namedWindow( "PAL Social Distance", WINDOW_NORMAL ); // Create a window for display.
-
-    int width, height;
-    std::vector<int> camera_indexes{5};
-    PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
-
-    //Start the PAL application
-    if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
-    {
-        cout<<"Init failed"<<endl;
-        return 1;
-    }
-
-    //Select which mode you want to run the application in.
-    PAL::SetAPIMode(PAL::API_Mode::TRACKING);
-    usleep(1000000);
-
-    PAL::CameraProperties cam_data;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &cam_data);
-
-    if(ack_load != PAL::SUCCESS)
-    {
-        cout<<"Error Loading settings! Loading default values."<<endl;
-    }
-
-    bool filter_spots = cam_data.filter_spots;
-    bool flip = cam_data.vertical_flip;
-    bool fd = cam_data.fd;
-
-    bool enableDepth = true;
-    PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_3DLOCATION_ON);
-
-    float threshold_distance = (argc>1) ? atof(argv[1]) : 100.0f; //threshold_distane should be between 1m to 2m.
+    //Distance threshold in cm
+    //The Distance threshold should be kept within 1m to 2m range.
+    float threshold_distance;
+    std::string threshold_msg = "Enter the distance threshold in cm, eg 100";
+    GetUserInput<float>(threshold_msg, threshold_distance);
 
     if(threshold_distance > 200)
     {
         threshold_distance = 200;
-        printf("threshold distance set above maximum range. Setting to 2m\n");
+        cout<<"threshold distance set above maximum range. Setting to 2m"<<endl;
     }
     else if(threshold_distance < 100)
     {
         threshold_distance = 100;
-        printf("threshold distance set below minumum range. Setting to 1m\n");
+        cout<<"threshold distance set below minumum range. Setting to 1m"<<endl;
     }
 
+    //camera index is the video index assigned by the system to the camera. 
+    //By default we set it to 5. Specify the index if the value has been changed.
+    std::vector<int> camera_indexes{5};
+    if(argc > 1) 
+        camera_indexes[0] = std::atoi(argv[1]);
+    
+    //Connect to the PAL camera
+    if (PAL::Init(camera_indexes) != PAL::SUCCESS) 
+    {
+        cerr<<"Init failed"<<endl;
+        return 1;
+    }
+
+    //Setting API Mode
+    PAL::SetAPIMode(PAL::API_Mode::TRACKING);
+    
+    //Loading camera properties from a text file
+    PAL::CameraProperties properties;
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+    {
+        PAL::Destroy();
+        return 1;
+    }
+    if(ack_load != PAL::SUCCESS)
+    {
+        cerr<<"Error Loading settings! Loading default values."<<endl;
+    }
+
+    //Set depth detection mode
+    PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_3DLOCATION_ON);
+
+    //Set in which mode to run tracking
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_DETECTION;
     int success = PAL::SetModeInTracking(tracking_mode);
 
+    //Set minimum score threshold for detections. -1 as class id sets the same threshold for all classes
     float detection_threshold = 0.30;
-    int class_id = -1; // -1 means all classes
+    int class_id = -1;
     PAL::SetDetectionModeThreshold(detection_threshold, class_id);
 
-    std::vector<PAL::Data::TrackingResults> dataDiscard;
-    dataDiscard =  PAL::GrabTrackingData();    
-
-    width = dataDiscard[0].left.cols;
-    height = dataDiscard[0].left.rows;
-
-    //width and height are the dimensions of each panorama.
-    //Each of the panoramas are displayed at their original resolution.
-    resizeWindow("PAL Social Distance", width, height);
-
-    int key = ' ';
+    // Create a window for display.
+    namedWindow( "PAL Social Distancing", WINDOW_AUTOSIZE);
 
     cout << "Press ESC to close the window." << endl;
     cout << "Press f/F to toggle filter rgb property" << endl;
     cout << "Press v/V to toggle Vertical Flip property." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
-    cout << "Press q/Q & a/A arrow key to increase and decrease detection threshold respectively\n\n" << endl;
-	extern bool camera_changed;
-	
-	//27 = esc key. Run the loop until the ESC key is pressed
-	while(key != 27)
-	{
-		
-		if(camera_changed)
-		{
-			break;
-		}
+    cout << "Press q/Q & a/A to increase and decrease detection threshold respectively" << endl;
 
-        std::vector<PAL::Data::TrackingResults> data;
+    std::vector<PAL::Data::TrackingResults> data;
+
+    int key = ' ';
+
+    do
+    {
+        //Capturing Detection data from the camera
         data =  PAL::GrabTrackingData();
 
         cv::Mat display = data[0].left;
+        
         int num_of_persons = data[0].trackingData[PAL::States::OK].size();
         std::vector<bool> DistantData(num_of_persons, true);
-
-        if(num_of_persons>=2)
-        {
-            ComputeDistanceMatrix(data[0].trackingData[PAL::States::OK], DistantData, threshold_distance);
-            for(int i=0; i<num_of_persons; i++)
-            {
-                int x1,y1,x2,y2;
-                x1 = (int)data[0].trackingData[PAL::States::OK][i].boxes.x1;
-                y1 = (int)data[0].trackingData[PAL::States::OK][i].boxes.y1;
-                x2 = (int)data[0].trackingData[PAL::States::OK][i].boxes.x2;
-                y2 = (int)data[0].trackingData[PAL::States::OK][i].boxes.y2;
-
-                if(DistantData[i])
-                    //Drawing GREEN box indicating the person is socially distant
-                    cv::rectangle(display, cv::Rect(x1, y1, x2, y2), cv::Scalar(0,255,0),2);
-                else
-                    //Drawing RED box indicating the person is not socially distant 
-                    cv::rectangle(display, cv::Rect(x1, y1, x2, y2), cv::Scalar(0,0,255),2);
-            }  
-        }
-        else if(num_of_persons==1)
+        ComputeDistanceMatrix(data[0].trackingData[PAL::States::OK], DistantData, threshold_distance);
+        
+        for(int i=0; i<num_of_persons; i++)
         {
             int x1,y1,x2,y2;
-            x1 = (int)data[0].trackingData[PAL::States::OK][0].boxes.x1;
-            y1 = (int)data[0].trackingData[PAL::States::OK][0].boxes.y1;
-            x2 = (int)data[0].trackingData[PAL::States::OK][0].boxes.x2;
-            y2 = (int)data[0].trackingData[PAL::States::OK][0].boxes.y2;
-            cv::rectangle(display, cv::Rect(x1, y1, x2, y2), cv::Scalar(0,255,0), 2);
+            x1 = (int)data[0].trackingData[PAL::States::OK][i].boxes.x1;
+            y1 = (int)data[0].trackingData[PAL::States::OK][i].boxes.y1;
+            x2 = (int)data[0].trackingData[PAL::States::OK][i].boxes.x2;
+            y2 = (int)data[0].trackingData[PAL::States::OK][i].boxes.y2;
+
+            if(DistantData[i])
+                //Drawing GREEN box indicating the person is socially distant
+                cv::rectangle(display, cv::Rect(x1, y1, x2, y2), cv::Scalar(0,255,0),2);
+            else
+                //Drawing RED box indicating the person is not socially distant 
+                cv::rectangle(display, cv::Rect(x1, y1, x2, y2), cv::Scalar(0,0,255),2);
         }
         
         //Display the stereo images
-        imshow( "PAL Social Distance", display);  
+        imshow( "PAL Social Distancing", display);  
 
         //Wait for the keypress - with a timeout of 1 ms
         key = waitKey(1) & 255;
 
-        if(key == 113) //up arrow key
+        if (key == 'q' || key == 'Q')
         {
             detection_threshold += 0.1;
             if(detection_threshold>1)
@@ -203,8 +184,7 @@ int main( int argc, char** argv )
             }
             PAL::SetDetectionModeThreshold(detection_threshold, class_id);
         }
-
-        if(key == 97) //down arrow key
+        if (key == 'a' || key == 'A')
         {
             detection_threshold -= 0.1;
             if(detection_threshold<0.01)
@@ -216,36 +196,29 @@ int main( int argc, char** argv )
         }
         
         if (key == 'f' || key == 'F')
-        {   
-            PAL::CameraProperties prop;
-            filter_spots = !filter_spots;
-            prop.filter_spots = filter_spots;
+        {
+            properties.filter_spots = !properties.filter_spots;
             unsigned long int flags = PAL::FILTER_SPOTS;
-            PAL::SetCameraProperties(&prop, &flags);
+            PAL::SetCameraProperties(&properties, &flags);
         }
-
         if (key == 'v' || key == 'V')
-        {           
-            PAL::CameraProperties prop;
-            flip = !flip;
-            prop.vertical_flip = flip;
+        {
+            properties.vertical_flip = !properties.vertical_flip;
             unsigned long int flags = PAL::VERTICAL_FLIP;
-            PAL::SetCameraProperties(&prop, &flags);
+            PAL::SetCameraProperties(&properties, &flags);
         }
-
         if (key == 'm' || key == 'M')
         {           
-            PAL::CameraProperties prop;
-            fd = !fd;
-            prop.fd = fd;
+            properties.fd = !properties.fd;
             unsigned long int flags = PAL::FD;
-            PAL::SetCameraProperties(&prop, &flags);
+            PAL::SetCameraProperties(&properties, &flags);
         }
     }
+    //27 = esc key. Run the loop until the ESC key is pressed and camera is not changed
+    while(key != 27 && !data[0].camera_changed);
 
-    printf("exiting the application\n");
+    cout<<"exiting the application"<<endl;
     PAL::Destroy();
    
     return 0;
 }
-

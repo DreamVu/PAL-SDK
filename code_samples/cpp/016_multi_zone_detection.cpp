@@ -3,42 +3,22 @@
 CODE SAMPLE # 016: Multi Zone Detection
 This code will grab the left panorama with person tracking data and check if they are in the user provided distinctive detection zones
 
-
 >>>>>> Compile this code using the following command....
 
 ./compile.sh 016_multi_zone_detection.cpp
 
-
 >>>>>> Execute the binary file by typing the following command...
 
 ./016_multi_zone_detection.out
-
-
->>>>>> KEYBOARD CONTROLS:
-
-    Press ESC to close the window.
-    Press f/F to toggle filter rgb property
-    Press v/V to toggle Vertical Flip property.
-    Press m/M to toggle Fast Depth property        
+      
 */
 
-
-# include <stdio.h>
-
-# include <opencv2/opencv.hpp>
-
-# include "PAL.h"
-#include "TimeLogger.h"
-#include <time.h>
-#include <unistd.h>
-
-#include<sys/time.h>
-
-#include <iomanip>
+#include <stdio.h>
+#include <opencv2/opencv.hpp>
+#include "PAL.h"
 
 using namespace cv;
 using namespace std;
-
 
 std::string precision_string(float num, int precision=1)
 {
@@ -130,35 +110,35 @@ void zoneDetection(cv::Mat &img, std::vector<std::vector<PAL::Data::TrackND>> de
         cv::rectangle(img, Rect(x1, y1-box_height-1, box_width, box_height), Scalar(255,255,255), cv::FILLED);        
 
         cv::Scalar colors;
-		int number_of_zones = thresh.size();
-		bool beyond_all_zones = true;
-		for(int j=0 ; j<number_of_zones ; j++)
-		{
-		    if(depth_value < thresh[j])
-		    {
-		        std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs to zone " << (j+1) << std::endl;
-				float normalised_color = (float)(j/(float)(number_of_zones)) ;			
-				int green = (int)(255.0f*normalised_color);
-				int red = (int)(255.0f*(1.0f-normalised_color));
-		        colors = cv::Scalar(0, green, red);
-				beyond_all_zones = false;
-				break;
-		    }
-		}
+        int number_of_zones = thresh.size();
+        bool beyond_all_zones = true;
+        for(int j=0 ; j<number_of_zones ; j++)
+        {
+            if(depth_value < thresh[j])
+            {
+                std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs to zone " << (j+1) << std::endl;
+                float normalised_color = (float)(j/(float)(number_of_zones)) ;            
+                int green = (int)(255.0f*normalised_color);
+                int red = (int)(255.0f*(1.0f-normalised_color));
+                colors = cv::Scalar(0, green, red);
+                beyond_all_zones = false;
+                break;
+            }
+        }
 
-		if(beyond_all_zones)
-		{
-			std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs beyond zone " << number_of_zones << std::endl;
-		    colors = cv::Scalar(0, 255, 0);
-		}
+        if(beyond_all_zones)
+        {
+            std::cout << "ID " << to_string((int)detections[PAL::States::OK][i].t_track_id) << " belongs beyond zone " << number_of_zones << std::endl;
+            colors = cv::Scalar(0, 255, 0);
+        }
 
-		cv::putText(img, label1, Point(x1, (int)(y1-text2.height-baseline-2)), fontface, scale, colors, thickness, cv::LINE_AA);
+        cv::putText(img, label1, Point(x1, (int)(y1-text2.height-baseline-2)), fontface, scale, colors, thickness, cv::LINE_AA);
         if(ENABLEDEPTH)
         {
             cv::putText(img, label2, Point(x1, (int)(y1-baseline/2 -1)), fontface, scale, colors, thickness, cv::LINE_AA); 
         }
 
-			
+            
         cv::rectangle(img, Rect(x1, y1, x2, y2), colors, 2);
     }
     
@@ -229,87 +209,77 @@ void print_track(std::vector<std::vector<PAL::Data::TrackND>> results)
 
 int main( int argc, char** argv )
 {
-    namedWindow( "PAL Multi Zone Detection", WINDOW_NORMAL ); // Create a window for display.
-
-    int width, height;
-    std::vector<int> camera_indexes{5};
-    PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
-
-	if ((argc < 2) || (stoi(argv[1]) != (argc - 2)))
-	{
-		std::cout << "Wrong format for arguments" << std::endl;
-		std::cout << "Expected format:" << std::endl;
-		std::cout << "./016_multi_zone_detection.out <number of zones> <distance 1> <distance 2> .. <distance for last zone>" << std::endl;
-		return 1;
-	}	
-	
-	int number_of_zones = stoi(argv[1]);
-
-	vector <float> distances(number_of_zones);
-
-	for(int i=0 ; i<number_of_zones ; i++)
-	{
-		distances[i] = stof(argv[i+2])/100.0f;
-	}
-
-	sort(distances.begin(), distances.end());
-
-    //Start the PAL application
-    if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) //Connect to the PAL camera
+    //provide zone range as command line arguments
+    if ((argc < 2) || (stoi(argv[1]) != (argc - 2)))
     {
-        cout<<"Init failed"<<endl;
+        std::cout << "Wrong format for arguments" << std::endl;
+        std::cout << "Expected format:" << std::endl;
+        std::cout << "./016_multi_zone_detection.out <video index> <number of zones> <distance 1> <distance 2> .. <distance for last zone>" << std::endl;
         return 1;
     }
 
-    //Select which mode you want to run the application in.
-    PAL::SetAPIMode(PAL::API_Mode::TRACKING);
-    usleep(1000000);
-
-    PAL::CameraProperties cam_data;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &cam_data);
-
-    if(ack_load != PAL::SUCCESS)
+    //Assign the given zone distances
+    int number_of_zones = stoi(argv[1]);
+    
+    vector <float> distances(number_of_zones);
+    for(int i=0 ; i<number_of_zones ; i++)
     {
-        cout<<"Error Loading settings! Loading default values."<<endl;
+        distances[i] = stof(argv[i+2])/100.0f;
     }
 
-    bool filter_spots = cam_data.filter_spots;
-    bool flip = cam_data.vertical_flip;
-    bool fd = cam_data.fd;
+    sort(distances.begin(), distances.end());
 
-    bool enableDepth = true;
-    bool enable3Dlocation = true;
+    //Camera index is the video index assigned by the system to the camera. 
+    //By default we set it to 5. Specify the index if the value has been changed.
+    std::vector<int> camera_indexes{5};
+    
+    //Connect to the PAL camera
+    if (PAL::Init(camera_indexes) != PAL::SUCCESS) 
+    {
+        cerr<<"Init failed"<<endl;
+        return 1;
+    }
+
+    //Setting API Mode
+    PAL::SetAPIMode(PAL::API_Mode::TRACKING);
+    
+    //Loading camera properties from a text file
+    PAL::CameraProperties properties;
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+    {
+        PAL::Destroy();
+        return 1;
+    }
+    if(ack_load != PAL::SUCCESS)
+    {
+        cerr<<"Error Loading settings! Loading default values."<<endl;
+    }
+
+    //Set depth detection mode
     PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_3DLOCATION_ON);
 
+    //Set in which mode to run tracking
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_TRACKING;
     int success = PAL::SetModeInTracking(tracking_mode);
-    std::vector<PAL::Data::TrackingResults> dataDiscard;
-    dataDiscard =  PAL::GrabTrackingData();    
 
-    width = dataDiscard[0].left.cols;
-    height = dataDiscard[0].left.rows;
-
-    //width and height are the dimensions of each panorama.
-    //Each of the panoramas are displayed at otheir original resolution.
-    resizeWindow("PAL Multi Zone Detection", width, height);
-
-    int key = ' ';
+    // Create a window for display.
+    namedWindow( "PAL Multi Zone Detection", WINDOW_AUTOSIZE);
 
     cout << "Press ESC to close the window." << endl;
     cout << "Press f/F to toggle filter rgb property" << endl;
     cout << "Press v/V to toggle Vertical Flip property." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
 
-    
-    //27 = esc key. Run the loop until the ESC key is pressed
-    while(key != 27)
+    std::vector<PAL::Data::TrackingResults> data;
+
+    int key = ' ';
+
+    do
     {
-        std::vector<PAL::Data::TrackingResults> data;
+        //Capturing Detection data from the camera
         data =  PAL::GrabTrackingData();    
-        if(data[0].camera_changed)
-        {
-            break;
-        }
+
         cv::Mat display = data[0].left;
         
         zoneDetection(display, data[0].trackingData, distances);
@@ -321,34 +291,28 @@ int main( int argc, char** argv )
         key = waitKey(1) & 255;
         
         if (key == 'f' || key == 'F')
-        {   
-            PAL::CameraProperties prop;
-            filter_spots = !filter_spots;
-            prop.filter_spots = filter_spots;
+        {
+            properties.filter_spots = !properties.filter_spots;
             unsigned long int flags = PAL::FILTER_SPOTS;
-            PAL::SetCameraProperties(&prop, &flags);
+            PAL::SetCameraProperties(&properties, &flags);
         }
-
         if (key == 'v' || key == 'V')
-        {           
-            PAL::CameraProperties prop;
-            flip = !flip;
-            prop.vertical_flip = flip;
+        {
+            properties.vertical_flip = !properties.vertical_flip;
             unsigned long int flags = PAL::VERTICAL_FLIP;
-            PAL::SetCameraProperties(&prop, &flags);
+            PAL::SetCameraProperties(&properties, &flags);
         }
-
         if (key == 'm' || key == 'M')
         {           
-            PAL::CameraProperties prop;
-            fd = !fd;
-            prop.fd = fd;
+            properties.fd = !properties.fd;
             unsigned long int flags = PAL::FD;
-            PAL::SetCameraProperties(&prop, &flags);
+            PAL::SetCameraProperties(&properties, &flags);
         }
     }
+    //27 = esc key. Run the loop until the ESC key is pressed and camera is not changed
+    while(key != 27 && !data[0].camera_changed);
 
-    printf("exiting the application\n");
+    cout<<"exiting the application"<<endl;
     PAL::Destroy();
    
     return 0;
