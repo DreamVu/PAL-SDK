@@ -44,17 +44,17 @@ To preview the PAL camera, run the below command
 
 #### To install ROS Melodic Navigation package use the below command:
 
-    sudo apt install pal-melodic-navigation-temp
+    sudo apt install pal-melodic-navigation-dev
     
 ### Ubuntu 20.04 supports ROS Noetic and ROS2 Foxy.
 
 #### To install ROS Noetic Navigation package use the below command:
 
-    sudo apt install pal-noetic-navigation-temp
+    sudo apt install pal-noetic-navigation-dev
 
 #### To install ROS2 Foxy Navigation package use the below command:
 
-    sudo apt install pal-foxy-navigation-temp
+    sudo apt install pal-foxy-navigation-dev
     
 ## Turtlebot-Nav
   
