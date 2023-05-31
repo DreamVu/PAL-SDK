@@ -40,7 +40,7 @@ template <typename T> void GetUserInput(std::string text, T &value)
     return;
 }
 
-void setLabel(cv::Mat& input, const std::string label, const cv::Point org, cv::Scalar clr)
+void setLabel(cv::Mat& input, const std::string label, cv::Point org, cv::Scalar clr)
 {
     int fontface = cv::FONT_HERSHEY_SIMPLEX;
     double scale = 0.8;
@@ -48,6 +48,15 @@ void setLabel(cv::Mat& input, const std::string label, const cv::Point org, cv::
     int baseline = 0;
 
     cv::Size text = cv::getTextSize(label, fontface, scale, thickness, &baseline);
+
+    org.x = org.x < 0 ? 0 : org.x;
+    org.y = org.y - text.height < 0 ? text.height : org.y;
+
+    if(org.x + text.width > input.cols)
+    {
+        org.x = input.cols - text.width;
+    }
+
     cv::rectangle(input, org + cv::Point(0, baseline), org + cv::Point(text.width, -text.height), CV_RGB(0,0,0), cv::FILLED);
     cv::putText(input, label, org, fontface, scale, clr, thickness, 4);
 }

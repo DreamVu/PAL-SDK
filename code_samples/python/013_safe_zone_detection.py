@@ -23,6 +23,13 @@ def setLabel(input_image, label, org, clr):
     baseline = 0
 
     text_size, _ = cv2.getTextSize(label, fontface, scale, thickness)
+
+    org[0] = 0 if org[0] < 0 else org[0]
+    org[1] = text_size[1] if org[1] - text_size[1] < 0 else org[1]
+
+    if(org[0] + text_size[0] > input_image.shape[1]):
+        org[0] = input_image.shape[1] - text_size[0]
+
     cv2.rectangle(input_image, (org[0] + 0, org[1] + baseline), (org[0] + text_size[0], org[1] - text_size[1]), (0, 0, 0), cv2.FILLED)
     cv2.putText(input_image, label, org, fontface, scale, clr, thickness, cv2.LINE_AA)
 
@@ -113,7 +120,7 @@ def main():
                 #Drawing RED box indicating the person is not socially distant 
                 cv2.rectangle(display, (x1, y1, x2, y2), (0,0,255),2)
 
-            setLabel(display, text, (x1,y1), (0,0,255))
+            setLabel(display, text, [x1,y1], (0,0,255))
 
         cv2.imshow(source_window, display)
 

@@ -151,12 +151,25 @@ void drawOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
         int box_height = text1.height + text2.height + baseline + 3;
         int box_width = std::max(text1.width, text2.width) + 2;
 
-        cv::rectangle(img, Rect(x1, y1-box_height-1, box_width, box_height), Scalar(255,255,255), cv::FILLED);        
+        int text_bg_x1 = x1 < 0 ? 0 : x1;
+        int text_bg_y1 = y1-box_height-1 < 0 ? 0 : y1-box_height-1;
 
-        cv::putText(img, label1, Point(x1, (int)(y1-text2.height-baseline-2)), fontface, scale, Scalar(0, 0, 255), thickness, cv::LINE_AA);
+        if(text_bg_x1 + box_width > img.cols)
+        {
+            text_bg_x1 = img.cols - (box_width);
+        }
+
+        cv::rectangle(img, cv::Rect(text_bg_x1, text_bg_y1, box_width, box_height), cv::Scalar(255,255,255), cv::FILLED); 
+
+        int text_line1_x1 = text_bg_x1;
+        int text_line1_y1 = y1-box_height-1 < 0 ? (int)(text1.height + baseline/2) : (int)y1-text2.height-baseline-2;
+
+        cv::putText(img, label1, cv::Point(text_line1_x1, text_line1_y1), fontface, scale, cv::Scalar(0, 0, 255), thickness, cv::LINE_AA);
         if(ENABLEDEPTH)
         {
-            cv::putText(img, label2, Point(x1, (int)(y1-baseline/2 -1)), fontface, scale, Scalar(0, 0, 255), thickness, cv::LINE_AA); 
+            int text_line2_x1 = text_line1_x1;
+            int text_line2_y1 = (int)(text_line1_y1 + text2.height + baseline/2 + 1);
+            cv::putText(img, label2, cv::Point(text_line2_x1, text_line2_y1), fontface, scale, cv::Scalar(0, 0, 255), thickness, cv::LINE_AA); 
         }
 
         cv::rectangle(img, Rect(x1, y1, x2, y2), colors, 2);

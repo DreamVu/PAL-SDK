@@ -88,11 +88,21 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
         box_height = text1_height + text2_height + baseline + 3
         box_width = max(text1_width, text2_width) + 2
 
-        cv2.rectangle(img, (x1, y1-box_height-1, box_width, box_height), (255,255,255), cv2.FILLED)        
+        text_bg_x1 = 0 if x1 < 0 else x1
+        text_bg_y1 = 0 if y1-box_height-1 < 0 else y1-box_height-1
 
-        cv2.putText(img, label1, (x1, (y1-text2_height-baseline-2)), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
+        if(text_bg_x1 + box_width > img.shape[1]):
+            text_bg_x1 = img.shape[1] - box_width
+
+        cv2.rectangle(img, (text_bg_x1, text_bg_y1, box_width, box_height), (255,255,255), cv2.FILLED)        
+
+        text_line1_x1 = text_bg_x1
+        text_line1_y1 = int(text1_height + baseline/2) if y1-box_height-1 < 0 else int(y1-text2_height-baseline-2)
+        cv2.putText(img, label1, (text_line1_x1, text_line1_y1), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
         if ENABLEDEPTH:
-            cv2.putText(img, label2, (x1, int(y1-baseline/2 -1)), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
+            text_line2_x1 = text_line1_x1
+            text_line2_y1 = int(text_line1_y1 + text2_height + baseline/2 + 1)
+            cv2.putText(img, label2, (text_line2_x1, text_line2_y1), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
 
         cv2.rectangle(img, (x1, y1, x2, y2), colors, 2)
     
@@ -185,6 +195,10 @@ def main():
 
     tracking_mode = PAL_PYTHON.OBJECT_DETECTIONP
     success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
+
+    detection_threshold = 0.30
+    class_id = -1 #use -1 to set for all classes
+    PAL_PYTHON.SetDetectionModeThresholdP(detection_threshold, class_id)
 
     # Creating a window
     source_window = 'PAL Object Detection'

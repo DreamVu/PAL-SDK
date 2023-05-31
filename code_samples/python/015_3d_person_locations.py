@@ -17,6 +17,12 @@ def setLabel(img, label, org, clr):
 
     (text_width, text_height), baseline = cv2.getTextSize(label, fontface, scale, thickness)
 
+    org[0] = 0 if org[0] < 0 else org[0]
+    org[1] = text_height if org[1] - text_height < 0 else org[1]
+
+    if(org[0] + text_width > img.shape[1]):
+        org[0] = img.shape[1] - text_width
+
     cv2.rectangle(img, (int(org[0]+0), int(org[1]+baseline)), (int(org[0]+text_width), int(org[1]-text_height)), (0,0,0), cv2.FILLED)
     cv2.putText(img, label, org, fontface, scale, clr, thickness, 4)
 
@@ -43,7 +49,7 @@ def draw3DLocation(img, trackingData):
             color = (0,0,255)
 
         cv2.circle(img, (int(x1+x2/2), int(y1+y2/4)), 5, color, -1)
-        setLabel(img, text, (int(x1+x2/2), int(y1+y2/4-10)), color)
+        setLabel(img, text, [int(x1+x2/2), int(y1+y2/4-10)], color)
 
 def main():
     #Camera index is the video index assigned by the system to the camera. 
