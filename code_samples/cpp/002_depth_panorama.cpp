@@ -3,156 +3,111 @@
 CODE SAMPLE # 002: PAL Depth Panorama
 This code will grab the left & depth panorama and display in a window using opencv
 
-
 >>>>>> Compile this code using the following command....
 
 ./compile.sh 002_depth_panorama.cpp
 
 >>>>>> Execute the binary file by typing the following command...
 
-./002_depth_panorama.out
-
-
->>>>>> KEYBOARD CONTROLS:
-
-ESC key closes the window
-Press v/V to toggle vertical flip property    
-Press f/F to toggle filter rgb property       
+./002_depth_panorama.out    
 
 */
-
 
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include "PAL.h"
-#include "TimeLogger.h"
-#include <time.h>
-#include <unistd.h>
 
 using namespace cv;
 using namespace std;
 
 int main( int argc, char** argv )
 {
-	// Create a window for display.
-	namedWindow( "PAL Depth Panorama", WINDOW_NORMAL ); 
+    //camera index is the video index assigned by the system to the camera. 
+    //By default we set it to 5. Specify the index if the value has been changed.
+    std::vector<int> camera_indexes{5};
+    if(argc > 1) 
+        camera_indexes[0] = std::atoi(argv[1]);
+    
+    //Connect to the PAL camera
+    if (PAL::Init(camera_indexes) != PAL::SUCCESS) 
+    {
+        cerr<<"Init failed"<<endl;
+        return 1;
+    }
 
-	int width, height;
-	PAL::Mode mode = PAL::Mode::LASER_SCAN;
+    //Setting API Mode
+    PAL::SetAPIMode(PAL::API_Mode::DEPTH);
+    
+    //Loading camera properties from a text file
+    PAL::CameraProperties properties;
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+    {
+        PAL::Destroy();
+        return 1;
+    }
+    if(ack_load != PAL::SUCCESS)
+    {
+        cerr<<"Error Loading settings! Loading default values."<<endl;
+    }
+        
+    // Create a window for display.
+    namedWindow( "PAL Depth Panorama", WINDOW_AUTOSIZE);
 
-	std::vector<int> camera_indexes{5};
-	
-	if(argc > 1) 
-		camera_indexes[0] = std::atoi(argv[1]);
+    cout<<"Press ESC to close the window."<<endl;
+    cout<<"Press f/F to toggle filter spots property"<<endl;
+    cout<<"Press v/V to toggle vertical flip property"<<endl;
+    
+    std::vector<PAL::Data::ODOA_Data> data;
+    
+    int key = ' ';
 
+    do
+    {
+        //Capturing Depth data from the camera
+        data =  PAL::GrabRangeScanData();    
+        
+        Mat left = data[0].left;
+        
+        Mat depth;
+        if(properties.raw_depth)
+            depth = data[0].fused_depth.clone();
+        else
+            depth = data[0].distance.clone();    
+        
+        //A utility function to visualise the depth returned
+        PAL::Acknowledgement ack = PAL::ColorDepthPostProcessing(depth);
+        cv::cvtColor(depth, depth, cv::COLOR_BGR2RGB);
 
-	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
+        Mat display;
 
-	//Connect to the PAL camera
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
-	{
-		cout<<"Init failed"<<endl;
-		return 1;
-	}
-	
-	PAL::SetAPIMode(PAL::API_Mode::DEPTH);
-	usleep(1000000);
+        //Vertical concatenation of colored left and depth into the final output
+        vconcat(left, depth, display);
 
-	PAL::CameraProperties data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
-	{
-		PAL::Destroy();
-		return 1;
-	}
-	
-	if(ack_load != PAL::SUCCESS)
-	{
-		cout<<"Error Loading settings! Loading default values."<<endl;
-	}
+        //Display the depth with colored left panorama
+        imshow( "PAL Depth Panorama", display);  
 
-	//discarding initial frames
-	std::vector<PAL::Data::ODOA_Data> discard;
-	for(int i=0; i<5;i++)
-		discard =  PAL::GrabRangeScanData();		
+        //Wait for the keypress - with a timeout of 1 ms
+        key = waitKey(1) & 255;
+        
+        if (key == 'f' || key == 'F')
+        {
+            properties.filter_spots = !properties.filter_spots;
+            unsigned long int flags = PAL::FILTER_SPOTS;
+            PAL::SetCameraProperties(&properties, &flags);
+        }
+        if (key == 'v' || key == 'V')
+        {
+            properties.vertical_flip = !properties.vertical_flip;
+            unsigned long int flags = PAL::VERTICAL_FLIP;
+            PAL::SetCameraProperties(&properties, &flags);
+        }
+    }
+    //27 = esc key. Run the loop until the ESC key is pressed and camera is not changed
+    while(key != 27 && !data[0].camera_changed);
 
-	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at their original resolution.
-	resizeWindow("PAL Depth Panorama", width, height);
-
-	int key = ' ';
-
-	cout<<"\n\nPress ESC to close the window."<<endl;
-	printf("Press v/V to toggle vertical flip property\n");	
-	printf("Press f/F to toggle filter rgb property\n\n");
-	
-	bool filter_spots = data.filter_spots;
-	bool flip = data.vertical_flip;	
-	Mat output = cv::Mat::zeros(height, width, CV_8UC3);
-	bool raw_depth = data.raw_depth;
-
-	//Display the overlayed image
-	imshow( "PAL Depth Panorama", output);
-
-	
-	//27 = esc key. Run the loop until the ESC key is pressed
-	while(key != 27)
-	{
-
-
-		std::vector<PAL::Data::ODOA_Data> data;
-
-		data =  PAL::GrabRangeScanData();	
-		
-		if(data[0].camera_changed)
-		{
-			break;
-		}
-		
-		Mat display;
-		Mat l = data[0].left;
-		Mat d;
-		if(raw_depth)
-			d = data[0].fused_depth.clone();
-		else
-			d = data[0].distance.clone();
-		
-		
-		PAL::Acknowledgement ack = PAL::ColorDepthPostProcessing(d);
-		cv::cvtColor(d, d, cv::COLOR_BGR2RGB);
-
-		//Vertical concatenation of rgb and depth into the final output
-		vconcat(l, d, display);
-
-		//Display the depth with rgb panorama
-		imshow( "PAL Depth Panorama", display);  
-
-		//Wait for the keypress - with a timeout of 1 ms
-		key = waitKey(1) & 255;
-		
-		if (key == 'f' || key == 'F')
-		{	
-			PAL::CameraProperties prop;
-			filter_spots = !filter_spots;
-			prop.filter_spots = filter_spots;
-			unsigned long int flags = PAL::FILTER_SPOTS;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
-		if (key == 'v' || key == 'V')
-		{		    
-			PAL::CameraProperties prop;
-			flip = !flip;
-			prop.vertical_flip = flip;
-			unsigned long int flags = PAL::VERTICAL_FLIP;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
-
-	}
-
-	printf("exiting the application\n");
-	PAL::Destroy();
-
+    cout<<"exiting the application"<<endl;
+    PAL::Destroy();
    
     return 0;
 }
-

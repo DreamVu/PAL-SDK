@@ -7,7 +7,6 @@ import cv2
 import numpy as np
 import math
 from Xlib.display import Display
-import time
 import subprocess
 
 def is_number(s):
@@ -47,7 +46,7 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
 
     
     no_of_persons = len(trackingData[PAL_PYTHON.OKP])
-	
+    
     for i in range (0, no_of_persons):
         colors = get_color(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"]))
         
@@ -93,11 +92,21 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
         box_height = text1_height + text2_height + baseline + 3
         box_width = max(text1_width, text2_width) + 2
 
-        cv2.rectangle(img, (x1, y1-box_height-1, box_width, box_height), (255,255,255), cv2.FILLED)        
+        text_bg_x1 = 0 if x1 < 0 else x1
+        text_bg_y1 = 0 if y1-box_height-1 < 0 else y1-box_height-1
 
-        cv2.putText(img, label1, (x1, (y1-text2_height-baseline-2)), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
+        if(text_bg_x1 + box_width > img.shape[1]):
+            text_bg_x1 = img.shape[1] - box_width
+
+        cv2.rectangle(img, (text_bg_x1, text_bg_y1, box_width, box_height), (255,255,255), cv2.FILLED)        
+
+        text_line1_x1 = text_bg_x1
+        text_line1_y1 = int(text1_height + baseline/2) if y1-box_height-1 < 0 else int(y1-text2_height-baseline-2)
+        cv2.putText(img, label1, (text_line1_x1, text_line1_y1), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
         if ENABLEDEPTH:
-            cv2.putText(img, label2, (x1, int(y1-baseline/2 -1)), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
+            text_line2_x1 = text_line1_x1
+            text_line2_y1 = int(text_line1_y1 + text2_height + baseline/2 + 1)
+            cv2.putText(img, label2, (text_line2_x1, text_line2_y1), fontface, scale, (0, 0, 255), thickness, cv2.LINE_AA)
 
         cv2.rectangle(img, (x1, y1, x2, y2), colors, 2)
     
@@ -155,151 +164,133 @@ def print_track(results):
     print("\n")
 
 def main():
+    #Camera index is the video index assigned by the system to the camera. 
+    #By default we set it to 5. Specify the index if the value has been changed.
+    camera_index = 5    
+    
+    arg = len(sys.argv)
+    if arg == 2:
+        camera_index = int(sys.argv[1])
 
-	# Initialising camera
-	image_width = 0
-	image_height = 0
-	camera_index = 5	
+    #Connect to the PAL camera    
+    res_init = PAL_PYTHON.InitP(camera_index)
 
-	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
+    if res_init != PAL_PYTHON.SUCCESSP:
+        print("Camera Init failed\n")
+        return
 
-	if res_init!= PAL_PYTHON.SUCCESSP:
-		print("Camera Init failed\n")
-		return
+    #Setting API Mode
+    PAL_PYTHON.SetAPIModeP(PAL_PYTHON.TRACKINGP)
 
-	PAL_PYTHON.SetAPIModeP(PAL_PYTHON.TRACKINGP)
-	
-	loaded_prop = {}
-	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
-	
-	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
-	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
-		PAL_PYTHON.DestroyP()
-		return
-		
-	if ack_load != PAL_PYTHON.SUCCESSP:
-		print("Error Loading settings! Loading default values.")
+    loaded_prop = {}
+    loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
+    
+    #Loading camera properties from a text file
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
+    if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+        PAL_PYTHON.DestroyP()
+        return
+    if ack_load != PAL_PYTHON.SUCCESSP:
+        print("Error Loading settings! Loading default values.")
         
-	enableDepth = False
-	enable3Dlocation = False
-	
-	PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
+    enableDepth = False
+    enable3Dlocation = False
+    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
 
-	tracking_mode = PAL_PYTHON.OBJECT_FOLLOWINGP
-	success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
-	
-	# Creating a window
-	source_window = 'PAL Object Following'
-	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
-	
-	screen = Display().screen()
-	sc_height = screen.height_in_pixels
-	sc_width  = screen.width_in_pixels
-	
-	# Changing window size
-	cv2.resizeWindow(source_window, sc_width-60, sc_height-60)
-	
-	key = ' '
-	filter_spots = loaded_prop["filter_spots"]
-	vertical_flip = loaded_prop["vertical_flip"]
-	fd = loaded_prop["fd"]
-	
-	print("\n\nPress ESC to close the window.")
-	print("Press f/F to toggle filter rgb property.")
-	print("Press v/V to toggle Vertical Flip property.")
-	print("Press d/D to enable/Disable Depth calculation.")
-	print("Press l/L to enable/Disable 3D Location calculation.")
-	print("Press m/M to toggle Fast Depth property")
-	print("Press i/I to set ID of the person you want to follow.")
-	print("Press p/P to print the ID of the person being followed.\n\n")
+    tracking_mode = PAL_PYTHON.OBJECT_FOLLOWINGP
+    success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
+    
+    # Creating a window
+    source_window = 'PAL Object Following'
+    cv2.namedWindow(source_window, cv2.WINDOW_AUTOSIZE)
 
-	# ESC
-	while key != 27:
+    print("\n\nPress ESC to close the window.")
+    print("Press f/F to toggle filter rgb property.")
+    print("Press v/V to toggle Vertical Flip property.")
+    print("Press d/D to enable/Disable Depth calculation.")
+    print("Press l/L to enable/Disable 3D Location calculation.")
+    print("Press m/M to toggle Fast Depth property")
+    print("Press i/I to set ID of the person you want to follow.")
+    print("Press p/P to print the ID of the person being followed.\n\n")
 
-		left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
-		if camera_changed == True:
-			break
-		display = left
+    key = ' '
 
-		drawOnImage(display, trackingData, tracking_mode, enableDepth, enable3Dlocation)
+    # ESC
+    while key != 27:
+        left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+        if camera_changed == True:
+            break
+        
+        display = left
+        drawOnImage(display, trackingData, tracking_mode, enableDepth, enable3Dlocation)
 
-		cv2.imshow(source_window, display)
-		
-		#print_track(trackingData)
+        cv2.imshow(source_window, display)
 
-        	# Wait for 1ms
-		key = cv2.waitKey(1) & 255
+        # Wait for 1ms
+        key = cv2.waitKey(1) & 255
 
-		#i		
-		if key == 105:	
-			zenityCmd = "zenity --entry --text \"Enter ID to Track\" --title \"PAL Object Following\" --entry-text=\"\""
-			output_zenity = subprocess.run(zenityCmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
-			output = output_zenity.stdout
-			output = output.replace(" ", "")
-			output = output.replace("\n", "")
-			output = output.replace("\t", "")
-			if is_number(output):
-				PAL_PYTHON.SetTrackIDP(int(output))
-			else:
-				errorCmd = "zenity --warning  --text \"Not a valid input\" --title \"PAL Object Following\""
-				error_output = subprocess.run(errorCmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)    
-		
-		#p
-		if key == 112:	
-			new_id = PAL_PYTHON.GetTrackIDP()	    
-			if new_id == -2:
-				print("Currently not in Following Mode")
-			elif new_id == -1:
-				print("No ID has been entered. Press 'i' to enter an ID")
-			else:
-				print("The ID currently being followed is: ",new_id)
+        #i        
+        if key == 105:    
+            zenityCmd = "zenity --entry --text \"Enter ID to Track\" --title \"PAL Object Following\" --entry-text=\"\""
+            output_zenity = subprocess.run(zenityCmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)
+            output = output_zenity.stdout
+            output = output.replace(" ", "")
+            output = output.replace("\n", "")
+            output = output.replace("\t", "")
+            if is_number(output):
+                PAL_PYTHON.SetTrackIDP(int(output))
+            else:
+                errorCmd = "zenity --warning  --text \"Not a valid input\" --title \"PAL Object Following\""
+                error_output = subprocess.run(errorCmd, shell=True, stdout=subprocess.PIPE, universal_newlines=True)    
+        
+        #p
+        if key == 112:    
+            new_id = PAL_PYTHON.GetTrackIDP()        
+            if new_id == -2:
+                print("Currently not in Following Mode")
+            elif new_id == -1:
+                print("No ID has been entered. Press 'i' to enter an ID")
+            else:
+                print("The ID currently being followed is: ",new_id)
 
-		#f		
-		if key == 102:		    
-			flag = PAL_PYTHON.FILTER_SPOTSP
-			filter_spots = not(filter_spots)
-			loaded_prop["filter_spots"] = filter_spots
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
-		
-		#v		
-		if key == 118:		    
-			flag = PAL_PYTHON.VERTICAL_FLIPP
-			vertical_flip = not(vertical_flip)
-			loaded_prop["vertical_flip"] = vertical_flip
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+        #f        
+        if key == 102:            
+            flag = PAL_PYTHON.FILTER_SPOTSP
+            loaded_prop["filter_spots"] = not(bool(loaded_prop["filter_spots"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		#m		
-		if key == 109:
-			flag = PAL_PYTHON.FDP
-			fd = not(fd)
-			loaded_prop["fd"] = fd
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+            
+        if key == 118:            
+            flag = PAL_PYTHON.VERTICAL_FLIPP
+            loaded_prop["vertical_flip"] = not(bool(loaded_prop["vertical_flip"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+        
+        #m    
+        if key == 109:
+            flag = PAL_PYTHON.FDP
+            loaded_prop["fd"] = not(bool(loaded_prop["fd"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		#d		
-		if key == 100:	
-			enableDepth = not(enableDepth)	    
-			if enableDepth:
-				if enable3Dlocation:
-					PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_3DLOCATION_ONP)
-				else:
-					PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_ONP)
-			else:
-				PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
+        #d        
+        if key == 100:    
+            enableDepth = not(enableDepth)        
+            if enableDepth:
+                if enable3Dlocation:
+                    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_3DLOCATION_ONP)
+                else:
+                    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_ONP)
+            else:
+                PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
 
-		#l		
-		if key == 108:	
- 			enable3Dlocation = not(enable3Dlocation)
+        #l        
+        if key == 108:    
+             enable3Dlocation = not(enable3Dlocation)
 
-    	# Destroying connections
-	print("exiting the application\n")
-	PAL_PYTHON.DestroyP()
+    # Destroying connections
+    print("exiting the application\n")
+    PAL_PYTHON.DestroyP()
 
-	return
+    return
 
 if __name__ == "__main__":
-	main()
-
-
-
-
-
+    main()

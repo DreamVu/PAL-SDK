@@ -3,7 +3,6 @@
 CODE SAMPLE # 004: PAL Video Capture
 This code will grab the left & depth panorama and display in a window using opencv
 
-
 >>>>>> Compile this code using the following command....
 
 ./compile.sh 004_video_capture.cpp
@@ -12,195 +11,158 @@ This code will grab the left & depth panorama and display in a window using open
 
 ./004_video_capture.out
 
-
->>>>>> KEYBOARD CONTROLS:
-
-ESC key closes the window
-Press v/V to toggle vertical flip property    
-Press f/F to toggle filter rgb property       
-Press C to capture a single frame into a PNG file.
-Press B to begin the video capture.
-Press E to end the video capture.
 */
-
 
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include "PAL.h"
-#include "TimeLogger.h"
-#include <time.h>
-#include <unistd.h>
 
 using namespace cv;
 using namespace std;
 
 int main( int argc, char** argv )
 {
-	// Create a window for display.
-	namedWindow( "PAL Video Capture", WINDOW_NORMAL ); 
-
-	int width, height;
-	PAL::Mode mode = PAL::Mode::LASER_SCAN;
-
-	std::vector<int> camera_indexes{5};
-	
-	if(argc > 1) 
-		camera_indexes[0] = std::atoi(argv[1]);
-
-
-	PAL::Mode def_mode = PAL::Mode::LASER_SCAN;
-
-	//Connect to the PAL camera
-	if (PAL::Init(width, height, camera_indexes, &def_mode) != PAL::SUCCESS) 
-	{
-		cout<<"Init failed"<<endl;
-		return 1;
-	}
-
-	PAL::SetAPIMode(PAL::API_Mode::DEPTH);
-	usleep(1000000);
-
-	PAL::CameraProperties data;
-	PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &data);
-	if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
-	{
-		PAL::Destroy();
-		return 1;
-	}
-	
-	if(ack_load != PAL::SUCCESS)
-	{
-		cout<<"Error Loading settings! Loading default values."<<endl;
-	}
-
-	//discarding initial frames
-	std::vector<PAL::Data::ODOA_Data> discard;
-	for(int i=0; i<5;i++)
-		discard =  PAL::GrabRangeScanData();		
-
-	//width and height are the dimensions of each panorama.
-	//Each of the panoramas are displayed at their original resolution.
-	resizeWindow("PAL Video Capture", width, 2*height);
-
-	int key = ' ';
-    	bool record = false;
-    	bool closed = false;
+    //camera index is the video index assigned by the system to the camera. 
+    //By default we set it to 5. Specify the index if the value has been changed.
+    std::vector<int> camera_indexes{5};
+    if(argc > 1) 
+        camera_indexes[0] = std::atoi(argv[1]);
     
-	cout<<"\n\nPress ESC to close the window."<<endl;
-	printf("Press v/V to toggle vertical flip property\n");	
-	printf("Press f/F to toggle filter rgb property\n");
-	
-	bool filter_spots = data.filter_spots;
-	bool flip = data.vertical_flip;	
-	
-	cout<<"Press C to capture a single frame into a PNG file."<<endl;
-    	cout<<"Press B to begin the video capture."<<endl;
-    	cout<<"Press E to end the video capture.\n"<<endl;
+    //Connect to the PAL camera
+    if (PAL::Init(camera_indexes) != PAL::SUCCESS) 
+    {
+        cerr<<"Init failed"<<endl;
+        return 1;
+    }
+
+    //Setting API Mode
+    PAL::SetAPIMode(PAL::API_Mode::DEPTH);
     
-    	cv::VideoWriter video;
+    //Loading camera properties from a text file
+    PAL::CameraProperties properties;
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
+    {
+        PAL::Destroy();
+        return 1;
+    }
+    if(ack_load != PAL::SUCCESS)
+    {
+        cerr<<"Error Loading settings! Loading default values."<<endl;
+    }
+
+    // Create a window for display.
+    namedWindow( "PAL Range Scan", WINDOW_AUTOSIZE);
+
+    cout<<"Press ESC to close the window."<<endl;
+    cout<<"Press v/V to toggle vertical flip property"<<endl;
+    cout<<"Press f/F to toggle filter spots property"<<endl;
+    cout<<"Press C to capture a single frame into a PNG file."<<endl;
+    cout<<"Press B to begin the video capture."<<endl;
+    cout<<"Press E to end the video capture."<<endl;
+
+    int image_count = 0;
+    int video_count = 0;
+    bool record = false;
+
+    cv::VideoWriter video;
+
+    std::vector<PAL::Data::ODOA_Data> data;
     
-	Mat output = cv::Mat::zeros(2*height, width, CV_8UC3);
+    int key = ' ';
+    
+    do
+    {
+        //Capturing Depth data from the camera
+        data =  PAL::GrabRangeScanData();    
 
-	//Display the overlayed image
-	imshow( "PAL Video Capture", output);
+        Mat left = data[0].left;
+        Mat depth;
+        if(properties.raw_depth)
+            depth = data[0].fused_depth.clone();
+        else
+            depth = data[0].distance.clone();    
 
-	char image_filename[128];
-	char video_filename[128];
-	int image_count = 0;
-	int video_count = 0;
-	
-	//27 = esc key. Run the loop until the ESC key is pressed
-	while(key != 27)
-	{
+        //convert the 32FC1 depth map to 8UC3 for visualisation
+        depth.convertTo(depth, CV_8UC1);
+        cvtColor(depth, depth, cv::COLOR_GRAY2BGR);
 
+        Mat display;
 
-		std::vector<PAL::Data::ODOA_Data> data;
+        //Vertical concatenation of colored left and depth into the final output
+        vconcat(left, depth, display);
 
-		data =  PAL::GrabRangeScanData();	
-		if(data[0].camera_changed)
-		{
-			break;
-		}
-		Mat l = data[0].left;
-		Mat d = data[0].distance.clone();
-		d.convertTo(d, CV_8UC1);
-		cvtColor(d, d, cv::COLOR_GRAY2BGR);
+        //Display the depth with colored left panorama
+        imshow( "PAL Video Capture", display);  
 
-		//Vertical concatenation of rgb and depth into the final output
-		vconcat(l, d, output);
-
-		//Display the depth with rgb panorama
-		imshow( "PAL Video Capture", output);  
-
-		//Wait for the keypress - with a timeout of 1 ms
-		key = waitKey(1) & 255;
-		
-		if (key == 'f' || key == 'F')
-		{	
-			PAL::CameraProperties prop;
-			filter_spots = !filter_spots;
-			prop.filter_spots = filter_spots;
-			unsigned long int flags = PAL::FILTER_SPOTS;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
-		if (key == 'v' || key == 'V')
-		{		    
-			PAL::CameraProperties prop;
-			flip = !flip;
-			prop.vertical_flip = flip;
-			unsigned long int flags = PAL::VERTICAL_FLIP;
-			PAL::SetCameraProperties(&prop, &flags);
-		}
-		
-		//capture an image using imwrite
-		if(key == 'C' || key == 'c') 
-        	{
-        		sprintf(image_filename, "image_%d.png", ++image_count);
-            		imwrite(image_filename, output);
-            		printf("The current frame is saved as image.png\n");
-        	}
+        //Wait for the keypress - with a timeout of 1 ms
+        key = waitKey(1) & 255;
         
-		else if(key == 'B' || key == 'b')
-		{
-		    	cv::Size size = cv::Size(output.cols, output.rows);
-		    	int fps = 15;
-		    	printf("Opening the video\n");
-		    	sprintf(video_filename, "pal_video_%d.avi", ++video_count);
-		    	video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
-		    	record = true;
-		}
-		else if (key == 'E' || key == 'e')
-		{
-		    	//closed = true;
-		    	if(record)
-		    	{
-		        	record = false;            
-		        	printf("Releasing the video \n");
-		        	video.release();
-		    	}
-		}
-		else if ( key == 27)
-		{
-		    	closed = true;
-		    	if(record)
-		    	{
-				record = false;            
-				printf("Releasing the video \n");
-				video.release();
-		    	}
-		}
-		if(record)
-		{ 
-		    	video.write(output);
-		}
-		
+        if (key == 'f' || key == 'F')
+        {
+            properties.filter_spots = !properties.filter_spots;
+            unsigned long int flags = PAL::FILTER_SPOTS;
+            PAL::SetCameraProperties(&properties, &flags);
+        }
+        if (key == 'v' || key == 'V')
+        {
+            properties.vertical_flip = !properties.vertical_flip;
+            unsigned long int flags = PAL::VERTICAL_FLIP;
+            PAL::SetCameraProperties(&properties, &flags);
+        }
+        
+        //capture an image using imwrite
+        if(key == 'C' || key == 'c') 
+        {
+            char image_filename[128];
+            sprintf(image_filename, "image_%d.png", ++image_count);
+            imwrite(image_filename, display);
 
-	}
+            cout<<"The current frame is saved as " << image_filename <<endl;
+        }
 
-	printf("exiting the application\n");
-	PAL::Destroy();
+        //capture a video using VideoWriter
+        if(key == 'B' || key == 'b')
+        {
+            cout<<"Opening the video"<<endl;
 
+            char video_filename[128];
+            sprintf(video_filename, "pal_video_%d.avi", ++video_count);
+            cv::Size size = cv::Size(display.cols, display.rows);
+            int fps = 15;
+
+            video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
+            
+            record = true;
+        }
+        if (key == 'E' || key == 'e')
+        {
+            if(record)
+            {
+                record = false;            
+                cout<<"Releasing the video"<<endl;
+                video.release();
+            }
+        }
+        if (key == 27 || data[0].camera_changed)
+        {
+            if(record)
+            {
+                record = false;            
+                cout<<"Releasing the video"<<endl;
+                video.release();
+            }
+        }
+        if(record)
+        { 
+            video.write(display);
+        }
+    }
+    //27 = esc key. Run the loop until the ESC key is pressed and camera is not changed
+    while(key != 27 && !data[0].camera_changed);
+
+    cout<<"exiting the application"<<endl;
+    PAL::Destroy();
    
     return 0;
 }
-

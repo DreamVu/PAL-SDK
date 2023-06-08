@@ -5,93 +5,70 @@ import PAL_PYTHON
 import cv2
 import numpy as np
 import sys
-import time
 
 def main():
 
-	# Initialising camera
-	image_width = 0
-	image_height = 0
-	camera_index = 5	
-	arg = len(sys.argv)
+    #Camera index is the video index assigned by the system to the camera. 
+    #By default we set it to 5. Specify the index if the value has been changed.
+    camera_index = 5    
+    
+    arg = len(sys.argv)
+    if arg == 2:
+        camera_index = int(sys.argv[1])
 
-	if arg == 2:
-		camera_index = int(sys.argv[1])
-	
-	width, height, res_init = PAL_PYTHON.InitP(image_width, image_height, camera_index)
+    #Connect to the PAL camera    
+    res_init = PAL_PYTHON.InitP(camera_index)
 
-	if res_init!= PAL_PYTHON.SUCCESSP:
-		print("Camera Init failed\n")
-		return
-	
-	time.sleep(1)
-	PAL_PYTHON.SetAPIModeP(PAL_PYTHON.RANGE_SCANP)
-	time.sleep(1)
+    if res_init != PAL_PYTHON.SUCCESSP:
+        print("Camera Init failed\n")
+        return
 
-	loaded_prop = {}
-	prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
-	
-	loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", prop)
-	if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
-		PAL_PYTHON.DestroyP()
-		return
-	
-	
-	if ack_load != PAL_PYTHON.SUCCESSP:
-		print("Error Loading settings! Loading default values.")
-	
-	for i in range(0, 5):
-		left, right, depth, raw_depth, camera_changed  = PAL_PYTHON.GrabDepthDataP()
-	
-	# Creating a window
-	source_window = 'PAL Range Scan'
-	cv2.namedWindow(source_window, cv2.WINDOW_NORMAL)
-	
-	# Current image resolution
-	#print("The image resolution is : ", width, "x", height, "\n")
+    #Setting API Mode
+    PAL_PYTHON.SetAPIModeP(PAL_PYTHON.RANGE_SCANP)
 
-	# Changing window size
-	cv2.resizeWindow(source_window, (int(width), int(height)))
+    loaded_prop = {}
+    loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
+    
+    #Loading camera properties from a text file
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
+    if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
+        PAL_PYTHON.DestroyP()
+        return
+    if ack_load != PAL_PYTHON.SUCCESSP:
+        print("Error Loading settings! Loading default values.")
+    
+    # Creating a window
+    source_window = 'PAL Range Scan'
+    cv2.namedWindow(source_window, cv2.WINDOW_AUTOSIZE)
 
-	key = ' '
+    print("\n\nPress ESC to close the window.")
+    print("Press v/V to flip vertically.\n\n")
 
-	print("\n\nPress ESC to close the window.")
-	print("Press v/V to flip vertically.\n\n")	
-	
-	flip = bool(loaded_prop["vertical_flip"])
-	
-	# ESC
-	while key != 27:
+    key = ' '
+    
+    # ESC
+    while key != 27:
+        # GrabFrames function
+        rangescan, camera_changed = PAL_PYTHON.GrabRangeScanDataP()
+        if camera_changed == True:
+            break
 
-		# GrabFrames function
-		rangescan, camera_changed = PAL_PYTHON.GrabRangeScanDataP()
-		if camera_changed == True:
-			break
-		# Show results
-		cv2.imshow(source_window, rangescan)
+        # Show results
+        cv2.imshow(source_window, rangescan)
 
-		# Wait for 1ms
-		key = cv2.waitKey(1) & 255
-		
-		if key == 118:		    
-			flag = PAL_PYTHON.VERTICAL_FLIPP
-			flip = not(flip)	
-			loaded_prop["vertical_flip"] = flip
-			prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+        # Wait for 1ms
+        key = cv2.waitKey(1) & 255
+        
+        if key == 118:            
+            flag = PAL_PYTHON.VERTICAL_FLIPP
+            loaded_prop["vertical_flip"] = not(bool(loaded_prop["vertical_flip"]))
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-		
-		
+    # Destroying connections
+    print("exiting the application\n")
+    PAL_PYTHON.DestroyP()
 
-
-	# Destroying connections
-	print("exiting the application\n")
-	PAL_PYTHON.DestroyP()
-
-	return
+    return
 
 if __name__ == "__main__":
     main()
-
-
-
-
