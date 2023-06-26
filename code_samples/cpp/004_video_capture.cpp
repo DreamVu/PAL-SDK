@@ -52,7 +52,7 @@ int main( int argc, char** argv )
     }
 
     // Create a window for display.
-    namedWindow( "PAL Range Scan", WINDOW_AUTOSIZE);
+    namedWindow( "PAL Video Capture", WINDOW_AUTOSIZE);
 
     cout<<"Press ESC to close the window."<<endl;
     cout<<"Press v/V to toggle vertical flip property"<<endl;
