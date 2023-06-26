@@ -226,7 +226,7 @@ int main( int argc, char** argv )
     {
         std::cout << "Wrong format for arguments" << std::endl;
         std::cout << "Expected format:" << std::endl;
-        std::cout << "./016_multi_zone_detection.out <video index> <number of zones> <distance 1> <distance 2> .. <distance for last zone>" << std::endl;
+        std::cout << "./016_multi_zone_detection.out <number of zones> <distance 1> <distance 2> .. <distance for last zone>" << std::endl;
         return 1;
     }
 
