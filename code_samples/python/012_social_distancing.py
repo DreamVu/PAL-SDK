@@ -132,7 +132,8 @@ def main():
             detection_threshold += 0.1
             if(detection_threshold >1):
                 detection_threshold = 1
-                print("Max threshold (1.0) reached")
+
+            print("Detection Threshold set to: %.2f" % detection_threshold)
 
             PAL_PYTHON.SetDetectionModeThresholdP(detection_threshold, class_id)
 
@@ -141,7 +142,8 @@ def main():
             detection_threshold -= 0.1
             if(detection_threshold < 0.01):
                 detection_threshold = 0.01
-                print("Min threshold (0.01) reached")
+
+            print("Detection Threshold set to: %.2f" % detection_threshold)
 
             PAL_PYTHON.SetDetectionModeThresholdP(detection_threshold, class_id)
         

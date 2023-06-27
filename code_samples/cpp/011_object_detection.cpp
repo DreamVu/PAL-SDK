@@ -281,8 +281,9 @@ int main( int argc, char** argv )
             if(detection_threshold>1)
             {
                 detection_threshold = 1;
-                std::cout << "Max threshold (1.0) reached" << std::endl;
             }
+            std::cout << "Detection Threshold set to: " << detection_threshold << std::endl;
+
             PAL::SetDetectionModeThreshold(detection_threshold, class_id);
         }
         if (key == 'a' || key == 'A')
@@ -291,8 +292,9 @@ int main( int argc, char** argv )
             if(detection_threshold<0.01)
             {
                 detection_threshold = 0.01;
-                std::cout << "Min threshold (0.01) reached" << std::endl;
             }
+            std::cout << "Detection Threshold set to: " << detection_threshold << std::endl;
+
             PAL::SetDetectionModeThreshold(detection_threshold, class_id);
         }
         
