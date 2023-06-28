@@ -93,11 +93,12 @@ def main():
             image_count+=1
 
         if key == 98:
-            print("Opening the video.")
-            fps = 15
-            video = cv2.VideoWriter("pal_video_"+str(video_count)+".avi",cv2.VideoWriter_fourcc('X','V','I','D'), fps, (output.shape[1],output.shape[0]))
-            video_count+=1
-            record = True
+            if not record:
+                print("Opening the video.")
+                fps = 15
+                video = cv2.VideoWriter("pal_video_"+str(video_count)+".avi",cv2.VideoWriter_fourcc('X','V','I','D'), fps, (output.shape[1],output.shape[0]))
+                video_count+=1
+                record = True
 
         if key == 101 or key == 27:
             if record:

@@ -52,7 +52,7 @@ int main( int argc, char** argv )
     }
 
     // Create a window for display.
-    namedWindow( "PAL Range Scan", WINDOW_AUTOSIZE);
+    namedWindow( "PAL Video Capture", WINDOW_AUTOSIZE);
 
     cout<<"Press ESC to close the window."<<endl;
     cout<<"Press v/V to toggle vertical flip property"<<endl;
@@ -124,16 +124,19 @@ int main( int argc, char** argv )
         //capture a video using VideoWriter
         if(key == 'B' || key == 'b')
         {
-            cout<<"Opening the video"<<endl;
+            if(!record)
+            {
+                cout<<"Opening the video"<<endl;
 
-            char video_filename[128];
-            sprintf(video_filename, "pal_video_%d.avi", ++video_count);
-            cv::Size size = cv::Size(display.cols, display.rows);
-            int fps = 15;
+                char video_filename[128];
+                sprintf(video_filename, "pal_video_%d.avi", ++video_count);
+                cv::Size size = cv::Size(display.cols, display.rows);
+                int fps = 15;
 
-            video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
-            
-            record = true;
+                video = cv::VideoWriter(video_filename, cv::VideoWriter::fourcc('X','V','I','D'), fps, size);
+                
+                record = true;
+            }
         }
         if (key == 'E' || key == 'e')
         {
