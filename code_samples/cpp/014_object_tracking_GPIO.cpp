@@ -146,16 +146,6 @@ int main( int argc, char** argv )
         cerr<<"Error Loading settings! Loading default values."<<endl;
     }
 
-    //Changing default properties to ideal values for this application
-    PAL::CameraProperties prop;
-    prop.exposure = 1000;
-    prop.auto_gain = 1;
-    prop.auto_exposure_method = 1;
-
-    unsigned long int flags = PAL::EXPOSURE ;
-    flags = flags | PAL::AUTO_GAIN | PAL::AUTO_EXPOSURE_METHOD ;
-    PAL::SetCameraProperties(&prop, &flags);
-
     //Set depth detection mode
     PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
 
