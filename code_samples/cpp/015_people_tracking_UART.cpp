@@ -17,6 +17,7 @@ This code will grab the detection and depth data and transmit the same over uart
 #include <opencv2/opencv.hpp>
 #include "PAL.h"
 #include <iomanip>
+#include <JetsonGPIO.h>
 
 // Linux headers
 #include <fcntl.h> // Contains file controls like O_RDWR
@@ -24,9 +25,53 @@ This code will grab the detection and depth data and transmit the same over uart
 #include <termios.h> // Contains POSIX terminal control definitions
 #include <unistd.h> // write(), read(), close()
 #include <csignal>
+#include <string>
 
 using namespace cv;
 using namespace std;
+
+const string PORT_NVIDIA_NX = "/dev/ttyTHS0";
+const string PORT_DREAMVU_NX = "/dev/ttyTCU0";
+const string PORT_NVIDIA_NANO = "/dev/ttyGS0";
+const string PORT_DREAMVU_NANO = "/dev/ttyS0";
+
+string getPortName()
+{
+    int board_type, board_model;
+    PAL::GetBoardTypeAndModel(board_type, board_model);
+
+    string port_name;
+    if(board_model == 0) // NX
+    {
+        if(board_type == 0) // NVIDIA BOARD
+        {
+            port_name = PORT_NVIDIA_NX;
+        }
+        else if(board_type == 1) // DREAMVU BOARD
+        {
+            port_name = PORT_DREAMVU_NX;
+        }
+    }
+    else if(board_model == 1) // NANO
+    {
+        if(board_type == 0) // NVIDIA BOARD
+        {
+            port_name = PORT_NVIDIA_NANO;
+        }
+        else if(board_type == 1) // DREAMVU BOARD
+        {
+            port_name = PORT_DREAMVU_NANO;
+        }
+    }
+    else
+    {
+        cerr << "Device is neither NX nor NANO." << endl; 
+        cerr << "To get the port name for your device, select a port listed under /dev/tty* and use the application 'putty' to check if connection is being established" << endl;
+        exit(1);
+    }
+
+    return port_name;
+}
 
 static bool g_bExit = false;
 void signalHandler( int signum )
@@ -190,8 +235,11 @@ int main( int argc, char** argv )
         enableDepth = (input>0) ? true: false;
     }
 
+    // Port used for UART connection can be differnt for different carrier boards. Get the port name for the carrier board being used.
+    string port_name = getPortName();
+
     // Open the serial port. Change device path as needed (currently set to an standard FTDI USB-UART cable type device)
-    int serial_port = open("/dev/ttyTHS0", O_RDWR);
+    int serial_port = open(port_name.c_str(), O_RDWR);
 
     // Create new termios struc, we call it 'tty' for convention
     struct termios tty;
