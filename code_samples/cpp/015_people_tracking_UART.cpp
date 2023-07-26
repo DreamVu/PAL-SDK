@@ -32,7 +32,7 @@ using namespace std;
 
 const string PORT_NVIDIA_NX = "/dev/ttyTHS0";
 const string PORT_DREAMVU_NX = "/dev/ttyTCU0";
-const string PORT_NVIDIA_NANO = "/dev/ttyGS0";
+const string PORT_NVIDIA_NANO = "/dev/ttyS0";
 const string PORT_DREAMVU_NANO = "/dev/ttyS0";
 
 string getPortName()
