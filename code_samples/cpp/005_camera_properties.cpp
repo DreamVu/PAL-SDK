@@ -90,9 +90,9 @@ int main( int argc, char** argv )
         Mat left = data[0].left;
         Mat depth;
         if(properties.raw_depth)
-            depth = data[0].fused_depth.clone();
+            depth = data[0].raw_depth.clone();
         else
-            depth = data[0].distance.clone();    
+            depth = data[0].depth.clone();    
 
         //convert the 32FC1 depth map to 8UC3 for visualisation
         depth.convertTo(depth, CV_8UC1);

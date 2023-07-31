@@ -13,7 +13,7 @@ def precision_string(num, precision=1):
     num_string = str(num)
     return num_string[0:num_string.find(".")+1+precision]
 
-def zoneDetection(img, trackingData, thresh):
+def zoneDetection(img, tracking_info, thresh):
     classes = ["person","bicycle","car","motorcycle","airplane",
     "bus","train","truck","boat","traffic light","fire hydrant",
     "stop sign","parking meter","bench","bird","cat","dog","horse",
@@ -34,19 +34,19 @@ def zoneDetection(img, trackingData, thresh):
     ENABLEDEPTH = True
     ENABLE3D = True
 
-    no_of_persons = len(trackingData[PAL_PYTHON.OKP])
+    no_of_persons = len(tracking_info[PAL_PYTHON.OKP])
 
     print("-----------------------------------------------")
     
     for i in range (0, no_of_persons):        
-        x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
-        y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
-        x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
-        y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
+        x1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x1"]
+        y1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y1"]
+        x2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x2"]
+        y2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y2"]
 
-        x3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
-        y3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
-        z3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
+        x3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
+        y3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
+        z3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
 
         depth_value = math.sqrt(x3D*x3D + y3D*y3D)
 
@@ -59,9 +59,9 @@ def zoneDetection(img, trackingData, thresh):
         text2_width = 0
 
         if only_detection:
-            label1 = "Class= " + classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
+            label1 = "Class= " + classes[ int(round(tracking_info[PAL_PYTHON.OKP][i]["t_label"])) ]
         else:
-            label1 = "ID=" + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + ", "+classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
+            label1 = "ID=" + str(int(tracking_info[PAL_PYTHON.OKP][i]["t_track_id"])) + ", "+classes[ int(round(tracking_info[PAL_PYTHON.OKP][i]["t_label"])) ]
 
         if ENABLEDEPTH:
             if ENABLE3D:
@@ -83,7 +83,7 @@ def zoneDetection(img, trackingData, thresh):
 
         for j in range(0,number_of_zones):
             if(depth_value < thresh[j]):
-                print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs to zone " + str(j+1))
+                print("ID " + str(int(tracking_info[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs to zone " + str(j+1))
                 normalised_color = float(j)/float(number_of_zones);
                 green = int(255.0*normalised_color);
                 red = int(255.0*(1.0-normalised_color));
@@ -92,7 +92,7 @@ def zoneDetection(img, trackingData, thresh):
                 break
 
         if beyond_all_zones == True:
-            print("ID " + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs beyond zone " + str(number_of_zones))
+            print("ID " + str(int(tracking_info[PAL_PYTHON.OKP][i]["t_track_id"])) + " belongs beyond zone " + str(number_of_zones))
             colors = (0, 255, 0)
 
         box_height = text1_height + text2_height + baseline + 3
@@ -178,7 +178,7 @@ def main():
     if (arg < 2) or (int(sys.argv[1]) != (arg - 2)):
         print("Wrong format for arguments")
         print("Expected format:")
-        print("python 014_multi_zone_detection.py <number of zones> <distance 1> <distance 2> .. <distance for last zone>")
+        print("python 014_multi_zone_detection.py <number of zones> <distance 1 in cm> <distance 2 in cm> .. <distance for last zone in cm>")
         return
 
     number_of_zones = int(sys.argv[1])
@@ -233,12 +233,12 @@ def main():
 
     # ESC
     while key != 27:
-        left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+        left, right, depth, tracking_info, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
             break
         
         display = left
-        zoneDetection(display, trackingData, distances)
+        zoneDetection(display, tracking_info, distances)
         
         cv2.imshow(source_window, display)
 

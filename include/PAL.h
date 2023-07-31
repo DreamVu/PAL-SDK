@@ -6,7 +6,7 @@
 
 # include <vector>
 
-# include "DataExchange.h"
+# include "StructEnumInfo.h"
 # include "CameraProperties.h" 
 
 namespace PAL
@@ -67,7 +67,7 @@ namespace PAL
     bool SavePointCloud(const char* fileName, cv::Mat pcMat);
 
     
-    std::vector<PAL::Data::Stereo> GetStereoData();
+    std::vector<PAL::Data::Stereo_Data> GrabStereoData();
     
     
     std::vector<PAL::Data::ODOA_Data> GrabRangeScanData();
@@ -75,7 +75,7 @@ namespace PAL
 
     //Grabs the left, right panorama along with the tracking data.  \
     //If depth is enbled then it will also grab the depth panoramas.
-    std::vector<PAL::Data::TrackingResults> GrabTrackingData();
+    std::vector<PAL::Data::Tracking_Data> GrabTrackingData();
 
 
     //Depth calculation could be turned on or off in tracking mode
@@ -103,7 +103,7 @@ namespace PAL
 
     //A Utility function to visualise the tracking information. It draws bounding boxes around 
     //the tracked object and displays their ID. It will also display depth or 3d location based on set modes.
-    void drawTracksOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
+    void drawTracksOnImage(cv::Mat &img, const PAL::Data::Tracking_Data &data, int mode,
     bool ENABLEDEPTH=false, bool ENABLE3D=false);
 
     

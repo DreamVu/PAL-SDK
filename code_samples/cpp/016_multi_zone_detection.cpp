@@ -226,7 +226,7 @@ int main( int argc, char** argv )
     {
         std::cout << "Wrong format for arguments" << std::endl;
         std::cout << "Expected format:" << std::endl;
-        std::cout << "./016_multi_zone_detection.out <number of zones> <distance 1> <distance 2> .. <distance for last zone>" << std::endl;
+        std::cout << "./016_multi_zone_detection.out <number of zones> <distance 1 in cm> <distance 2 in cm> .. <distance for last zone in cm>" << std::endl;
         return 1;
     }
 
@@ -283,7 +283,7 @@ int main( int argc, char** argv )
     cout << "Press v/V to toggle Vertical Flip property." << endl;
     cout << "Press m/M to toggle Fast Depth property" << endl;
 
-    std::vector<PAL::Data::TrackingResults> data;
+    std::vector<PAL::Data::Tracking_Data> data;
 
     int key = ' ';
 
@@ -294,7 +294,7 @@ int main( int argc, char** argv )
 
         cv::Mat display = data[0].left;
         
-        zoneDetection(display, data[0].trackingData, distances);
+        zoneDetection(display, data[0].tracking_info, distances);
         
         //Display the stereo images
         imshow( "PAL Multi Zone Detection", display);  

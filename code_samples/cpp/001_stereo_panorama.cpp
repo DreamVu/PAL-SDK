@@ -66,14 +66,14 @@ int main( int argc, char** argv )
     cout<<"Press f/F to toggle filter spots property"<<endl;
     cout<<"Press v/V to toggle vertical flip property"<<endl;
     
-    std::vector<PAL::Data::Stereo> data;
+    std::vector<PAL::Data::Stereo_Data> data;
     
     int key = ' ';
 
     do
     {
         //Capturing Stereo data from the camera
-        data =  PAL::GetStereoData();
+        data =  PAL::GrabStereoData();
 
         cv::Mat display;
         vconcat(data[0].stereo_left, data[0].stereo_right, display);

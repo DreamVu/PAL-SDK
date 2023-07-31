@@ -146,6 +146,16 @@ int main( int argc, char** argv )
         cerr<<"Error Loading settings! Loading default values."<<endl;
     }
 
+    //Changing default properties to ideal values for this application
+    PAL::CameraProperties prop;
+    prop.exposure = 1000;
+    prop.auto_gain = 1;
+    prop.auto_exposure_method = 1;
+
+    unsigned long int flags = PAL::EXPOSURE ;
+    flags = flags | PAL::AUTO_GAIN | PAL::AUTO_EXPOSURE_METHOD ;
+    PAL::SetCameraProperties(&prop, &flags);
+
     //Set depth detection mode
     PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
 
@@ -179,14 +189,14 @@ int main( int argc, char** argv )
             }   
         }    
 
-        std::vector<PAL::Data::TrackingResults> data;
+        std::vector<PAL::Data::Tracking_Data> data;
         data =  PAL::GrabTrackingData();    
         if(data[0].camera_changed)
         {
             //exiting application when camera is changed
             break;
         }
-        person_detected = data[0].trackingData[PAL::States::OK].size();
+        person_detected = data[0].tracking_info[PAL::States::OK].size();
 
         if(!camera_disconnected)
         {

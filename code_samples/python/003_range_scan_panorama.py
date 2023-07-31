@@ -49,12 +49,12 @@ def main():
     # ESC
     while key != 27:
         # GrabFrames function
-        rangescan, camera_changed = PAL_PYTHON.GrabRangeScanDataP()
+        scan_overlay_left, camera_changed = PAL_PYTHON.GrabRangeScanDataP()
         if camera_changed == True:
             break
 
         # Show results
-        cv2.imshow(source_window, rangescan)
+        cv2.imshow(source_window, scan_overlay_left)
 
         # Wait for 1ms
         key = cv2.waitKey(1) & 255
