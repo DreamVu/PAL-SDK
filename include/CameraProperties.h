@@ -1,9 +1,10 @@
 # ifndef PAL_CAMERA_PROPERTIES_H
 # define PAL_CAMERA_PROPERTIES_H
 
+#include "StructEnumInfo.h"
+
 namespace PAL
 {
-
 	enum CameraPropertyFlags
 	{
        	BRIGHTNESS = 0x1,
@@ -71,7 +72,6 @@ namespace PAL
 		CAMERA
 	};
 
-
 	enum Acknowledgement
 	{
 		IGNORED, 
@@ -109,48 +109,11 @@ namespace PAL
 		AUTO = 4,
 	};
 
-
-	enum API_Mode
-	{
-		STEREO = 0x1,
-		DEPTH = 0x2,
-		RANGE_SCAN = 0x4,
-		POINT_CLOUD = 0x8,
-		TRACKING = 0X10,
-		ALL_MODE = 0x1F,
-	};
-
-	enum Tracking_Mode
-	{
-		PEOPLE_TRACKING = 0X1,
-		PEOPLE_FOLLOWING = 0X2,
-		OBJECT_TRACKING = 0X4,
-		OBJECT_FOLLOWING = 0X8,
-		OBJECT_DETECTION = 0X10,
-		PEOPLE_DETECTION = 0X20,
-	};
-
 	enum Tracking_Quality
 	{
 		STANDARD = 0,
 		MEDIUM = 1,
 		HIGHEST = 2,
-	};
-
-	enum DepthInTracking
-	{
-		DEPTH_OFF = 0x1,
-		DEPTH_ON = 0x2,
-		DEPTH_3DLOCATION_ON = 0x4,
-	};
-	
-	enum R_M
-	{
-		S_M = 0,
-		DET_M = 2,
-		HQ_M  = 4,
-		PC_M = 4,
-		LS_M = 7,
 	};
 	
 	enum HDR_Mode 
@@ -257,11 +220,11 @@ namespace PAL
 		int MIN_HUE = -2000;
 		int DEFAULT_HUE = 0;
 		
-		int DEFAULT_MODE    =  LS_M;
+		int DEFAULT_MODE    =  API_Mode::STEREO;
 				
 		bool DEFAULT_AUTO_WHITE_BAL = 1;
 		bool DEFAULT_AUTO_GAIN = 0;
-		bool DEFAULT_AUTO_FOCUS = 1;
+		bool DEFAULT_AUTO_FOCUS = 0;
 
 		CaptureType DEFAULT_CAPTURE_TYPE = CaptureType::CAMERA;
 		ColorSpace DEFAULT_COLOR_SPACE = RGB;
@@ -409,8 +372,6 @@ namespace PAL
 		
 		CameraProperties();	
 	};
-
-
 }//namespace
 
 # endif //PAL_CAMERA_PROPERTIES_H

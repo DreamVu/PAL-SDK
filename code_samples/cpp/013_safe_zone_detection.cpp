@@ -119,7 +119,7 @@ int main( int argc, char** argv )
     cout << "Press m/M to toggle Fast Depth property" << endl;
     cout << "Press q/Q & a/A to increase and decrease detection threshold respectively" << endl;
 
-    std::vector<PAL::Data::TrackingResults> data;
+    std::vector<PAL::Data::Tracking_Data> data;
 
     int key = ' ';
 
@@ -129,21 +129,21 @@ int main( int argc, char** argv )
         data =  PAL::GrabTrackingData();
 
         cv::Mat display = data[0].left;
-        int num_of_persons = data[0].trackingData[PAL::States::OK].size();
+        int num_of_persons = data[0].tracking_info[PAL::States::OK].size();
 
         char text[128];
         for(int i=0; i<num_of_persons; i++)
         {
             int x1,y1,x2,y2;
-            x1 = (int)data[0].trackingData[PAL::States::OK][i].boxes.x1;
-            y1 = (int)data[0].trackingData[PAL::States::OK][i].boxes.y1;
-            x2 = (int)data[0].trackingData[PAL::States::OK][i].boxes.x2;
-            y2 = (int)data[0].trackingData[PAL::States::OK][i].boxes.y2;
+            x1 = (int)data[0].tracking_info[PAL::States::OK][i].boxes.x1;
+            y1 = (int)data[0].tracking_info[PAL::States::OK][i].boxes.y1;
+            x2 = (int)data[0].tracking_info[PAL::States::OK][i].boxes.x2;
+            y2 = (int)data[0].tracking_info[PAL::States::OK][i].boxes.y2;
 
             float x3D, y3D, z3D, depth_value;
-            x3D = data[0].trackingData[PAL::States::OK][i].locations_3d.x;
-            y3D = data[0].trackingData[PAL::States::OK][i].locations_3d.y;
-            z3D = data[0].trackingData[PAL::States::OK][i].locations_3d.z;
+            x3D = data[0].tracking_info[PAL::States::OK][i].locations_3d.x;
+            y3D = data[0].tracking_info[PAL::States::OK][i].locations_3d.y;
+            z3D = data[0].tracking_info[PAL::States::OK][i].locations_3d.z;
 
             //get the depth of each person from the camera
             depth_value = sqrt(x3D*x3D + y3D*y3D);

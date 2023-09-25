@@ -16,7 +16,7 @@ def precision_string(num, precision=1):
     num_string = str(num)
     return num_string[0:num_string.find(".")+1+precision]
 
-def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
+def drawOnImage(img, tracking_info, mode, ENABLEDEPTH=False, ENABLE3D=False):
     classes = ["person","bicycle","car","motorcycle","airplane",
     "bus","train","truck","boat","traffic light","fire hydrant",
     "stop sign","parking meter","bench","bird","cat","dog","horse",
@@ -41,19 +41,19 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
         ENABLE3D = False
 
     
-    no_of_persons = len(trackingData[PAL_PYTHON.OKP])
+    no_of_persons = len(tracking_info[PAL_PYTHON.OKP])
     
     for i in range (0, no_of_persons):
-        colors = get_color(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"]))
+        colors = get_color(int(tracking_info[PAL_PYTHON.OKP][i]["t_track_id"]))
         
-        x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
-        y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
-        x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
-        y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
+        x1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x1"]
+        y1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y1"]
+        x2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x2"]
+        y2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y2"]
 
-        x3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
-        y3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
-        z3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
+        x3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
+        y3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
+        z3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
 
         depth_value = math.sqrt(x3D*x3D + y3D*y3D)
 
@@ -66,9 +66,9 @@ def drawOnImage(img, trackingData, mode, ENABLEDEPTH=False, ENABLE3D=False):
         text2_width = 0
 
         if only_detection:
-            label1 = "Class= " + classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
+            label1 = "Class= " + classes[ int(round(tracking_info[PAL_PYTHON.OKP][i]["t_label"])) ]
         else:
-            label1 = "ID=" + str(int(trackingData[PAL_PYTHON.OKP][i]["t_track_id"])) + ", "+classes[ int(round(trackingData[PAL_PYTHON.OKP][i]["t_label"])) ]
+            label1 = "ID=" + str(int(tracking_info[PAL_PYTHON.OKP][i]["t_track_id"])) + ", "+classes[ int(round(tracking_info[PAL_PYTHON.OKP][i]["t_label"])) ]
 
         if ENABLEDEPTH:
             if ENABLE3D:
@@ -211,12 +211,12 @@ def main():
 
     # ESC
     while key != 27:
-        left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+        left, right, depth, tracking_info, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
             break
         
         display = left
-        drawOnImage(display, trackingData, tracking_mode, enableDepth, enable3Dlocation)
+        drawOnImage(display, tracking_info, tracking_mode, enableDepth, enable3Dlocation)
         
         cv2.imshow(source_window, display)
 

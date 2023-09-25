@@ -26,18 +26,18 @@ def setLabel(img, label, org, clr):
     cv2.rectangle(img, (int(org[0]+0), int(org[1]+baseline)), (int(org[0]+text_width), int(org[1]-text_height)), (0,0,0), cv2.FILLED)
     cv2.putText(img, label, org, fontface, scale, clr, thickness, 4)
 
-def draw3DLocation(img, trackingData):
-    no_of_persons = len(trackingData[PAL_PYTHON.OKP])
+def draw3DLocation(img, tracking_info):
+    no_of_persons = len(tracking_info[PAL_PYTHON.OKP])
     
     for i in range (0, no_of_persons):
-        x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
-        y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
-        x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
-        y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
+        x1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x1"]
+        y1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y1"]
+        x2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x2"]
+        y2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y2"]
 
-        x3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
-        y3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
-        z3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
+        x3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
+        y3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
+        z3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
 
         depth_value = math.sqrt(x3D*x3D + y3D*y3D)
 
@@ -104,12 +104,12 @@ def main():
 
     # ESC
     while key != 27:
-        left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+        left, right, depth, tracking_info, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
             break
         
         display = left
-        draw3DLocation(display, trackingData)
+        draw3DLocation(display, tracking_info)
 
         cv2.imshow(source_window, display)
 

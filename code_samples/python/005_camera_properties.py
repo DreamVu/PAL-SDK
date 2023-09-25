@@ -78,7 +78,7 @@ def main():
         else:
             depth_mat = depth
             
-        depth_mat = depth_mat.astype(np.uint8)
+        depth_mat, color_add_ack = PAL_PYTHON.ColorDepthPostProcessingP(depth_mat)
         depth_mat = cv2.cvtColor(depth_mat, cv2.COLOR_BGR2RGB)
 
         # Concatenate vertically

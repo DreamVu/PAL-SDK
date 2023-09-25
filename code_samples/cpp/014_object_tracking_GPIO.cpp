@@ -189,14 +189,14 @@ int main( int argc, char** argv )
             }   
         }    
 
-        std::vector<PAL::Data::TrackingResults> data;
+        std::vector<PAL::Data::Tracking_Data> data;
         data =  PAL::GrabTrackingData();    
         if(data[0].camera_changed)
         {
             //exiting application when camera is changed
             break;
         }
-        person_detected = data[0].trackingData[PAL::States::OK].size();
+        person_detected = data[0].tracking_info[PAL::States::OK].size();
 
         if(!camera_disconnected)
         {

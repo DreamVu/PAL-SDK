@@ -99,21 +99,21 @@ def main():
 
     # ESC
     while key != 27:
-        left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+        left, right, depth, tracking_info, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
             break
         
         display = left
         
-        num_of_persons = len(trackingData[PAL_PYTHON.OKP])
+        num_of_persons = len(tracking_info[PAL_PYTHON.OKP])
 
-        DistantData = compute_distance_matrix(trackingData[PAL_PYTHON.OKP], threshold_distance)
+        DistantData = compute_distance_matrix(tracking_info[PAL_PYTHON.OKP], threshold_distance)
 
         for i in range (0, num_of_persons):
-            x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
-            y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
-            x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
-            y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
+            x1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x1"]
+            y1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y1"]
+            x2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x2"]
+            y2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y2"]
 
             if(DistantData[i]):
                 #Drawing GREEN box indicating the person is socially distant

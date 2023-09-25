@@ -41,21 +41,21 @@ void setLabel(cv::Mat& input, const std::string label, cv::Point org, cv::Scalar
     cv::putText(input, label, org, fontface, scale, clr, thickness, 4);
 }
 
-void draw3DLocation(cv::Mat &rgb, const PAL::Data::TrackingResults &data)
+void draw3DLocation(cv::Mat &rgb, const PAL::Data::Tracking_Data &data)
 {
-    int no_of_persons = data.trackingData[PAL::States::OK].size();
+    int no_of_persons = data.tracking_info[PAL::States::OK].size();
     for(int i =0; i<no_of_persons; i++)
     {
         int x1,y1,x2,y2;
-        x1 = (int)data.trackingData[PAL::States::OK][i].boxes.x1;
-        y1 = (int)data.trackingData[PAL::States::OK][i].boxes.y1;
-        x2 = (int)data.trackingData[PAL::States::OK][i].boxes.x2;
-        y2 = (int)data.trackingData[PAL::States::OK][i].boxes.y2;
+        x1 = (int)data.tracking_info[PAL::States::OK][i].boxes.x1;
+        y1 = (int)data.tracking_info[PAL::States::OK][i].boxes.y1;
+        x2 = (int)data.tracking_info[PAL::States::OK][i].boxes.x2;
+        y2 = (int)data.tracking_info[PAL::States::OK][i].boxes.y2;
 
         float x3D, y3D, z3D, depth_value;
-        x3D = data.trackingData[PAL::States::OK][i].locations_3d.x;
-        y3D = data.trackingData[PAL::States::OK][i].locations_3d.y;
-        z3D = data.trackingData[PAL::States::OK][i].locations_3d.z;
+        x3D = data.tracking_info[PAL::States::OK][i].locations_3d.x;
+        y3D = data.tracking_info[PAL::States::OK][i].locations_3d.y;
+        z3D = data.tracking_info[PAL::States::OK][i].locations_3d.z;
 
         depth_value = sqrt(x3D*x3D + y3D*y3D);
 
@@ -130,7 +130,7 @@ int main( int argc, char** argv )
     cout << "Press m/M to toggle Fast Depth property" << endl;
     cout << "Press q/Q & a/A to increase and decrease detection threshold respectively" << endl;
 
-    std::vector<PAL::Data::TrackingResults> data;
+    std::vector<PAL::Data::Tracking_Data> data;
 
     int key = ' ';
 

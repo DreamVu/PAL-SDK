@@ -67,7 +67,7 @@ int main( int argc, char** argv )
         data =  PAL::GrabRangeScanData();    
         
         //Display the overlayed image
-        imshow( "PAL Range Scan", data[0].marked_left);  
+        imshow( "PAL Range Scan", data[0].scan_overlay_left);  
 
         //Wait for the keypress - with a timeout of 1 ms
         key = waitKey(1) & 255;

@@ -184,9 +184,9 @@ int main(int argc, char *argv[])
         
         Mat depth;
         if(properties.raw_depth)
-            depth = data[0].fused_depth.clone();
+            depth = data[0].raw_depth.clone();
         else
-            depth = data[0].distance.clone();  
+            depth = data[0].depth.clone();  
         depth.convertTo(depth, CV_8UC1);
 
         //Get a 1D occupancy mask

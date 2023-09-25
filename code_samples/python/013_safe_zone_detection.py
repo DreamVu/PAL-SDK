@@ -90,23 +90,23 @@ def main():
 
     # ESC
     while key != 27:
-        left, right, depth, trackingData, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
+        left, right, depth, tracking_info, camera_changed =  PAL_PYTHON.GrabTrackingDataP()
         if camera_changed == True:
             break
         
         display = left
         
-        num_of_persons = len(trackingData[PAL_PYTHON.OKP])
+        num_of_persons = len(tracking_info[PAL_PYTHON.OKP])
 
         for i in range (0, num_of_persons):
-            x1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x1"]
-            y1 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y1"]
-            x2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["x2"]
-            y2 = trackingData[PAL_PYTHON.OKP][i]["boxes"]["y2"]
+            x1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x1"]
+            y1 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y1"]
+            x2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["x2"]
+            y2 = tracking_info[PAL_PYTHON.OKP][i]["boxes"]["y2"]
 
-            x3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
-            y3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
-            z3D = trackingData[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
+            x3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["x"]
+            y3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["y"]
+            z3D = tracking_info[PAL_PYTHON.OKP][i]["locations_3d"]["z"]
 
             depth_value = math.sqrt(x3D*x3D + y3D*y3D)
             text = "Depth:{:.2f}m".format(depth_value)

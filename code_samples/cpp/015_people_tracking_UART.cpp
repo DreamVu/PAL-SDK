@@ -112,7 +112,7 @@ std::string precision_string(float num, int precision=1)
     return num_string.substr(0, num_string.find(".")+1+precision);
 }
 
-void drawOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
+void drawOnImage(cv::Mat &img, const PAL::Data::Tracking_Data &data, int mode,
     bool ENABLEDEPTH=false, bool ENABLE3D=false)
 {
     vector<std::string> classes = {"person","bicycle","car","motorcycle","airplane",
@@ -134,23 +134,23 @@ void drawOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
     if(!ENABLEDEPTH)
         ENABLE3D = false;
 
-    int no_of_persons = data.trackingData[PAL::States::OK].size();
+    int no_of_persons = data.tracking_info[PAL::States::OK].size();
     depthValues.resize(no_of_persons);
     
     for (int i = 0; i < no_of_persons; i++)
     {
-        cv::Scalar colors = get_color((int)data.trackingData[PAL::States::OK][i].t_track_id);
+        cv::Scalar colors = get_color((int)data.tracking_info[PAL::States::OK][i].t_track_id);
 
         int x1,y1,x2,y2;
-        x1 = (int)data.trackingData[PAL::States::OK][i].boxes.x1;
-        y1 = (int)data.trackingData[PAL::States::OK][i].boxes.y1;
-        x2 = (int)data.trackingData[PAL::States::OK][i].boxes.x2;
-        y2 = (int)data.trackingData[PAL::States::OK][i].boxes.y2;
+        x1 = (int)data.tracking_info[PAL::States::OK][i].boxes.x1;
+        y1 = (int)data.tracking_info[PAL::States::OK][i].boxes.y1;
+        x2 = (int)data.tracking_info[PAL::States::OK][i].boxes.x2;
+        y2 = (int)data.tracking_info[PAL::States::OK][i].boxes.y2;
 
         float x3D, y3D, z3D, depth_value;
-        x3D = data.trackingData[PAL::States::OK][i].locations_3d.x;
-        y3D = data.trackingData[PAL::States::OK][i].locations_3d.y;
-        z3D = data.trackingData[PAL::States::OK][i].locations_3d.z;
+        x3D = data.tracking_info[PAL::States::OK][i].locations_3d.x;
+        y3D = data.tracking_info[PAL::States::OK][i].locations_3d.y;
+        z3D = data.tracking_info[PAL::States::OK][i].locations_3d.z;
 
         depth_value = sqrt(x3D*x3D + y3D*y3D);
         depthValues[i] = depth_value*100;
@@ -165,12 +165,12 @@ void drawOnImage(cv::Mat &img, const PAL::Data::TrackingResults &data, int mode,
         
         if(only_detection)
         {
-            label1 = "Class= " + classes[ round(data.trackingData[PAL::States::OK][i].t_label) ];
+            label1 = "Class= " + classes[ round(data.tracking_info[PAL::States::OK][i].t_label) ];
         }
         else
         {
-            label1 = "ID=" + to_string((int)data.trackingData[PAL::States::OK][i].t_track_id) + 
-                ", "+classes[ round(data.trackingData[PAL::States::OK][i].t_label) ];
+            label1 = "ID=" + to_string((int)data.tracking_info[PAL::States::OK][i].t_track_id) + 
+                ", "+classes[ round(data.tracking_info[PAL::States::OK][i].t_label) ];
         }
 
         if(ENABLEDEPTH)
@@ -338,7 +338,7 @@ int main( int argc, char** argv )
 
     while(!g_bExit)
     {
-        std::vector<PAL::Data::TrackingResults> data;
+        std::vector<PAL::Data::Tracking_Data> data;
         data =  PAL::GrabTrackingData();
         if(data[0].camera_changed)
         {
@@ -349,7 +349,7 @@ int main( int argc, char** argv )
         cv::Mat display = data[0].left;
         drawOnImage(display, data[0], tracking_mode, enableDepth, false);
         
-        int person_detected = data[0].trackingData[PAL::States::OK].size();
+        int person_detected = data[0].tracking_info[PAL::States::OK].size();
         if(person_detected)
         {
             // Writing Start of the frame to the serial port
