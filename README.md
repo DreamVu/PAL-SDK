@@ -70,6 +70,7 @@ Turtlebot-Nav support is also provided for both the version and can be installed
 - [PAL Mini ROS Application Note](https://docs.google.com/document/d/e/2PACX-1vS8XpaUZAu6q5TRsJzVaWwDdjwRKgArtJ4zVdHj6nsrHrvVfGSlu3hm9ecHhCMaBqLlIYdlguVTJJH-/pub)
 - [GPIO & UART Application Note](https://docs.google.com/document/d/e/2PACX-1vTN9U7ZocPkSLjN90oEgiOtFgr4e81qbgLsfpibcUGtQnvx3zpwMETmWvJ4BujKfcuOYSs_Yh95_4fm/pub)
 - [Design Integration Guide](https://docs.google.com/document/d/e/2PACX-1vTzozqh7LtwgcBRXhxrZCy6jdk5TG6VzUCgNuZqZzNg5orSkilWFPm9WlGZ7PaZNOsGiVRC8i_-cXle/pub)
+- [API Documentation](https://docs.google.com/document/d/e/2PACX-1vSeJXv0aqo0bomlP70tXHcqzOPHWOJkWHWxJFrcOhuPrMXDRxc9uu5GSwoyAjCN5aZcijBFFw7m29sf/pub)
 
 ## Support 
 If you need help or more informations check our [Help Center](https://support.dreamvu.com/portal/en/home) or join our [Community](https://support.dreamvu.com/portal/en/community/dreamvu-inc). 
