@@ -20,7 +20,7 @@ def precision_string(num, precision=1):
     num_string = str(num)
     return num_string[0:num_string.find(".")+1+precision]
 
-def drawOnImage(img, tracking_info, mode, ENABLEDEPTH=False, ENABLE3D=False):
+def drawOnImage(img, tracking_info, mode, properties):
     classes = ["person","bicycle","car","motorcycle","airplane",
     "bus","train","truck","boat","traffic light","fire hydrant",
     "stop sign","parking meter","bench","bird","cat","dog","horse",
@@ -41,9 +41,9 @@ def drawOnImage(img, tracking_info, mode, ENABLEDEPTH=False, ENABLE3D=False):
     else:
         only_detection = False
 
-    if ENABLEDEPTH == False:
-        ENABLE3D = False
+    ENABLEDEPTH = (properties["depth_in_tracking"] == PAL_PYTHON.DEPTH_ONP) or (properties["depth_in_tracking"] == PAL_PYTHON.DEPTH_3DLOCATION_ONP)
 
+    ENABLE3D = (properties["depth_in_tracking"] == PAL_PYTHON.DEPTH_3DLOCATION_ONP)
     
     no_of_persons = len(tracking_info[PAL_PYTHON.OKP])
     
@@ -186,16 +186,12 @@ def main():
     loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
     
     #Loading camera properties from a text file
-    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedProperties.yml", loaded_prop)
     if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
         PAL_PYTHON.DestroyP()
         return
     if ack_load != PAL_PYTHON.SUCCESSP:
         print("Error Loading settings! Loading default values.")
-        
-    enableDepth = False
-    enable3Dlocation = False
-    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
 
     tracking_mode = PAL_PYTHON.OBJECT_FOLLOWINGP
     success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)
@@ -207,8 +203,9 @@ def main():
     print("\n\nPress ESC to close the window.")
     print("Press f/F to toggle filter rgb property.")
     print("Press v/V to toggle Vertical Flip property.")
-    print("Press d/D to enable/Disable Depth calculation.")
-    print("Press l/L to enable/Disable 3D Location calculation.")
+    print("Press z/Z to Disable Depth calculation.")
+    print("Press x/X to Enable Depth calculation.")
+    print("Press c/C to Enable 3D Location calculation.")
     print("Press m/M to toggle Fast Depth property")
     print("Press i/I to set ID of the person you want to follow.")
     print("Press p/P to print the ID of the person being followed.\n\n")
@@ -222,7 +219,7 @@ def main():
             break
         
         display = left
-        drawOnImage(display, tracking_info, tracking_mode, enableDepth, enable3Dlocation)
+        drawOnImage(display, tracking_info, tracking_mode, loaded_prop)
 
         cv2.imshow(source_window, display)
 
@@ -271,20 +268,23 @@ def main():
             loaded_prop["fd"] = not(bool(loaded_prop["fd"]))
             loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-        #d        
-        if key == 100:    
-            enableDepth = not(enableDepth)        
-            if enableDepth:
-                if enable3Dlocation:
-                    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_3DLOCATION_ONP)
-                else:
-                    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_ONP)
-            else:
-                PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_OFFP)
+        #z
+        if key == 122:
+            flag = PAL_PYTHON.DEPTH_IN_TRACKINGP
+            loaded_prop["depth_in_tracking"] = PAL_PYTHON.DEPTH_OFFP 
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
-        #l        
-        if key == 108:    
-             enable3Dlocation = not(enable3Dlocation)
+        #x
+        if key == 120:
+            flag = PAL_PYTHON.DEPTH_IN_TRACKINGP
+            loaded_prop["depth_in_tracking"] = PAL_PYTHON.DEPTH_ONP 
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
+
+        #c
+        if key == 99:
+            flag = PAL_PYTHON.DEPTH_IN_TRACKINGP
+            loaded_prop["depth_in_tracking"] = PAL_PYTHON.DEPTH_3DLOCATION_ONP 
+            loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
     # Destroying connections
     print("exiting the application\n")

@@ -13,7 +13,7 @@ else
     NO_OF_GPU=0
 fi
 
-if [ "$UBUNTU_VERSION" = "focal" ]; then
+if [ "$UBUNTU_VERSION" = "jammy" ]; then
 	NO_OF_GPU=0
 fi
 

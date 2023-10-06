@@ -306,7 +306,7 @@ int main( int argc, char** argv )
     
     //Loading camera properties from a text file
     PAL::CameraProperties properties;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedProperties.yml", &properties);
     if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
     {
         PAL::Destroy();
@@ -317,17 +317,21 @@ int main( int argc, char** argv )
         cerr<<"Error Loading settings! Loading default values."<<endl;
     }
     
+    //Set in which mode to run tracking
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_TRACKING;
     int success = PAL::SetModeInTracking(tracking_mode);
 
+    //Set depth detection mode
+    unsigned long int flags = PAL::DEPTH_IN_TRACKING;
     if(enableDepth)
     {
-        SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_ON);
+        properties.depth_in_tracking = PAL::DepthInTracking::DEPTH_ON;
     }
     else
     {
-        PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
+        properties.depth_in_tracking = PAL::DepthInTracking::DEPTH_OFF;
     }
+    PAL::SetCameraProperties(&properties, &flags);
 
     // Create a window for display.
     namedWindow("PAL OBJECT_TRACKING_UART", WINDOW_AUTOSIZE);

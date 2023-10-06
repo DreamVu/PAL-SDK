@@ -29,7 +29,7 @@ def main():
     loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
     
     #Loading camera properties from a text file
-    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedProperties.yml", loaded_prop)
     if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
         PAL_PYTHON.DestroyP()
         return

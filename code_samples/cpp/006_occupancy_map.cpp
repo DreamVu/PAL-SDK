@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
     
     //Loading camera properties from a text file
     PAL::CameraProperties properties;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedProperties.yml", &properties);
     if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
     {
         PAL::Destroy();

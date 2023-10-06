@@ -57,7 +57,7 @@ std::string precision_string(float num, int precision=1)
 }
 
 void drawOnImage(cv::Mat &img, const PAL::Data::Tracking_Data &data, int mode,
-    bool ENABLEDEPTH=false, bool ENABLE3D=false)
+    PAL::CameraProperties *properties=nullptr)
 {
     vector<std::string> classes = {"person","bicycle","car","motorcycle","airplane",
     "bus","train","truck","boat","traffic light","fire hydrant",
@@ -74,9 +74,11 @@ void drawOnImage(cv::Mat &img, const PAL::Data::Tracking_Data &data, int mode,
     "refrigerator","book","clock","vase","scissors","teddy bear",
     "hair drier","toothbrush"};
 
-    bool only_detection = (mode == PAL::Tracking_Mode::PEOPLE_DETECTION || mode == PAL::Tracking_Mode::OBJECT_DETECTION) ? true : false;
-    if(!ENABLEDEPTH)
-        ENABLE3D = false;
+    bool only_detection = (mode == PAL::Tracking_Mode::PEOPLE_DETECTION || 
+                           mode == PAL::Tracking_Mode::OBJECT_DETECTION) ? true : false;
+    bool ENABLEDEPTH = (properties->depth_in_tracking == PAL::DepthInTracking::DEPTH_ON || 
+                        properties->depth_in_tracking == PAL::DepthInTracking::DEPTH_3DLOCATION_ON);
+    bool ENABLE3D = properties->depth_in_tracking == PAL::DepthInTracking::DEPTH_3DLOCATION_ON;
 
     int no_of_persons = data.tracking_info[PAL::States::OK].size();
     for (int i = 0; i < no_of_persons; i++)
@@ -245,7 +247,7 @@ int main( int argc, char** argv )
     
     //Loading camera properties from a text file
     PAL::CameraProperties properties;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedProperties.yml", &properties);
     if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
     {
         PAL::Destroy();
@@ -255,11 +257,6 @@ int main( int argc, char** argv )
     {
         cerr<<"Error Loading settings! Loading default values."<<endl;
     }
-
-    //Set depth detection mode
-    bool enableDepth = false;
-    bool enable3Dlocation = false;
-    PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
 
     //Set in which mode to run tracking
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_FOLLOWING;
@@ -271,8 +268,9 @@ int main( int argc, char** argv )
     cout << "Press ESC to close the window." << endl;
     cout << "Press f/F to toggle filter rgb property" << endl;
     cout << "Press v/V to toggle Vertical Flip property." << endl;
-    cout << "Press d/D to enable/Disable Depth calculation." << endl;
-    cout << "Press l/L to enable/Disable 3D Location calculation." << endl;
+    cout << "Press z/Z to Disable Depth calculation." << endl;
+    cout << "Press x/X to Enable Depth calculation." << endl;
+    cout << "Press c/C to Enable 3D Location calculation." << endl;
     cout << "Press m/M to toggle Fast Depth property." << endl;
     cout << "Press i/I to set ID of the person you want to follow." << endl;
     cout << "Press p/P to print the ID of the person being followed." << endl;
@@ -287,7 +285,7 @@ int main( int argc, char** argv )
         data =  PAL::GrabTrackingData();    
 
         cv::Mat display = data[0].left;
-        drawOnImage(display, data[0], tracking_mode, enableDepth, enable3Dlocation);
+        drawOnImage(display, data[0], tracking_mode, &properties);
         
         //Display the stereo images
         imshow( "PAL People Following", display);  
@@ -352,22 +350,25 @@ int main( int argc, char** argv )
             PAL::SetCameraProperties(&properties, &flags);
         }
 
-        if (key == 'd' || key == 'D')
+        if (key == 'z' || key == 'Z')
         {   
-            enableDepth = !enableDepth;
-            if(enableDepth)
-            {
-                if(enable3Dlocation)
-                    SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_3DLOCATION_ON);
-                else
-                    SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_ON);
-            }
-            else
-                SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_OFF);
+            properties.depth_in_tracking = PAL::DepthInTracking::DEPTH_OFF;
+            unsigned long int flags = PAL::DEPTH_IN_TRACKING;
+            PAL::SetCameraProperties(&properties, &flags);
         }
-        if (key == 'l' || key == 'L')
-        {
-            enable3Dlocation = !enable3Dlocation;
+        
+        if (key == 'x' || key == 'X')
+        {   
+            properties.depth_in_tracking = PAL::DepthInTracking::DEPTH_ON;
+            unsigned long int flags = PAL::DEPTH_IN_TRACKING;
+            PAL::SetCameraProperties(&properties, &flags);
+        }
+
+        if (key == 'c' || key == 'C')
+        {   
+            properties.depth_in_tracking = PAL::DepthInTracking::DEPTH_3DLOCATION_ON;
+            unsigned long int flags = PAL::DEPTH_IN_TRACKING;
+            PAL::SetCameraProperties(&properties, &flags);
         }
     }
     //27 = esc key. Run the loop until the ESC key is pressed and camera is not changed
