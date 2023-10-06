@@ -12,6 +12,19 @@ namespace PAL
      */
 
     /**
+     * @brief Enumerates different acknowledgement states.
+     */
+    enum Acknowledgement
+    {
+        IGNORED, /**< The action was ignored. */
+        SUCCESS, /**< The action was successful. */
+        FAILURE, /**< The action failed. */
+        INVALID_PROPERTY_VALUE, /**< The provided property value(s) is/are invalid. */
+        ERROR_CAMERA_NOT_INITIALIZED /**< An error occurred due to camera not being initialized. 
+                                        Ensure that the function PAL::Init() has been invoked. */
+    };
+
+    /**
      * @brief Enumeration for different API modes.
      */
     enum API_Mode
@@ -35,16 +48,6 @@ namespace PAL
         OBJECT_FOLLOWING = 0X8,    /**< Object following mode. */
         OBJECT_DETECTION = 0X10,   /**< Object detection mode. */
         PEOPLE_DETECTION = 0X20    /**< People detection mode. */
-    };
-
-    /**
-     * @brief Enumeration for depth options in tracking mode.
-     */
-    enum DepthInTracking
-    {
-        DEPTH_OFF = 0x1,            /**< Depth calculation is off. */
-        DEPTH_ON = 0x2,             /**< Depth calculation is on. */
-        DEPTH_3DLOCATION_ON = 0x4   /**< 3D location calculation based on depth is on. */
     };
 
     /**
