@@ -55,6 +55,12 @@ To preview the PAL camera, run the below command
 #### To install ROS2 Foxy Navigation package use the below command:
 
     sudo apt install pal-foxy-navigation-dev
+
+### Ubuntu 22.04 supports ROS2 Humble.
+
+#### To install ROS2 Humble Navigation package use the below command:
+
+    sudo apt install pal-humble-navigation-dev
     
 ## Turtlebot-Nav
   
