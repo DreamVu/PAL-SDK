@@ -64,9 +64,12 @@ To preview the PAL camera, run the below command
     
 ## Turtlebot-Nav
   
-Turtlebot-Nav support is also provided for both the version and can be installed using following command,
-
+Turtlebot navigation support is also provided for both the versions of ROS and can be installed using following command,
+#### For ROS Melodic:
     sudo apt install ros-melodic-turtlebot-nav    
+    
+#### For ROS Noetic:
+    sudo apt install ros-noetic-turtlebot-nav    
       
 
 ## Documentation 
