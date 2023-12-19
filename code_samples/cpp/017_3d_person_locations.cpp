@@ -97,7 +97,7 @@ int main( int argc, char** argv )
     
     //Loading camera properties from a text file
     PAL::CameraProperties properties;
-    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedPalProperties.txt", &properties);
+    PAL::Acknowledgement ack_load = PAL::LoadProperties("../../Explorer/SavedProperties.yml", &properties);
     if(ack_load == PAL::Acknowledgement::INVALID_PROPERTY_VALUE)
     {
         PAL::Destroy();
@@ -109,8 +109,11 @@ int main( int argc, char** argv )
     }
 
     //Set depth detection mode
-    bool enableDepth = true;
-    PAL::SetDepthModeInTracking(PAL::DepthInTracking::DEPTH_3DLOCATION_ON);
+    {
+        properties.depth_in_tracking = PAL::DepthInTracking::DEPTH_3DLOCATION_ON;
+        unsigned long int flags = PAL::DEPTH_IN_TRACKING;
+        PAL::SetCameraProperties(&properties, &flags);
+    }
 
     //Set in which mode to run tracking
     int tracking_mode = PAL::Tracking_Mode::PEOPLE_DETECTION;

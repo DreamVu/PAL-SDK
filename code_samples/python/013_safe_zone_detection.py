@@ -60,14 +60,16 @@ def main():
     loaded_prop = PAL_PYTHON.createPALCameraPropertiesP(loaded_prop)
     
     #Loading camera properties from a text file
-    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedPalProperties.txt", loaded_prop)
+    loaded_prop, ack_load = PAL_PYTHON.LoadPropertiesP("../../Explorer/SavedProperties.yml", loaded_prop)
     if ack_load == PAL_PYTHON.INVALID_PROPERTY_VALUEP: 
         PAL_PYTHON.DestroyP()
         return
     if ack_load != PAL_PYTHON.SUCCESSP:
         print("Error Loading settings! Loading default values.")
 
-    PAL_PYTHON.SetDepthModeInTrackingP(PAL_PYTHON.DEPTH_3DLOCATION_ONP)
+    flag = PAL_PYTHON.DEPTH_IN_TRACKINGP
+    loaded_prop["depth_in_tracking"] = PAL_PYTHON.DEPTH_3DLOCATION_ONP 
+    loaded_prop, flags, res_scp = PAL_PYTHON.SetCameraPropertiesP(loaded_prop, flag)
 
     tracking_mode = PAL_PYTHON.PEOPLE_DETECTIONP
     success = PAL_PYTHON.SetModeInTrackingP(tracking_mode)

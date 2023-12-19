@@ -18,6 +18,7 @@ read -p "Enter the value: " arg1
 cp -r dreamvu_pal_navigation ~/catkin_ws/src/
 non_foxy_launch_files=("scan_rviz.launch" "stereo_rviz.launch" "object_tracking_rviz.launch" "people_tracking_rviz.launch" "object_detection_rviz.launch" "object_following_rviz.launch" "people_following_rviz.launch")
 foxy_launch_files=("scan_rviz_launch.py" "stereo_rviz_launch.py" "object_tracking_rviz_launch.py" "people_tracking_rviz_launch.py" "object_detection_rviz_launch.py" "object_following_rviz_launch.py" "people_following_rviz_launch.py") 
+humble_launch_files=("scan_rviz_launch.py" "stereo_rviz_launch.py" "object_tracking_rviz_launch.py" "people_tracking_rviz_launch.py" "object_detection_rviz_launch.py" "object_following_rviz_launch.py" "people_following_rviz_launch.py") 
 if [ -e /opt/ros/foxy/ ] 
 then		
 	cd ~/catkin_ws/
@@ -25,6 +26,14 @@ then
 	. ./install/setup.bash
 	colcon build
 	ros2 launch src/dreamvu_pal_navigation/launch/${foxy_launch_files[arg1-1]}
+	
+elif [ -e /opt/ros/humble/ ]
+then
+	cd ~/catkin_ws/
+	colcon build
+	. ./install/setup.bash
+	colcon build
+	ros2 launch src/dreamvu_pal_navigation/launch/${humble_launch_files[arg1-1]}
 	
 else
 	cd ~/catkin_ws/

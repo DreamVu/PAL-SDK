@@ -5,86 +5,10 @@
 
 namespace PAL
 {
-	enum CameraPropertyFlags
-	{
-       	BRIGHTNESS = 0x1,
-		CONTRAST = 0x2,
-		SATURATION = 0x4,
-		GAMMA = 0x8,
-		GAIN = 0x10,
-		WHITE_BAL_TEMP = 0x20,
-		SHARPNESS = 0x40,
-		EXPOSURE = 0x80,
-		FOCUS = 0x100,
-		HUE = 0x200,
-		AUTO_WHITE_BAL = 0x400,
-		AUTO_GAIN = 0x800,
-		AUTO_FOCUS = 0x1000,
-		RESOLUTION = 0x2000,
-		COLOR_SPACE = 0x4000,
-		POWER_LINE_FREQUENCY = 0x8000,
-		VERTICAL_FLIP = 0x10000,
-		FILTER_DISPARITY = 0x20000,
-		FILTER_SPOTS = 0x40000,
-        FOV = 0x80000,
-		PROJECTION = 0x100000,
-		CAMERA_HEIGHT = 0x200000,		
-		DETECTION_MODE = 0x400000,		
-		GROUND_DETECTION = 0x800000,
-		YAW = 0x1000000,
-		PITCH = 0x2000000,
-		RANGE = 0x4000000,
-		STARTHFOV = 0x8000000,
-		HFOV_RANGE = 0x10000000,
-		STARTVFOV = 0x20000000,
-		ENDVFOV = 0x40000000,
-		DEPTH_SCALE   = 0x80000000,
-		POINTCLOUD_DENSITY = 0x100000000,
-		IMAGE_STABILIZATION = 0x200000000,
-		DEPTH_STABILIZATION = 0x400000000,
-		COLOR_DEPTH = 0x800000000,
-		MODE = 0x1000000000,
-		RAW_DEPTH = 0x2000000000, 
-		STEREO_IMAGE_STABILIZATION = 0x4000000000, 
-		AUTO_EXPOSURE_METHOD = 0x8000000000,
-		HID_FRAME_RATE = 0x10000000000,
-		HID_DENOISE = 0x20000000000,
-		HID_QFACTOR = 0x40000000000,
-		HID_IHDR_MODE = 0x80000000000,
-		HID_IHDR_VALUE = 0x100000000000,
-		ODOA_DEPTHTEMPORAL = 0x200000000000,
-		ODOA_DEPTHSENSITIVITY = 0x400000000000,
-		CLOTHES_LINING_MAX_HEIGHT = 0x800000000000,
-		FD = 0x1000000000000,
-		TRACKING_QUALITY = 0x2000000000000,
-		ALL = 0x3FFFFFFFFFFFF,
-	};
-
-	struct Resolution
-	{
-		int width;
-		int height;
-	};
-
 	enum CaptureType
 	{
 		DUMMY,
 		CAMERA
-	};
-
-	enum Acknowledgement
-	{
-		IGNORED, 
-		SUCCESS, 
-		FAILURE, 
-		INVALID_PROPERTY_VALUE, 
-		ERROR_CAMERA_NOT_INITIALIZED
-	};
-
-	enum ColorSpace
-	{
-		RGB,
-		YUV444
 	};
 
 	enum PowerLineFrequency
@@ -100,13 +24,12 @@ namespace PAL
 		PERSPECTIVE = 1,
 		SPHERICAL = 2,
 	};
-	
-	enum DetectionMode
+
+	enum HDR_Mode 
 	{
-		FLOOR = 1,
-		TABLE_TOP = 2,
-		CEILING = 3,
-		AUTO = 4,
+		HDR_OFF = 0x01,
+		HDR_AUTO = 0x02,
+		HDR_MANUAL = 0x03,
 	};
 
 	enum Tracking_Quality
@@ -114,14 +37,67 @@ namespace PAL
 		STANDARD = 0,
 		MEDIUM = 1,
 		HIGHEST = 2,
-	};
-	
-	enum HDR_Mode 
-	{
-        HDR_OFF = 0x01,
-        HDR_AUTO = 0x02,
-        HDR_MANUAL = 0x03,
+	};	
+
+	/**
+     * @brief Enumeration for depth options in tracking mode.
+     */
+    enum DepthInTracking
+    {
+        DEPTH_OFF = 0,            /**< Depth calculation is off. */
+        DEPTH_ON = 1,             /**< Depth calculation is on. */
+        DEPTH_3DLOCATION_ON = 2,   /**< 3D location calculation based on depth is on. */
     };
+
+	enum CameraPropertyFlags
+	{
+		BRIGHTNESS = 0x1,
+		CONTRAST = 0x2,
+		SATURATION = 0x4,
+		GAMMA = 0x8,
+		GAIN = 0x10,
+		WHITE_BAL_TEMP = 0x20,
+		SHARPNESS = 0x40,
+		EXPOSURE = 0x80,
+		FOCUS = 0x100,
+		HUE = 0x200,
+		AUTO_WHITE_BAL = 0x400,
+		AUTO_GAIN = 0x800,
+		AUTO_FOCUS = 0x1000,
+		POWER_LINE_FREQUENCY = 0x2000,
+		VERTICAL_FLIP = 0x4000,
+		FILTER_SPOTS = 0x8000,
+		PROJECTION = 0x10000,
+		CAMERA_HEIGHT = 0x20000,
+		GROUND_DETECTION = 0x40000,
+		YAW = 0x80000,
+		PITCH = 0x100000,
+		RANGE = 0x200000,
+		STARTHFOV = 0x400000,
+		HFOV_RANGE = 0x800000,
+		STARTVFOV = 0x1000000,
+		ENDVFOV = 0x2000000,
+		DEPTH_SCALE = 0x4000000,
+		POINTCLOUD_DENSITY = 0x8000000,
+		IMAGE_STABILIZATION = 0x10000000,
+		DEPTH_STABILIZATION = 0x20000000,
+		COLOR_DEPTH = 0x40000000,
+		RAW_DEPTH = 0x80000000,
+		STEREO_IMAGE_STABILIZATION = 0x100000000,
+		AUTO_EXPOSURE_METHOD = 0x200000000,
+		HID_FRAME_RATE = 0x400000000,
+		HID_DENOISE = 0x800000000,
+		HID_QFACTOR = 0x1000000000,
+		HID_IHDR_MODE = 0x2000000000, 
+		HID_IHDR_VALUE = 0x4000000000,
+		ODOA_DEPTHTEMPORAL = 0x8000000000,
+		ODOA_DEPTHSENSITIVITY = 0x10000000000,
+		CLOTHES_LINING_MAX_HEIGHT = 0x20000000000,
+		FD = 0x40000000000,
+		TRACKING_QUALITY = 0x80000000000,
+		DEPTH_IN_TRACKING = 0x100000000000,
+		ALL = 0x1FFFFFFFFFFF,
+	};
 
 	struct CameraPropertyValues
 	{
@@ -156,7 +132,7 @@ namespace PAL
 		
 		HDR_Mode DEFAULT_HID_IHDR_MODE = HDR_OFF;
 		
-		int MAX_AUTO_EXPOSURE_METHOD = 1;
+		int MAX_AUTO_EXPOSURE_METHOD = 2;
 		int MIN_AUTO_EXPOSURE_METHOD = 0;
 		int DEFAULT_AUTO_EXPOSURE_METHOD = 1;
 		
@@ -180,7 +156,7 @@ namespace PAL
 		int MIN_POINT_CLOUD_DENSITY = 1;
 		int DEFAULT_POINT_CLOUD_DENSITY = 9;
 		
-        int MAX_BRIGHTNESS = 15;
+		int MAX_BRIGHTNESS = 15;
 		int MIN_BRIGHTNESS = -15;
 		int DEFAULT_BRIGHTNESS = -2;
 		
@@ -219,27 +195,18 @@ namespace PAL
 		int MAX_HUE = 2000;
 		int MIN_HUE = -2000;
 		int DEFAULT_HUE = 0;
-		
-		int DEFAULT_MODE    =  API_Mode::STEREO;
 				
 		bool DEFAULT_AUTO_WHITE_BAL = 1;
 		bool DEFAULT_AUTO_GAIN = 0;
 		bool DEFAULT_AUTO_FOCUS = 0;
 
 		CaptureType DEFAULT_CAPTURE_TYPE = CaptureType::CAMERA;
-		ColorSpace DEFAULT_COLOR_SPACE = RGB;
 		PowerLineFrequency DEFAULT_POWER_LINE_FREQUENCY = _AUTO;
 
 		bool DEFAULT_VERTICAL_FLIP = false;
-		bool DEFAULT_FILTER_DISPARITY = true;
 		bool DEFAULT_FILTER_SPOTS = true;
-        
-		int DEFAULT_FOV_START = 0;
-		int DEFAULT_FOV_END = 360;
 
 		Projection DEFAULT_PROJECTION = EQUI_RECTANGULAR;
-
-		DetectionMode DEFAULT_DETECTION_MODE = TABLE_TOP;
 		
 		bool DEFAULT_GROUND_DETECTION = true;		
 		
@@ -277,24 +244,20 @@ namespace PAL
 	
 		bool DEFAULT_RAW_DEPTH  = false;
 		bool DEFAULT_COLOR_DEPTH  = true;
-
-		Resolution DEFAULT_RESOLUTION = 
-		{
-			.width = 672,
-        		.height = 224
-		};
 		
 		bool DEFAULT_FD = true;
 
 		Tracking_Quality DEFAULT_TRACKING_QUALITY = Tracking_Quality::STANDARD;
+
+		DepthInTracking DEFAULT_DEPTH_IN_TRACKING = DepthInTracking::DEPTH_OFF;
 
 		CameraPropertyValues();
 	};
 	
 	struct CameraProperties
 	{
-	    int brightness;
-	    int contrast;
+		int brightness;
+		int contrast;
 		int saturation;
 		int gamma;
 		int gain;
@@ -307,42 +270,30 @@ namespace PAL
 		bool auto_gain;
 		bool auto_focus;
 		
-		int mode ;
-		
-		Resolution resolution;
 		CaptureType capture_type;
-		ColorSpace color_space;
 		PowerLineFrequency power_line_frequency;
 
 		bool  vertical_flip;
-		bool  filter_disparity;
 		bool  filter_spots;
-        	bool raw_depth;
-        	bool color_depth;
-        
-		//horizontal FOV in degrees
-		int   fov_start; 
-		int   fov_end;
+		bool raw_depth;
+		bool color_depth;
 
 		//Projection type : equi-rectangular or perspective
 		Projection projection;
-		
-		//Modes of the camera position to be used in person detection
-		DetectionMode detection_mode;
-        
+
 		bool ground_detection;
 
 		int yaw;
-
 		int pitch;
 
 		int range;
 		int min_range;
-         
+
 		int start_hfov; 
 		int hfov_range; 
 		int start_vfov; 
 		int end_vfov; 
+		
 		float camera_height;
 
 		int depth_scale_factor;
@@ -367,8 +318,8 @@ namespace PAL
 		bool fd;
 
 		Tracking_Quality tracking_quality;
+		DepthInTracking depth_in_tracking;
 
-		//PAL::CameraPropertyValues cpv;
 		
 		CameraProperties();	
 	};

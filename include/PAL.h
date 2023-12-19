@@ -70,7 +70,7 @@ namespace PAL
      *             If not provided (nullptr), the loaded properties will not be written.
      * @return PAL::Acknowledgement SUCCESS if the properties are loaded successfully, FAILURE otherwise.
      */
-    PAL::Acknowledgement LoadProperties(const char* fileName, PAL::CameraProperties* data = 0);
+    PAL::Acknowledgement LoadProperties(const char* fileName, PAL::CameraProperties* properties = 0);
 
     /**
      * @brief Sets the API mode.
@@ -109,12 +109,6 @@ namespace PAL
     std::vector<PAL::Data::Tracking_Data> GrabTrackingData();
 
     /**
-     * @brief Sets the depth calculation mode in tracking.
-     * @param mode The depth mode to be set.
-     */
-    void SetDepthModeInTracking(int mode);
-
-    /**
      * @brief Sets the tracking mode.
      * @param mode The tracking mode to be set.
      * @return 0 if the operation is successful. If the current properties need to be modified to change the mode successfully, the function returns 1.
@@ -149,11 +143,11 @@ namespace PAL
      * @param img The input image on which to draw bounding boxes and display tracking information.
      * @param data The PAL::Data::Tracking_Data object containing tracking information.
      * @param mode The tracking mode to determine what information to display.
-     * @param ENABLEDEPTH Flag to enable depth display (optional, default is false).
-     * @param ENABLE3D Flag to enable 3D location display (optional, default is false).
+     * @param properties The PAL::CameraProperties to be used for visualizing the data(optional, default is nullptr).
+     *                   If not provided (nullptr), the current properties will be used.
      */
     void drawTracksOnImage(cv::Mat& img, const PAL::Data::Tracking_Data& data, int mode,
-                           bool ENABLEDEPTH = false, bool ENABLE3D = false);
+                           PAL::CameraProperties* properties=nullptr);
 
 
      /**
